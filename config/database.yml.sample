@@ -1,0 +1,16 @@
+# PostgreSQL. Versions 8.2 and up are supported.
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: postgres
+  password:
+  pool: 5
+
+development:
+  <<: *default
+  database: ink_development
+
+test:
+  <<: *default
+  database: ink_test
