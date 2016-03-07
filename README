@@ -1,16 +1,16 @@
-== INK
+## INK
 
 Ink is an API and extensible step-based framework for file conversions.
 
-== Ruby version
+## Ruby version
 
 2.2.3
 
-== Rails version
+## Rails version
 
 This project is an API, and therefore is using the `rails-api` gem.
 
-== Setup
+## Setup
 
 Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
@@ -18,11 +18,11 @@ Copy the `config/database.yml.sample` file into `config/database.yml`
 
 `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
-== Mailcatcher
+## Mailcatcher
 
 Install Mailcatcher by running `gem install mailcatcher`
 
-== Run it
+## Run it
 
 Run the Rails server in a terminal - `bundle exec rails s`
 
@@ -34,10 +34,10 @@ Run sidekiq in another terminal - `bundle exec sidekiq`
 
 Go to localhost:3000 to see if it's up.
 
-== Support
+## Support
 
 Charlie  - charlie@enspiral.com for all your (ink-related) support needs.
 
-== License
+## License
 
 MIT.
