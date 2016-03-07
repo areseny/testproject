@@ -12,19 +12,25 @@ This project is an API, and therefore is using the `rails-api` gem.
 
 == Setup
 
-Make sure postgres is installed (recommended 9.1+)
+Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
 Copy the `config/database.yml.sample` file into `config/database.yml`
 
 `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
+== Mailcatcher
+
+Install Mailcatcher by running `gem install mailcatcher`
+
 == Run it
 
-Run the Rails server
+Run the Rails server in a terminal - `bundle exec rails s`
 
-Run redis
+Run Mailcatcher - `mailcatcher`
 
-Run sidekiq
+Run redis in another terminal - `redis-server`
+
+Run sidekiq in another terminal - `bundle exec sidekiq`
 
 Go to localhost:3000 to see if it's up.
 
