@@ -33,8 +33,6 @@ describe "User sign in" do
       it 'should return a valid token' do
         perform_request(valid_params.to_json)
 
-        puts response.header.inspect
-
         expect(response.header['access-token']).to_not be_nil
         expect(response.header['client']).to_not be_nil
         expect(response.header['expiry']).to_not be_nil
