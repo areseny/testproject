@@ -7,7 +7,7 @@ describe "User sign in" do
   # Email authentication. Requires email and password as params.
   # This route will return a JSON representation of the User model on successful login along with the access-token and client in the header of the response.
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1" -X POST -d '{"email":"user@example.com","password":"password","password_confirmation":"password"}' http://localhost:3000/api/auth
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1" -X POST -d '{"email":"user@example.com","password":"password"}' http://localhost:3000/api/auth/sign_in
 
   describe "POST sign in" do
     let!(:password)       { "password" }
@@ -20,9 +20,6 @@ describe "User sign in" do
     }
 
     context 'is successful' do
-      before do
-        user.confirm
-      end
 
       it 'responds with success' do
         perform_request(valid_params.to_json)
@@ -39,9 +36,9 @@ describe "User sign in" do
       end
     end
 
-    context 'is missing a parameter' do
+    context 'is missing parameters' do
       it 'should raise an error' do
-        perform_request(valid_params.except("password").to_json)
+        perform_request({}.to_json)
 
         expect(response.status).to eq(401)
       end
@@ -64,7 +61,7 @@ describe "User sign in" do
     end
   end
 
-  def perform_request(params)
+  def perform_request(params = {}.to_json)
     post "/api/auth/sign_in", params, {'Content-Type' => "application/json", 'Accept' => 'application/vnd.ink.v1' }
   end
 

@@ -38,7 +38,7 @@ describe "User sign up" do
       end
     end
   end
-  def perform_request(params)
+  def perform_request(params = {}.to_json)
     post "/api/auth/", params, {'Content-Type' => "application/json", 'Accept' => 'application/vnd.ink.v1' }
   end
 

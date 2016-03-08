@@ -8,5 +8,9 @@ FactoryGirl.define do
     password "password!"
     password_confirmation "password!"
     email
+    confirmed_at Date.today
+    factory :unconfirmed_user do
+      confirmed_at nil
+    end
   end
 end
