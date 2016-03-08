@@ -5,9 +5,13 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.5.1'
 gem 'rails-api'
 
+gem 'active_model_serializers'
+
 ################### authentication ####################
 
 gem 'devise'
+gem 'devise_token_auth'
+gem 'omniauth'
 
 ################### data #####################
 
@@ -53,6 +57,7 @@ group :development, :test do
   gem 'byebug'
 
   gem 'rspec-rails', '~> 3.0'
+  gem 'json_spec'
 
   # factories
   gem 'factory_girl_rails', '~> 4.0'

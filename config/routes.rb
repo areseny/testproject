@@ -1,4 +1,25 @@
+require 'api_constraints'
+
 Rails.application.routes.draw do
+
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
+      mount_devise_token_auth_for 'User', at: 'auth'
+
+      resources :chains do
+        collection do
+          get 'members_only'
+          get 'anyone'
+        end
+      end
+    end
+
+    # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do
+    #
+    # end
+  end
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
