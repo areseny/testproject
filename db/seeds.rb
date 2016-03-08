@@ -12,4 +12,4 @@ User.create(name: "Adam Hyde", password: "password", password_confirmation: "pas
 User.create(name: "Charlie Ablett", password: "password", password_confirmation: "password", email: "charlie@enspiral.com")
 User.create(name: "Jure Triglav", password: "password", password_confirmation: "password", email: "juretriglav@gmail.com")
 
-User.all.map(&:confirm!)
+User.all.map(&:confirm)
