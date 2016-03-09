@@ -14,11 +14,17 @@ module Api
       end
 
       def create
-        respond_with ChainTemplate.create(params[:product])
+        @chain_template = ChainTemplate.new(chain_template_params[:chain_template])
+        @chain_template.user = current_api_user
+        if @chain_template.save
+          render json: @chain_template.to_json
+        else
+          render json: {errors: @chain_template.errors.messages}
+        end
       end
 
       def update
-        respond_with ChainTemplate.update(params[:id], params[:product])
+        respond_with ChainTemplate.update(params[:id], params[:chain_template])
       end
 
       def destroy
@@ -47,7 +53,7 @@ module Api
       private
 
       def chain_template_params
-        params.permit(:name)
+        params.permit(chain_template: [:name, :description])
       end
 
     end
