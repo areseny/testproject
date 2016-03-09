@@ -32,6 +32,10 @@ module RequestHelper
     post "/api/chain_templates", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
   end
 
+  def index_chain_template_request(version, auth_headers, data = {}.to_json)
+    get "/api/chain_templates", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+  end
+
   def sign_in_request(version, params = {}.to_json)
     post "/api/auth/sign_in", params, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
   end
@@ -52,7 +56,7 @@ module RequestHelper
   end
 
   def index_chain_template(version, auth_headers, data = {}.to_json)
-    post :create, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+    get :index, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
   end
 
 

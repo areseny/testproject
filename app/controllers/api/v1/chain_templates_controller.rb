@@ -5,14 +5,6 @@ module Api
 
       respond_to :json
 
-      def index
-        respond_with user.chain_templates
-      end
-
-      def show
-        respond_with ChainTemplate.find(params[:id])
-      end
-
       def create
         @chain_template = ChainTemplate.new(chain_template_params[:chain_template])
         @chain_template.user = current_api_user
@@ -21,6 +13,15 @@ module Api
         else
           render json: {errors: @chain_template.errors.messages}
         end
+      end
+
+      def index
+        @chain_templates = current_api_user.chain_templates.active
+        render json: @chain_templates.to_json
+      end
+
+      def show
+        respond_with ChainTemplate.find(params[:id])
       end
 
       def update

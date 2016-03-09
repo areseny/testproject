@@ -18,7 +18,7 @@ describe "User sign out" do
       # {"access-token"=>"QQWgZPLpF8o9jNxdibLKPQ", "token-type"=>"Bearer", "client"=>"wWxg-wuhTmdgPu3hgoTrhA", "expiry"=>"1458632683", "uid"=>"person6@example.com"}
 
       before do
-        perform_request(auth_headers)
+        perform_sign_out_request(auth_headers)
       end
 
       it 'responds with success' do
@@ -32,7 +32,7 @@ describe "User sign out" do
 
     context 'if no user is supplied' do
       before do
-        perform_request(auth_headers.except('uid'))
+        perform_sign_out_request(auth_headers.except('uid'))
       end
 
       it 'should raise an error' do
@@ -46,17 +46,17 @@ describe "User sign out" do
 
     context 'if user has already signed out' do
       before do
-        perform_request(auth_headers)
+        perform_sign_out_request(auth_headers)
       end
 
       it 'should raise an error' do
-        perform_request(auth_headers)
+        perform_sign_out_request(auth_headers)
 
         expect(response.status).to eq(404)
       end
 
       it 'should provide a message' do
-        perform_request(auth_headers)
+        perform_sign_out_request(auth_headers)
 
         expect_to_contain_string(body_as_json['errors'], /was not found or was not logged in/)
       end
@@ -64,7 +64,7 @@ describe "User sign out" do
 
     context 'if no token is supplied' do
       before do
-        perform_request(auth_headers.except('access-token'))
+        perform_sign_out_request(auth_headers.except('access-token'))
       end
 
       it 'should raise an error' do
@@ -79,7 +79,7 @@ describe "User sign out" do
     context 'if the token has expired' do
       before do
         expire_token(user, auth_headers['client'])
-        perform_request(auth_headers)
+        perform_sign_out_request(auth_headers)
       end
 
       it 'should raise an error' do
@@ -93,7 +93,7 @@ describe "User sign out" do
 
   end
 
-  def perform_request(auth_headers)
+  def perform_sign_out_request(auth_headers)
     sign_out_request('v1', auth_headers)
   end
 

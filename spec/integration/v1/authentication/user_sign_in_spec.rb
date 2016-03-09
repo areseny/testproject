@@ -22,13 +22,13 @@ describe "User sign in" do
     context 'is successful' do
 
       it 'responds with success' do
-        perform_request(valid_params.to_json)
+        perform_sign_in_request(valid_params.to_json)
 
         expect(response.status).to eq(200)
       end
 
       it 'should return a valid token' do
-        perform_request(valid_params.to_json)
+        perform_sign_in_request(valid_params.to_json)
 
         expect(response.header['access-token']).to_not be_nil
         expect(response.header['client']).to_not be_nil
@@ -38,7 +38,7 @@ describe "User sign in" do
 
     context 'is missing parameters' do
       it 'should raise an error' do
-        perform_request({}.to_json)
+        perform_sign_in_request({}.to_json)
 
         expect(response.status).to eq(401)
       end
@@ -46,7 +46,7 @@ describe "User sign in" do
 
     context 'references a nonexistent user' do
       it 'should raise an error' do
-        perform_request(valid_params.merge(email: "nonsensical_rubbish@example.com").to_json)
+        perform_sign_in_request(valid_params.merge(email: "nonsensical_rubbish@example.com").to_json)
 
         expect(response.status).to eq(401)
       end
@@ -54,14 +54,14 @@ describe "User sign in" do
 
     context 'is provided an incorrect password' do
       it 'should raise an error' do
-        perform_request(valid_params.merge(password: "nonsense").to_json)
+        perform_sign_in_request(valid_params.merge(password: "nonsense").to_json)
 
         expect(response.status).to eq(401)
       end
     end
   end
 
-  def perform_request(auth_headers)
+  def perform_sign_in_request(auth_headers)
     sign_in_request('v1', auth_headers)
   end
 

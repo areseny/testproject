@@ -28,7 +28,7 @@ describe "User creates chain template" do
     context 'if user is signed in' do
 
       before do
-        perform_request(auth_headers, chain_template_params.to_json)
+        perform_create_request(auth_headers, chain_template_params.to_json)
       end
 
       it 'responds with success' do
@@ -55,7 +55,7 @@ describe "User creates chain template" do
 
     context 'if no user is signed in' do
       before do
-        perform_request({}, chain_template_params.to_json)
+        perform_create_request({}, chain_template_params.to_json)
       end
 
       it 'should raise an error' do
@@ -70,11 +70,10 @@ describe "User creates chain template" do
     context 'if the token has expired' do
       before do
         expire_token(user, auth_headers['client'])
-        perform_request({}, chain_template_params.to_json)
+        perform_create_request({}, chain_template_params.to_json)
       end
 
       it 'should raise an error' do
-        puts request.inspect
         expect(response.status).to eq(401)
       end
 
@@ -85,7 +84,7 @@ describe "User creates chain template" do
 
   end
   
-  def perform_request(auth_headers, data)
+  def perform_create_request(auth_headers, data)
     create_chain_template_request('v1', auth_headers, data)
   end
 end
