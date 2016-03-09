@@ -24,8 +24,10 @@ module Api
       end
 
       def update
-        chain_template.update(params[:chain_template])
+        chain_template.update!(chain_template_params)
         render json: chain_template.to_json
+      rescue => e
+        render json: {"errors": [e.message]}, status: 422
       end
 
       def destroy
@@ -57,7 +59,7 @@ module Api
       private
 
       def chain_template_params
-        params.permit(chain_template: [:name, :description])
+        params.require(:chain_template).permit(:name, :description)
       end
 
       def chain_template
@@ -65,7 +67,7 @@ module Api
       end
 
       def new_chain_template
-        @new_chain_template ||= current_api_user.chain_templates.new(chain_template_params[:chain_template])
+        @new_chain_template ||= current_api_user.chain_templates.new(chain_template_params)
       end
 
       def chain_templates

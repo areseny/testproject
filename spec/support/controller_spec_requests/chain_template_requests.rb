@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 ############## CONTROLLER TEST REQUEST TEMPLATES #############
 # These are for the controller tests.
 
@@ -8,8 +7,8 @@ def create_chain_template(version, data = {}.to_json)
   post :create, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
-def update_chain_template(version, id_hash, data)
-  put :update, id_hash, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+def update_chain_template(version, data)
+  put :update, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 def patch_chain_template(version, id_hash, data)
