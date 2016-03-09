@@ -1,15 +1,14 @@
 require 'rails_helper'
 
-describe "User sign out" do
-  # include Devise::TestHelpers
+describe "User creates chain template" do
 
-  # URL: /api/auth/sign_out
-  # Method: DELETE
+  # URL: /api/chain_templates
+  # Method: POST
   # Use this route to end the user's current session. This route will invalidate the user's authentication token.
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X DELETE http://localhost:3000/api/auth/sign_out
 
-  describe "DELETE sign out" do
+  describe "POST create new chain template" do
     let!(:auth_headers) { user.create_new_auth_token }
     let!(:user)           { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
 

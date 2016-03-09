@@ -23,9 +23,7 @@ describe "User sign up" do
       it 'creates a new user' do
         perform_request(valid_params.to_json)
 
-        json = JSON.parse(response.body)
-
-        new_user = User.find(json['data']['id'])
+        new_user = User.find(body_as_json['data']['id'])
         expect(new_user.email).to eq email
       end
     end

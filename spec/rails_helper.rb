@@ -89,7 +89,3 @@ end
 # from
 # https://github.com/lynndylanhurley/devise_token_auth/blob/d4d533523aeb3d7fef92ce47ef2a1fca1450edb3/test/test_helper.rb#L46
 
-def expire_token(user, client_id)
-  user.tokens[client_id]['expiry'] = (Time.now - (DeviseTokenAuth.token_lifespan.to_f + 10.seconds)).to_i
-  user.save!
-end
