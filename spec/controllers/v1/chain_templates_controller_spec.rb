@@ -81,7 +81,9 @@ describe Api::V1::ChainTemplatesController, type: :controller do
   end
 
   def perform_create_request(auth_headers, data = {})
-    create_chain_template('v1', auth_headers, data)
+    # this is special for controller tests - you can't just merge them in manually for some reason
+    request.headers.merge!(auth_headers)
+    create_chain_template('v1', {}, data)
   end
 
   def perform_index_request(auth_headers, data = {})
