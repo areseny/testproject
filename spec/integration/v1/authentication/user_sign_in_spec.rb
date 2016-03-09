@@ -61,8 +61,8 @@ describe "User sign in" do
     end
   end
 
-  def perform_sign_in_request(auth_headers)
-    sign_in_request('v1', auth_headers)
+  def perform_sign_in_request(data)
+    sign_in_request('v1', data)
   end
 
 end

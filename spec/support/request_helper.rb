@@ -32,12 +32,16 @@ module RequestHelper
     post "/api/chain_templates", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
   end
 
-  def index_chain_template_request(version, auth_headers, data = {}.to_json)
-    get "/api/chain_templates", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+  def index_chain_template_request(version, auth_headers)
+    get "/api/chain_templates", {}, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
   end
 
-  def sign_in_request(version, params = {}.to_json)
-    post "/api/auth/sign_in", params, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  def show_chain_template_request(version, auth_headers, id)
+    get "/api/chain_templates/#{id}", {}, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+  end
+
+  def sign_in_request(version, data = {}.to_json)
+    post "/api/auth/sign_in", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
   end
 
   def sign_out_request(version, auth_headers, params = {}.to_json)
@@ -57,6 +61,10 @@ module RequestHelper
 
   def index_chain_template(version, auth_headers, data = {}.to_json)
     get :index, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+  end
+
+  def show_chain_template(version, auth_headers, data = {}.to_json)
+    get :show, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
   end
 
 

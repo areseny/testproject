@@ -21,7 +21,10 @@ module Api
       end
 
       def show
-        respond_with ChainTemplate.find(params[:id])
+        @chain_template = current_api_user.chain_templates.find(params[:id])
+        render json: @chain_template.to_json
+      rescue => e
+        render json: {"errors": [e.message]}, status: 404
       end
 
       def update
