@@ -61,8 +61,8 @@ describe "User sign in" do
     end
   end
 
-  def perform_request(params = {}.to_json)
-    post "/api/auth/sign_in", params, {'Content-Type' => "application/json", 'Accept' => 'application/vnd.ink.v1' }
+  def perform_request(auth_headers)
+    sign_in_request('v1', auth_headers)
   end
 
 end

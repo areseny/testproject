@@ -36,9 +36,6 @@ describe "User sign up" do
       end
     end
   end
-  def perform_request(params = {}.to_json)
-    post "/api/auth/", params, {'Content-Type' => "application/json", 'Accept' => 'application/vnd.ink.v1' }
-  end
 
   def valid_params
     {
@@ -46,6 +43,10 @@ describe "User sign up" do
         "password" => password,
         "password_confirmation" => password
     }
+  end
+
+  def perform_request(auth_headers)
+    sign_up_request('v1', auth_headers)
   end
 
 end

@@ -25,8 +25,8 @@ RSpec.configure do |config|
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
 
-  config.include Requests::JsonHelpers
-  # config.include MatcherMethods
+  config.include RequestHelper::JsonHelpers
+  config.include RequestHelper
 
   config.expect_with :rspec do |expectations|
     # This option will default to `true` in RSpec 4. It makes the `description`

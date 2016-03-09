@@ -93,8 +93,8 @@ describe "User sign out" do
 
   end
 
-  def perform_request(auth_headers, params = {}.to_json)
-    delete "/api/auth/sign_out", params, {'Content-Type' => "application/json", 'Accept' => 'application/vnd.ink.v1' }.merge(auth_headers)
+  def perform_request(auth_headers)
+    sign_out_request('v1', auth_headers)
   end
 
 end

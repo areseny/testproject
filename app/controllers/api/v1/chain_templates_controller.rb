@@ -6,7 +6,7 @@ module Api
       respond_to :json
 
       def index
-        respond_with ChainTemplate.all
+        respond_with user.chain_templates
       end
 
       def show

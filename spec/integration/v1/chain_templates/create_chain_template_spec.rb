@@ -10,9 +10,10 @@ describe "User creates chain template" do
 
   describe "POST create new chain template" do
 
-    let!(:user)           { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
     let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
     let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
+    let!(:auth_headers)     { user.create_new_auth_token }
 
     let!(:chain_template_params) {
       {
@@ -25,7 +26,6 @@ describe "User creates chain template" do
     }
 
     context 'if user is signed in' do
-      let!(:auth_headers) { user.create_new_auth_token }
 
       before do
         perform_request(auth_headers, chain_template_params.to_json)
@@ -67,10 +67,25 @@ describe "User creates chain template" do
       end
     end
 
-  end
+    context 'if the token has expired' do
+      before do
+        expire_token(user, auth_headers['client'])
+        perform_request({}, chain_template_params.to_json)
+      end
 
-  def perform_request(auth_headers, data = {}.to_json)
-    post "/api/chain_templates", data, {'Content-Type' => "application/json", 'Accept' => 'application/vnd.ink.v1' }.merge(auth_headers)
-  end
+      it 'should raise an error' do
+        puts request.inspect
+        expect(response.status).to eq(401)
+      end
 
+      it 'should provide a message' do
+        expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
+      end
+    end
+
+  end
+  
+  def perform_request(auth_headers, data)
+    create_chain_template_request('v1', auth_headers, data)
+  end
 end
