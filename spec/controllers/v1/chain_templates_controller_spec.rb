@@ -24,7 +24,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
         perform_create_request(user.create_new_auth_token, chain_template_params.to_json)
 
         expect(response.status).to eq 200
-        expect(assigns[:chain_template]).to be_a ChainTemplate
+        expect(assigns[:new_chain_template]).to be_a ChainTemplate
       end
     end
 
@@ -34,7 +34,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
         perform_create_request({}, chain_template_params.to_json)
 
         expect(response.status).to eq 401
-        expect(assigns[:chain_template]).to be_nil
+        expect(assigns[:new_chain_template]).to be_nil
       end
     end
   end

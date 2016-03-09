@@ -40,6 +40,10 @@ module RequestHelper
     get "/api/chain_templates/#{id}", {}, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
   end
 
+  def archive_chain_template_request(version, auth_headers, id)
+    delete "/api/chain_templates/#{id}", {}, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+  end
+
   def sign_in_request(version, data = {}.to_json)
     post "/api/auth/sign_in", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
   end
@@ -65,6 +69,10 @@ module RequestHelper
 
   def show_chain_template(version, auth_headers, data = {}.to_json)
     get :show, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+  end
+
+  def archive_chain_template(version, auth_headers, data = {}.to_json)
+    delete :destroy, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
   end
 
 

@@ -6,33 +6,33 @@ module Api
       respond_to :json
 
       def create
-        @chain_template = ChainTemplate.new(chain_template_params[:chain_template])
-        @chain_template.user = current_api_user
-        if @chain_template.save
-          render json: @chain_template.to_json
+        if new_chain_template.save
+          render json: new_chain_template.to_json
         else
-          render json: {errors: @chain_template.errors.messages}
+          render json: {errors: new_chain_template.errors.messages}
         end
       end
 
       def index
-        @chain_templates = current_api_user.chain_templates.active
-        render json: @chain_templates.to_json
+        render json: chain_templates.to_json
       end
 
       def show
-        @chain_template = current_api_user.chain_templates.find(params[:id])
-        render json: @chain_template.to_json
+        render json: chain_template.to_json
       rescue => e
         render json: {"errors": [e.message]}, status: 404
       end
 
       def update
-        respond_with ChainTemplate.update(params[:id], params[:chain_template])
+        chain_template.update(params[:chain_template])
+        render json: chain_template.to_json
       end
 
       def destroy
-        respond_with ChainTemplate.destroy(params[:id])
+        chain_template.destroy
+        render json: chain_template
+      rescue => e
+        render json: {"errors": [e.message]}, status: 404
       end
 
       # test methods
@@ -58,6 +58,18 @@ module Api
 
       def chain_template_params
         params.permit(chain_template: [:name, :description])
+      end
+
+      def chain_template
+        @chain_template ||= current_api_user.chain_templates.find(params[:id])
+      end
+
+      def new_chain_template
+        @new_chain_template ||= current_api_user.chain_templates.new(chain_template_params[:chain_template])
+      end
+
+      def chain_templates
+        @chain_templates ||= current_api_user.chain_templates.active
       end
 
     end
