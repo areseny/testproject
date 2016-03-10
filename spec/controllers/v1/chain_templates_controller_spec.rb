@@ -20,14 +20,100 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
     context 'if a valid token is supplied' do
 
-      it "should assign" do
-        perform_create_request(user.create_new_auth_token, chain_template_params)
+      context 'if the chain template is valid' do
+        it "should assign" do
+          perform_create_request(user.create_new_auth_token, chain_template_params)
 
-        expect(response.status).to eq 200
-        new_chain_template = assigns[:new_chain_template]
-        expect(new_chain_template).to be_a ChainTemplate
-        attributes.each do |attribute|
-          expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+          expect(response.status).to eq 200
+          new_chain_template = assigns[:new_chain_template]
+          expect(new_chain_template).to be_a ChainTemplate
+          attributes.each do |attribute|
+            expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+          end
+        end
+
+        context 'if there are steps supplied' do
+
+          let!(:docx_to_xml)      { FactoryGirl.create(:step_class, name: "DocxToXml") }
+          let!(:xml_to_html)      { FactoryGirl.create(:step_class, name: "XmlToHtml") }
+          let!(:step_params)      { [{position: 1, name: "DocxToXml"}, {position: 2, name: "XmlToHtml" }] }
+
+          context 'and they are valid' do
+            before do
+              chain_template_params[:steps] = step_params
+            end
+
+            it "should create the template with step templates" do
+              perform_create_request(user.create_new_auth_token, chain_template_params)
+
+              expect(response.status).to eq 200
+              new_chain_template = assigns[:new_chain_template]
+              expect(new_chain_template).to be_a ChainTemplate
+              attributes.each do |attribute|
+                expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+              end
+              expect(new_chain_template.step_templates.count).to eq 2
+            end
+          end
+
+          context 'and they are incorrect' do
+
+            it "should not create the template for nonexistent step classes" do
+              docx_to_xml.destroy
+              chain_template_params[:steps] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              perform_create_request(user.create_new_auth_token, chain_template_params)
+
+              expect(response.status).to eq 422
+            end
+
+            it "should not create the template with duplicate numbers" do
+              chain_template_params[:steps] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              perform_create_request(user.create_new_auth_token, chain_template_params)
+
+              expect(response.status).to eq 422
+            end
+
+            it "should not create the template with incorrect numbers" do
+              chain_template_params[:steps] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              perform_create_request(user.create_new_auth_token, chain_template_params)
+
+              expect(response.status).to eq 422
+            end
+
+            it "should not create the template with skipped steps" do
+              chain_template_params[:steps] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
+              perform_create_request(user.create_new_auth_token, chain_template_params)
+
+              expect(response.status).to eq 422
+            end
+
+            it "should not create the template with nonsequential numbers" do
+              chain_template_params[:steps] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
+              perform_create_request(user.create_new_auth_token, chain_template_params)
+
+              expect(response.status).to eq 200
+              new_chain_template = assigns[:new_chain_template]
+              expect(new_chain_template).to be_a ChainTemplate
+              attributes.each do |attribute|
+                expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+              end
+              expect(new_chain_template.step_templates.count).to eq 2
+            end
+
+          end
+        end
+
+      end
+
+      context 'if the chain template is invalid' do
+        before do
+          chain_template_params[:chain_template].delete(:name)
+        end
+
+        it "should not be successful" do
+          perform_create_request(user.create_new_auth_token, chain_template_params)
+
+          expect(response.status).to eq 422
         end
       end
     end

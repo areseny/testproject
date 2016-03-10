@@ -6,11 +6,12 @@ module Api
       respond_to :json
 
       def create
-        if new_chain_template.save
-          render json: new_chain_template
-        else
-          render json: {errors: new_chain_template.errors.messages}, status: 422
-        end
+        new_chain_template.generate_step_templates(step_template_params[:steps])
+        new_chain_template.save!
+        render json: new_chain_template
+      rescue => e
+        # puts e.message
+        render json: {errors: [e.message]}, status: 422
       end
 
       def index
@@ -61,7 +62,11 @@ module Api
       private
 
       def chain_template_params
-        params.require(:chain_template).permit(:name, :description, :active, :steps)
+        params.require(:chain_template).permit(:name, :description, :active)
+      end
+
+      def step_template_params
+        params.permit(steps: [:name, :position])
       end
 
       def chain_template
