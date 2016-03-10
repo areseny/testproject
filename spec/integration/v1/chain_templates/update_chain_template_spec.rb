@@ -35,36 +35,85 @@ describe "User updates chain template" do
 
       context 'and the chain template belongs to the user' do
 
-        before do
-          perform_update_request(auth_headers, chain_template.id, chain_template_params.to_json)
-        end
+        context 'if all attributes are supplied' do
+          before do
+            perform_update_request(auth_headers, chain_template.id, chain_template_params.to_json)
+          end
 
-        it 'responds with success' do
-          expect(response.status).to eq(200)
-        end
+          it 'responds with success' do
+            expect(response.status).to eq(200)
+          end
 
-        it 'should return the updated ChainTemplate object' do
-          expect(body_as_json['name']).to eq name
-          expect(body_as_json['description']).to eq description
-          expect(body_as_json['user_id']).to eq user.id
-          expect(body_as_json['active']).to eq active
-        end
+          it 'should return the updated ChainTemplate object' do
+            expect(body_as_json['name']).to eq name
+            expect(body_as_json['description']).to eq description
+            expect(body_as_json['user_id']).to eq user.id
+            expect(body_as_json['active']).to eq active
+          end
 
-        it 'should modify the ChainTemplate object' do
-          updated_template = chain_template.reload
-          chain_template_attributes.each do |attribute|
-            expect(updated_template.send(attribute)).to eq self.send(attribute)
+          it 'should modify the ChainTemplate object' do
+            updated_template = chain_template.reload
+            chain_template_attributes.each do |attribute|
+              expect(updated_template.send(attribute)).to eq self.send(attribute)
+            end
+          end
+
+          it 'should update the chain template with the parameters' do
+            expect(user.reload.chain_templates.count).to eq 1
+
+            template = user.chain_templates.first
+            expect(template.user).to eq user
+            expect(template.name).to eq name
+            expect(template.description).to eq description
+            expect(template.active).to be_falsey
           end
         end
 
-        it 'should update the chain template with the parameters' do
-          expect(user.reload.chain_templates.count).to eq 1
+        context 'if only a subset of attributes are supplied' do
+          let!(:original_template)    { chain_template }
+          let!(:modified_template_params) {
+            {
+                chain_template: {
+                    name: name,
+                    uid: user.email
+                },
+                id: chain_template.id
+            }
+          }
 
-          template = user.chain_templates.first
-          expect(template.user).to eq user
-          expect(template.name).to eq name
-          expect(template.description).to eq description
-          expect(template.active).to be_falsey
+          before do
+            perform_update_request(auth_headers, chain_template.id, modified_template_params.to_json)
+          end
+
+          it 'responds with success' do
+            expect(response.status).to eq(200)
+          end
+
+          it 'should return the updated ChainTemplate object (with only some changed fields)' do
+            expect(body_as_json['name']).to eq name
+            expect(body_as_json['description']).to_not eq description
+            expect(body_as_json['user_id']).to eq user.id
+            expect(body_as_json['active']).to_not eq active
+          end
+
+          it 'should modify the ChainTemplate object' do
+            chain_template.reload
+            chain_template_attributes.delete(:name)
+            chain_template_attributes.each do |attribute|
+              expect(chain_template.send(attribute)).to eq original_template.send(attribute)
+            end
+            expect(chain_template.name).to eq original_template.name
+          end
+
+          it 'should update the chain template with the parameters' do
+            expect(user.reload.chain_templates.count).to eq 1
+
+            template = user.chain_templates.first
+            expect(template.user).to eq user
+            expect(template.name).to eq name
+            expect(template.description).to eq original_template.description
+            expect(template.active).to eq original_template.active
+          end
         end
       end
 
