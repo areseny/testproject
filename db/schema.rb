@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160310022147) do
+ActiveRecord::Schema.define(version: 20160310215355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,29 @@ ActiveRecord::Schema.define(version: 20160310022147) do
     t.boolean  "active",      default: true, null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+  end
+
+  create_table "conversion_steps", force: :cascade do |t|
+    t.integer  "executed_chain_id", null: false
+    t.integer  "position",          null: false
+    t.integer  "step_class_id",     null: false
+    t.text     "notes"
+    t.datetime "executed_at"
+    t.string   "output_file"
+    t.text     "conversion_errors"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "conversion_steps", ["position", "executed_chain_id"], name: "index_conversion_steps_on_position_and_executed_chain_id", unique: true, using: :btree
+
+  create_table "executed_chains", force: :cascade do |t|
+    t.integer  "user_id",           null: false
+    t.datetime "executed_at"
+    t.string   "input_file"
+    t.integer  "chain_template_id", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "step_classes", force: :cascade do |t|

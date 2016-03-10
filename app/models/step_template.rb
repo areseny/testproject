@@ -1,3 +1,11 @@
+# create_table "step_templates", force: :cascade do |t|
+#   t.integer  "chain_template_id", null: false
+#   t.integer  "step_class_id",     null: false
+#   t.integer  "position",          null: false
+#   t.datetime "created_at",        null: false
+#   t.datetime "updated_at",        null: false
+# end
+
 class StepTemplate < ActiveRecord::Base
 
   belongs_to :step_class
