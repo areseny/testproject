@@ -10,4 +10,16 @@ FactoryGirl.define do
     end
   end
 
+  factory :step_class do
+    sequence :name do |n|
+      "PngToJpg#{n}"
+    end
+  end
+
+  factory :step_template do
+    chain_template
+    step_class
+    position 1
+  end
+
 end

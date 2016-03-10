@@ -1,6 +1,7 @@
 class ChainTemplate < ActiveRecord::Base
 
   belongs_to :user
+  has_many :step_templates, inverse_of: :chain_template
 
   validates_presence_of :name, :user
   validates_inclusion_of :active, :in => [true, false]

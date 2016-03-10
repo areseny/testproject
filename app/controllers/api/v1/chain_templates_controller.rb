@@ -61,7 +61,7 @@ module Api
       private
 
       def chain_template_params
-        params.require(:chain_template).permit(:name, :description, :active)
+        params.require(:chain_template).permit(:name, :description, :active, :steps)
       end
 
       def chain_template

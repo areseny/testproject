@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160309001940) do
+ActiveRecord::Schema.define(version: 20160310022147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,25 @@ ActiveRecord::Schema.define(version: 20160309001940) do
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
   end
+
+  create_table "step_classes", force: :cascade do |t|
+    t.string   "name",                      null: false
+    t.boolean  "active",     default: true, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "step_classes", ["name"], name: "index_step_classes_on_name", unique: true, using: :btree
+
+  create_table "step_templates", force: :cascade do |t|
+    t.integer  "chain_template_id", null: false
+    t.integer  "step_class_id",     null: false
+    t.integer  "position",          null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "step_templates", ["chain_template_id", "position"], name: "chain_step_position_index", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "provider",               default: "email", null: false
