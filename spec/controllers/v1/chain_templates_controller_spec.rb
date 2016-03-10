@@ -26,8 +26,6 @@ describe Api::V1::ChainTemplatesController, type: :controller do
         expect(response.status).to eq 200
         new_chain_template = assigns[:new_chain_template]
         expect(new_chain_template).to be_a ChainTemplate
-        expect(new_chain_template.name).to eq name
-        expect(new_chain_template.description).to eq description
         facets.each do |facet|
           expect(new_chain_template.send(facet)).to eq self.send(facet)
         end
