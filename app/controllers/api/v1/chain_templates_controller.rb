@@ -6,7 +6,7 @@ module Api
       respond_to :json
 
       def create
-        new_chain_template.generate_step_templates(step_template_params[:steps])
+        new_chain_template.generate_step_templates(step_template_params)
         new_chain_template.save!
         render json: new_chain_template
       rescue => e
@@ -66,7 +66,7 @@ module Api
       end
 
       def step_template_params
-        params.permit(steps: [:name, :position])
+        params.permit(:steps, steps_with_positions: [:name, :position])
       end
 
       def chain_template

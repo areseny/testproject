@@ -11,18 +11,28 @@ class ChainTemplate < ActiveRecord::Base
 
   scope :active, -> { where(active: true) }
 
+  def generate_step_templates(data)
+    generate_steps_with_positions(data[:steps_with_positions]) if data[:steps_with_positions].present?
+    generate_steps(data[:steps_with_positions]) if data[:steps].present?
+  end
 
-  def generate_step_templates(step_template_data)
+  private
+
+  def generate_steps_with_positions(step_template_data)
     # [ {position: 1, name: "DocxToXml"}, {position: 2, name: "XmlToHtml" } ]
-
     return unless step_template_data.present?
-
     step_template_data.each do |st|
       step_templates.new(position: st[:position], step_class: StepClass.find_by_name(st[:name]))
     end
   end
 
-  private
+  def generate_steps(step_template_data)
+    # [ name: "DocxToXml", name: "XmlToHtml" ]
+    return unless step_template_data.present?
+    step_template_data.each do |st|
+      step_templates.new(position: st[:position], step_class: StepClass.find_by_name(st[:name]))
+    end
+  end
 
   def set_as_active
     attributes[:active] = true if active.nil?

@@ -40,7 +40,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
           context 'and they are valid' do
             before do
-              chain_template_params[:steps] = step_params
+              chain_template_params[:steps_with_positions] = step_params
             end
 
             it "should create the template with step templates" do
@@ -60,35 +60,35 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
             it "should not create the template for nonexistent step classes" do
               docx_to_xml.destroy
-              chain_template_params[:steps] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              chain_template_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
               perform_create_request(user.create_new_auth_token, chain_template_params)
 
               expect(response.status).to eq 422
             end
 
             it "should not create the template with duplicate numbers" do
-              chain_template_params[:steps] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              chain_template_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
               perform_create_request(user.create_new_auth_token, chain_template_params)
 
               expect(response.status).to eq 422
             end
 
             it "should not create the template with incorrect numbers" do
-              chain_template_params[:steps] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              chain_template_params[:steps_with_positions] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
               perform_create_request(user.create_new_auth_token, chain_template_params)
 
               expect(response.status).to eq 422
             end
 
             it "should not create the template with skipped steps" do
-              chain_template_params[:steps] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
+              chain_template_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
               perform_create_request(user.create_new_auth_token, chain_template_params)
 
               expect(response.status).to eq 422
             end
 
             it "should not create the template with nonsequential numbers" do
-              chain_template_params[:steps] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
+              chain_template_params[:steps_with_positions] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
               perform_create_request(user.create_new_auth_token, chain_template_params)
 
               expect(response.status).to eq 200
