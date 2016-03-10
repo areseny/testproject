@@ -8,6 +8,10 @@ class StepClass < ActiveRecord::Base
 
   scope :active, -> { where(active: true) }
 
+  def self.find_by_name(value)
+    where("lower(name) = ?", value.downcase).first
+  end
+
   private
 
   def set_as_active

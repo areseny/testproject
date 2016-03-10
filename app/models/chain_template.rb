@@ -13,7 +13,7 @@ class ChainTemplate < ActiveRecord::Base
 
   def generate_step_templates(data)
     generate_steps_with_positions(data[:steps_with_positions]) if data[:steps_with_positions].present?
-    generate_steps(data[:steps_with_positions]) if data[:steps].present?
+    generate_steps(data[:steps]) if data[:steps].present?
   end
 
   private
@@ -27,10 +27,12 @@ class ChainTemplate < ActiveRecord::Base
   end
 
   def generate_steps(step_template_data)
-    # [ name: "DocxToXml", name: "XmlToHtml" ]
+    # [ "DocxToXml", "XmlToHtml" ]
     return unless step_template_data.present?
-    step_template_data.each do |st|
-      step_templates.new(position: st[:position], step_class: StepClass.find_by_name(st[:name]))
+    count = 0
+    step_template_data.each do |step_class_name|
+      count += 1
+      ste = step_templates.new(position: count, step_class: StepClass.find_by_name(step_class_name))
     end
   end
 

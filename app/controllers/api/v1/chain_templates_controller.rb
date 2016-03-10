@@ -66,7 +66,7 @@ module Api
       end
 
       def step_template_params
-        params.permit(:steps, steps_with_positions: [:name, :position])
+        params.permit(steps: [], steps_with_positions: [:name, :position])
       end
 
       def chain_template
