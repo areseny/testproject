@@ -90,7 +90,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
                 expect(response.status).to eq 422
               end
 
-              it "should not create the template with nonsequential numbers" do
+              it "should create the template with nonsequential numbers" do
                 chain_template_params[:steps_with_positions] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
                 perform_create_request(user.create_new_auth_token, chain_template_params)
 
