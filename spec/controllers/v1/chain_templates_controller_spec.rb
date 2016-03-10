@@ -5,7 +5,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
   let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
   let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
-  let!(:facets)           { [:name, :description] }
+  let!(:attributes)           { [:name, :description] }
 
   let!(:chain_template_params) {
     {
@@ -26,8 +26,8 @@ describe Api::V1::ChainTemplatesController, type: :controller do
         expect(response.status).to eq 200
         new_chain_template = assigns[:new_chain_template]
         expect(new_chain_template).to be_a ChainTemplate
-        facets.each do |facet|
-          expect(new_chain_template.send(facet)).to eq self.send(facet)
+        attributes.each do |attribute|
+          expect(new_chain_template.send(attribute)).to eq self.send(attribute)
         end
       end
     end
@@ -56,7 +56,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           expect(response.status).to eq 200
           chain_template = assigns[:chain_template]
           expect(chain_template).to be_a ChainTemplate
-          facets.each do |facet|
+          attributes.each do |facet|
             expect(chain_template.send(facet)).to eq self.send(facet)
           end
         end

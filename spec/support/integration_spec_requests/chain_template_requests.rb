@@ -8,6 +8,10 @@ def create_chain_template_request(version, auth_headers, data = {}.to_json)
   post "/api/chain_templates", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
 end
 
+def update_chain_template_request(version, auth_headers, id, data = {}.to_json)
+  patch "/api/chain_templates/#{id}", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+end
+
 def index_chain_template_request(version, auth_headers)
   get "/api/chain_templates", {}, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
 end
