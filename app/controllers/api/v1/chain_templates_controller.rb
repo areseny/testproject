@@ -7,7 +7,7 @@ module Api
 
       def create
         if new_chain_template.save
-          render json: new_chain_template.to_json
+          render json: new_chain_template
         else
           render json: {errors: new_chain_template.errors.messages}, status: 422
         end
@@ -18,14 +18,14 @@ module Api
       end
 
       def show
-        render json: chain_template.to_json
+        render json: chain_template, include: ['step_templates']
       rescue => e
         render json: {"errors": [e.message]}, status: 404
       end
 
       def update
         chain_template.update!(chain_template_params)
-        render json: chain_template.to_json
+        render json: chain_template
       rescue ActiveRecord::RecordNotFound => e
         render json: {"errors": [e.message]}, status: 404
       rescue => e

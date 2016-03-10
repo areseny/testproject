@@ -31,7 +31,6 @@ describe "User archives a single chain template" do
           it 'should return a ChainTemplate object' do
             expect(body_as_json['name']).to eq template.name
             expect(body_as_json['description']).to eq template.description
-            expect(body_as_json['user_id']).to eq template.user.id
             expect(body_as_json['active']).to eq template.active
           end
         end

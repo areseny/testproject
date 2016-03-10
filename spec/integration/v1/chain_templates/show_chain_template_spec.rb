@@ -19,24 +19,35 @@ describe "User finds a single chain template" do
 
       context 'and the chain template exists' do
 
-        before do
-          perform_show_request(auth_headers, template.id)
-        end
-
         context 'and it belongs to the user' do
           it 'responds with success' do
+            perform_show_request(auth_headers, template.id)
+
             expect(response.status).to eq(200)
           end
 
           it 'should return a ChainTemplate object' do
+            perform_show_request(auth_headers, template.id)
+
             expect(body_as_json['name']).to eq template.name
             expect(body_as_json['description']).to eq template.description
-            expect(body_as_json['user_id']).to eq template.user.id
             expect(body_as_json['active']).to eq template.active
+          end
+
+          context 'and it has steps' do
+            let!(:step1)      { FactoryGirl.create(:step_template, chain_template: template, position: 1) }
+            let!(:step2)      { FactoryGirl.create(:step_template, chain_template: template, position: 2) }
+
+            it 'should also return the steps' do
+              perform_show_request(auth_headers, template.id)
+
+              expect(body_as_json['step_templates'].count).to eq 2
+            end
           end
         end
 
         context 'and it belongs to a different user' do
+
           let!(:other_user)     { FactoryGirl.create(:user) }
 
           before do

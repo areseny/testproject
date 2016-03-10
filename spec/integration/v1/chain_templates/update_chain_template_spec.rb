@@ -47,7 +47,6 @@ describe "User updates chain template" do
           it 'should return the updated ChainTemplate object' do
             expect(body_as_json['name']).to eq name
             expect(body_as_json['description']).to eq description
-            expect(body_as_json['user_id']).to eq user.id
             expect(body_as_json['active']).to eq active
           end
 
@@ -92,7 +91,6 @@ describe "User updates chain template" do
           it 'should return the updated ChainTemplate object (with only some changed fields)' do
             expect(body_as_json['name']).to eq name
             expect(body_as_json['description']).to_not eq description
-            expect(body_as_json['user_id']).to eq user.id
             expect(body_as_json['active']).to_not eq active
           end
 

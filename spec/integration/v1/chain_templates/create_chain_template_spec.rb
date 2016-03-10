@@ -38,7 +38,6 @@ describe "User creates chain template" do
       it 'should return a ChainTemplate object' do
         expect(body_as_json['name']).to eq name
         expect(body_as_json['description']).to eq description
-        expect(body_as_json['user_id']).to eq user.id
         expect(body_as_json['active']).to eq true
       end
 
