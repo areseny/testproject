@@ -6,10 +6,12 @@ module Api
       respond_to :json
 
       def execute
-        @new_chain = chain_template.clone_to_conversion_chain(params[:input_file])
+        @new_chain = chain_template.clone_to_conversion_chain(execution_params)
         @new_chain.save!
-        redirect_to execute_api_conversion_chain_path(@new_chain)
+        @new_chain.execute_conversion!
+        render json: @new_chain, status: 200
       rescue => e
+        # puts e.message
         render_error(e)
       end
 
@@ -58,8 +60,8 @@ module Api
       def members_only
         render json: {
                    data: {
-                       message: "Welcome to api version 1, #{current_user.name}",
-                       user: current_user
+                       message: "Welcome to api version 1, #{current_api_user.name}",
+                       user: current_api_user
                    }
                }, status: 200
       end
@@ -76,6 +78,7 @@ module Api
 
       def execution_params
         params.require(:input_file)
+        # params.require(files: [])
       end
 
       def chain_template

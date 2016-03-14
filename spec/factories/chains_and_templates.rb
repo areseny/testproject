@@ -13,6 +13,7 @@ FactoryGirl.define do
   factory :conversion_chain do
     chain_template
     user
+    input_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
   end
 
   factory :conversion_step do

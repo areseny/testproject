@@ -8,7 +8,7 @@ module Steps
     end
 
     def self.all_steps
-      [Demo, XmlToHtml]
+      [FlipImage, XmlToHtml]
     end
 
   end

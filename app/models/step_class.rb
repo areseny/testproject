@@ -22,6 +22,7 @@ class StepClass < ActiveRecord::Base
   def step
     # find step by name
     step_files
+    Steps::FlipImage
   end
 
   private

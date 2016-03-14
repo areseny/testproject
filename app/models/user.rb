@@ -31,5 +31,6 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   has_many :chain_templates, inverse_of: :user
+  has_many :conversion_chains, inverse_of: :user
 
 end

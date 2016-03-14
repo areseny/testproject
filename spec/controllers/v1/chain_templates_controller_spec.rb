@@ -23,14 +23,15 @@ describe Api::V1::ChainTemplatesController, type: :controller do
   describe "POST execute" do
 
     let!(:demo_step)        { FactoryGirl.create(:step_class, name: "demo") }
-    let!(:file)             { fixture_file_upload('files/test_file.xml', 'text/xml') }
+    let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
+    let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
     let!(:step_template)    { FactoryGirl.create(:step_template, step_class: demo_step) }
     let!(:chain_template)   { FactoryGirl.create(:chain_template, user: user, step_templates: [step_template]) }
 
     let!(:execution_params) {
         {
             id: chain_template.id,
-            input_file: file
+            input_file: photo_file
         }
     }
 
@@ -42,7 +43,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
             perform_execute_request(execution_params)
           end
 
-          expect(response.status).to eq 302
+          expect(response.status).to eq 200
         end
       end
 
@@ -400,7 +401,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
         it "should return an error" do
           request_with_auth(user.create_new_auth_token) do
-            perform_archive_request({id: "nonsense"})
+            perform_destroy_request({id: "nonsense"})
           end
 
           expect(response.status).to eq 404
@@ -416,7 +417,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
           it "should find the template" do
             request_with_auth(user.create_new_auth_token) do
-              perform_archive_request({id: template.id})
+              perform_destroy_request({id: template.id})
             end
 
             expect(response.status).to eq 200
@@ -430,7 +431,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
           it "should not find the template" do
             request_with_auth(user.create_new_auth_token) do
-              perform_archive_request({id: template.id})
+              perform_destroy_request({id: template.id})
             end
 
             expect(response.status).to eq 404
@@ -444,7 +445,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
       it "should not return anything" do
         request_with_auth do
-          perform_archive_request({id: "rubbish"})
+          perform_destroy_request({id: "rubbish"})
         end
 
         expect(response.status).to eq 401
@@ -457,30 +458,34 @@ describe Api::V1::ChainTemplatesController, type: :controller do
   # this is special for controller tests - you can't just merge them in manually for some reason
 
   def perform_execute_request(data = {})
-    execute_chain_template('v1', data)
+    execute_chain_template(version, data)
   end
 
   def perform_create_request(data = {})
-    post_create_request('v1', data)
+    post_create_request(version, data)
   end
 
   def perform_put_request(data)
-    put_update_request('v1', data)
+    put_update_request(version, data)
   end
 
   def perform_patch_request(data = {})
-    patch_update_request('v1', data)
+    patch_update_request(version, data)
   end
 
   def perform_index_request(data = {})
-    get_index_request('v1', data)
+    get_index_request(version, data)
   end
 
   def perform_show_request(data = {})
-    get_show_request('v1', data)
+    get_show_request(version, data)
   end
 
-  def perform_archive_request(data = {})
-    delete_destroy_request('v1', data)
+  def perform_destroy_request(data = {})
+    delete_destroy_request(version, data)
+  end
+
+  def version
+    'v1'
   end
 end

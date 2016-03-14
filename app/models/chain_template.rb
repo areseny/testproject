@@ -26,7 +26,7 @@ class ChainTemplate < ActiveRecord::Base
 
   def clone_to_conversion_chain(input_file)
     raise ConversionErrors::NoFileSuppliedError unless input_file
-    conversion_chains.new(input_file: input_file, user: user)
+    conversion_chains.new(user: user, input_file: input_file)
   end
 
   def generate_step_templates(data)

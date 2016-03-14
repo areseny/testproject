@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5.1'
 gem 'rails-api'
@@ -18,11 +17,17 @@ gem 'omniauth'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
 
+################### file upload ###################3
+
+gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
+
 ################### conversion utilities ########################
 
 # xml / xslt conversions
 gem 'nokogiri'
 
+# image manipulation
+gem 'mini_magick'
 
 ################### css ######################
 

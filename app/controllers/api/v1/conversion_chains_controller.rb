@@ -6,15 +6,22 @@ module Api
       respond_to :json
 
       def execute
-        chain.execute
+        conversion_chain_params.inspect #somehow, removal of this line causes the controller test to fail :/
+        conversion_chain.execute_conversion!
+        render json: @conversion_chain, status: 200
       rescue => e
+        # puts e.message
         render_error(e)
       end
 
       private
 
       def conversion_chain_params
-        params.require(:conversion_chain).permit(:input_file)
+        params.require(:input_file)
+      end
+
+      def conversion_chain
+        @conversion_chain ||= current_api_user.conversion_chains.find(params[:id])
       end
     end
   end
