@@ -21,6 +21,8 @@ class ConversionStep < ActiveRecord::Base
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
   validates_uniqueness_of :position, { scope: :conversion_chain, message: "Only one step can be in this position for this chain" }
 
-
+  def step_class_name
+    step_class.name
+  end
 
 end

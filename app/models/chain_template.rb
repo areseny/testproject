@@ -18,7 +18,7 @@ class ChainTemplate < ActiveRecord::Base
 
   validates_presence_of :name, :user
   validates_inclusion_of :active, :in => [true, false]
-  validate :steps_have_unique_positions, :all_steps_present?
+  validate :steps_have_unique_positions, :steps_contiguous?
 
   after_initialize :set_as_active
 
@@ -26,7 +26,11 @@ class ChainTemplate < ActiveRecord::Base
 
   def clone_to_conversion_chain(input_file)
     raise ConversionErrors::NoFileSuppliedError unless input_file
-    conversion_chains.new(user: user, input_file: input_file)
+    new_chain = conversion_chains.new(user: user, input_file: input_file)
+    step_templates.each do |template|
+      new_chain.conversion_steps.new(position: template.position, step_class: template.step_class)
+    end
+    new_chain
   end
 
   def generate_step_templates(data)
@@ -66,7 +70,7 @@ class ChainTemplate < ActiveRecord::Base
     errors.add(:step_template_positions, "must be unique") if duplicates
   end
 
-  def all_steps_present?
+  def steps_contiguous?
     array = step_templates.map(&:position)
     contiguous = array.sort.each_cons(2).all? { |x,y| y == x + 1 }
     errors.add(:step_template_positions, "must be contiguous") unless contiguous

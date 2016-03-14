@@ -4,7 +4,8 @@ class ApplicationController < ActionController::API
 
   def default_serializer_options
     # remove if you want the root element to serialise as well
-    {root: false}
+    # {root: false}
+    {}
   end
 
   def render_error(e)

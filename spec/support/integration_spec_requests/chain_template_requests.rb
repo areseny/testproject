@@ -23,3 +23,7 @@ end
 def archive_chain_template_request(version, auth_headers, id)
   delete "/api/chain_templates/#{id}", {}, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
 end
+
+def execute_chain_template_request(version, auth_headers, id, data = {}.to_json)
+  post "/api/chain_templates/#{id}/execute", data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+end

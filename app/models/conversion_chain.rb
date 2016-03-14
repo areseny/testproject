@@ -14,7 +14,7 @@ class ConversionChain < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :chain_template
-  has_many :conversion_steps, inverse_of: :ConversionChain
+  has_many :conversion_steps, inverse_of: :conversion_chain
 
   mount_uploaders :files, FileUploader
   has_many :files, as: :file_handler
@@ -24,6 +24,12 @@ class ConversionChain < ActiveRecord::Base
   def execute_conversion!
     raise ConversionErrors::NoFileSuppliedError unless input_file.present?
     self.update_attribute(:executed_at, Time.zone.now)
+  end
+
+  def input_file_name
+    input_file.name
+  rescue => e
+    "cannot render name"
   end
 
 end

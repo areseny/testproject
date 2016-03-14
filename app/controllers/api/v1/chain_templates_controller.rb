@@ -18,7 +18,7 @@ module Api
       def create
         new_chain_template.generate_step_templates(step_template_params)
         new_chain_template.save!
-        render json: new_chain_template
+        render json: new_chain_template, root: false
       rescue => e
         render_unprocessable_error(e)
       end
@@ -28,21 +28,21 @@ module Api
       end
 
       def show
-        render json: chain_template, include: ['step_templates']
+        render json: chain_template, include: ['step_templates'], root: false
       rescue => e
         render_not_found_error(e)
       end
 
       def update
         chain_template.update!(chain_template_params)
-        render json: chain_template
+        render json: chain_template, root: false
       rescue ActiveRecord::RecordNotFound => e
         render_not_found_error(e)
       end
 
       def destroy
         chain_template.destroy
-        render json: chain_template
+        render json: chain_template, root: false
       rescue => e
         render_not_found_error(e)
       end
