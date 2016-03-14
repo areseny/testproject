@@ -44,6 +44,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           end
 
           expect(response.status).to eq 200
+          expect(assigns(:new_chain)).to_not be_nil
         end
       end
 
@@ -58,6 +59,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           end
 
           expect(response.status).to eq 422
+          expect(assigns(:new_chain)).to be_nil
         end
       end
     end
