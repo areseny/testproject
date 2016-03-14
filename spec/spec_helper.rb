@@ -1,7 +1,7 @@
 require 'support/request_helper'
 require 'support/matcher_methods'
 require 'support/auth_helper'
-require 'support/controller_spec_requests/chain_template_requests'
+require 'support/controller_spec_requests/controller_requests'
 require 'support/integration_spec_requests/chain_template_requests'
 require 'support/integration_spec_requests/auth_requests'
 

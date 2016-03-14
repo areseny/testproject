@@ -19,10 +19,25 @@ class StepClass < ActiveRecord::Base
     where("lower(name) = ?", value.downcase).first
   end
 
+  def step
+    # find step by name
+    step_files
+  end
+
   private
 
   def set_as_active
     attributes[:active] = true if active.nil?
+  end
+
+  def step_files
+    # files = Dir.entries("app/logic/steps").select {|f| !File.directory? f}
+    # files.delete("step.rb")
+    classes = []
+    Steps.module_eval do
+      classes = Module.nesting.select {|m| m.is_a? Class}
+    end
+    @step_files ||= classes
   end
 
 end

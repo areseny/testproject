@@ -11,6 +11,15 @@ Rails.application.routes.draw do
           get 'members_only'
           get 'anyone'
         end
+        member do
+          post 'execute'
+        end
+      end
+
+      resources :conversion_chains, only: [:execute] do
+        member do
+          post 'execute'
+        end
       end
     end
 

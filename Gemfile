@@ -18,6 +18,12 @@ gem 'omniauth'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
 
+################### conversion utilities ########################
+
+# xml / xslt conversions
+gem 'nokogiri'
+
+
 ################### css ######################
 
 # Use SCSS for stylesheets

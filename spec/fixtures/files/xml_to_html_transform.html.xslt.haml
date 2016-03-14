@@ -1,0 +1,17 @@
+!!! XML
+%xsl:stylesheet(version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform")
+
+%xsl:template(match="/env/context")
+  -# More about this in a moment, for now just make sure we don't output the
+  -# context tag.
+
+%xsl:template(match="/env/file")
+  %h1 Here is some xslt output. I'm HTML now!
+  %ul
+    %xsl:apply-templates(select=".")
+
+%xsl:template(match="item")
+  %li
+    %label
+      %xsl:value-of(select="@name")
+    %xsl:value-of(select=".")

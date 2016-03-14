@@ -3,7 +3,24 @@ class ApplicationController < ActionController::API
   include ActionController::Serialization
 
   def default_serializer_options
+    # remove if you want the root element to serialise as well
     {root: false}
+  end
+
+  def render_error(e)
+    if e.is_a? ActiveRecord::RecordNotFound
+      render_not_found_error(e)
+    else
+      render_unprocessable_error(e)
+    end
+  end
+
+  def render_unprocessable_error(e)
+    render json: {errors: [e.message]}, status: 422
+  end
+
+  def render_not_found_error(e)
+    render json: {errors: [e.message]}, status: 404
   end
 
   # Prevent CSRF attacks by raising an exception.

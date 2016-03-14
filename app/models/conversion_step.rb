@@ -1,5 +1,5 @@
 # create_table "conversion_steps", force: :cascade do |t|
-#   t.integer  "executed_chain_id", null: false
+#   t.integer  "conversion_chain_id", null: false
 #   t.integer  "position",          null: false
 #   t.integer  "step_class_id",     null: false
 #   t.text     "notes"
@@ -13,11 +13,11 @@
 class ConversionStep < ActiveRecord::Base
 
   belongs_to :step_class
-  belongs_to :executed_chain, inverse_of: :conversion_steps
+  belongs_to :conversion_chain, inverse_of: :conversion_steps
 
-  validates_presence_of :executed_chain, :step_class, :position
+  validates_presence_of :conversion_chain, :step_class, :position
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
-  validates_uniqueness_of :position, { scope: :executed_chain, message: "Only one step can be in this position for this chain" }
+  validates_uniqueness_of :position, { scope: :conversion_chain, message: "Only one step can be in this position for this chain" }
 
 
 

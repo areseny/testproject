@@ -203,6 +203,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   json_spec
+  nokogiri
   omniauth
   pg (~> 0.15)
   rails (= 4.2.5.1)

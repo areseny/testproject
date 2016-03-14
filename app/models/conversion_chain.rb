@@ -1,4 +1,4 @@
-# create_table "executed_chains", force: :cascade do |t|
+# create_table "conversion_chains", force: :cascade do |t|
 #   t.integer  "user_id",           null: false
 #   t.datetime "executed_at"
 #   t.string   "input_file"
@@ -7,11 +7,11 @@
 #   t.datetime "updated_at",        null: false
 # end
 
-class ExecutedChain < ActiveRecord::Base
+class ConversionChain < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :chain_template
-  has_many :conversion_steps, inverse_of: :executed_chain
+  has_many :conversion_steps, inverse_of: :ConversionChain
 
   validates_presence_of :user, :chain_template
 

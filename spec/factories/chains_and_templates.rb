@@ -10,13 +10,13 @@ FactoryGirl.define do
     end
   end
 
-  factory :executed_chain do
+  factory :conversion_chain do
     chain_template
     user
   end
 
   factory :conversion_step do
-    executed_chain
+    conversion_chain
     position 1
     step_class
     notes "yay! done!"
@@ -24,7 +24,7 @@ FactoryGirl.define do
 
   factory :step_class do
     sequence :name do |n|
-      "PngToJpg#{n}"
+      "ThingToOtherThing#{n}"
     end
   end
 

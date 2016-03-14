@@ -1,3 +1,5 @@
+require 'conversion_errors/conversion_errors'
+
 # create_table "chain_templates", force: :cascade do |t|
 #   t.integer  "user_id",                    null: false
 #   t.string   "name",                       null: false
@@ -8,9 +10,11 @@
 # end
 
 class ChainTemplate < ActiveRecord::Base
+  include ConversionErrors
 
   belongs_to :user
   has_many :step_templates, inverse_of: :chain_template
+  has_many :conversion_chains
 
   validates_presence_of :name, :user
   validates_inclusion_of :active, :in => [true, false]
@@ -19,6 +23,11 @@ class ChainTemplate < ActiveRecord::Base
   after_initialize :set_as_active
 
   scope :active, -> { where(active: true) }
+
+  def clone_to_conversion_chain(input_file)
+    raise ConversionErrors::NoFileSuppliedError unless input_file
+    conversion_chains.new(input_file: input_file, user: user)
+  end
 
   def generate_step_templates(data)
     generate_steps_with_positions(data[:steps_with_positions]) if data[:steps_with_positions].present?

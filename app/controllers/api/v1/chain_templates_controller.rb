@@ -1,17 +1,24 @@
 module Api
   module V1
     class ChainTemplatesController < ApplicationController
-      before_action :authenticate_api_user!, only: [:index, :show, :create, :update, :destroy, :members_only]
+      before_action :authenticate_api_user!, only: [:index, :show, :create, :update, :destroy, :execute, :members_only]
 
       respond_to :json
+
+      def execute
+        @new_chain = chain_template.clone_to_conversion_chain(params[:input_file])
+        @new_chain.save!
+        redirect_to execute_api_conversion_chain_path(@new_chain)
+      rescue => e
+        render_error(e)
+      end
 
       def create
         new_chain_template.generate_step_templates(step_template_params)
         new_chain_template.save!
         render json: new_chain_template
       rescue => e
-        # puts e.message
-        render json: {errors: [e.message]}, status: 422
+        render_unprocessable_error(e)
       end
 
       def index
@@ -21,23 +28,21 @@ module Api
       def show
         render json: chain_template, include: ['step_templates']
       rescue => e
-        render json: {"errors": [e.message]}, status: 404
+        render_not_found_error(e)
       end
 
       def update
         chain_template.update!(chain_template_params)
         render json: chain_template
       rescue ActiveRecord::RecordNotFound => e
-        render json: {"errors": [e.message]}, status: 404
-      rescue => e
-        render json: {"errors": [e.message]}, status: 422
+        render_not_found_error(e)
       end
 
       def destroy
         chain_template.destroy
         render json: chain_template
       rescue => e
-        render json: {"errors": [e.message]}, status: 404
+        render_not_found_error(e)
       end
 
       # test methods
@@ -67,6 +72,10 @@ module Api
 
       def step_template_params
         params.permit(steps: [], steps_with_positions: [:name, :position])
+      end
+
+      def execution_params
+        params.require(:input_file)
       end
 
       def chain_template

@@ -34,6 +34,12 @@ Run sidekiq in another terminal - `bundle exec sidekiq`
 
 Go to localhost:3000 to see if it's up.
 
+## Adding a new step
+
+To add a new step, add the step logic under its own file in `app/logic/steps`.
+
+Add the class name into the array `Step.all_steps` method.
+
 ## Upgrading API version
 
 To prevent breaking consumers of this API with upgrades, this API is versioned with a simple mechanism that looks for the API version specified in the request header.
