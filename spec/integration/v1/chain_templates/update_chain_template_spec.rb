@@ -37,7 +37,7 @@ describe "User updates chain template" do
 
         context 'if all attributes are supplied' do
           before do
-            perform_update_request(auth_headers, chain_template.id, chain_template_params)
+            perform_update_request(auth_headers, chain_template_params)
           end
 
           it 'responds with success' do
@@ -81,7 +81,7 @@ describe "User updates chain template" do
           }
 
           before do
-            perform_update_request(auth_headers, chain_template.id, modified_template_params)
+            perform_update_request(auth_headers, modified_template_params)
           end
 
           it 'responds with success' do
@@ -120,7 +120,7 @@ describe "User updates chain template" do
 
         before do
           chain_template.update_attribute(:user_id, other_user.id)
-          perform_update_request(auth_headers, chain_template.id, chain_template_params)
+          perform_update_request(auth_headers, chain_template_params)
         end
 
         it 'responds with Not Found' do
@@ -141,7 +141,7 @@ describe "User updates chain template" do
 
     context 'if no user is signed in' do
       before do
-        perform_update_request({}, chain_template.id, chain_template_params)
+        perform_update_request({}, chain_template_params)
       end
 
       it 'should raise an error' do
@@ -156,7 +156,7 @@ describe "User updates chain template" do
     context 'if the token has expired' do
       before do
         expire_token(user, auth_headers['client'])
-        perform_update_request({}, chain_template.id, chain_template_params)
+        perform_update_request({}, chain_template_params)
       end
 
       it 'should raise an error' do
@@ -170,7 +170,7 @@ describe "User updates chain template" do
 
   end
   
-  def perform_update_request(auth_headers, id, data)
-    update_chain_template_request('v1', auth_headers, id, data.to_json)
+  def perform_update_request(auth_headers, data)
+    update_chain_template_request('v1', auth_headers, data)
   end
 end

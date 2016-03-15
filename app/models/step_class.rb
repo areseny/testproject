@@ -8,8 +8,8 @@
 class StepClass < ActiveRecord::Base
 
   validates_presence_of :name
-  validates_uniqueness_of :name
   validates_inclusion_of :active, in: [true, false]
+  validate :name_included_in_all_steps?
 
   after_initialize :set_as_active
 
@@ -19,10 +19,17 @@ class StepClass < ActiveRecord::Base
     where("lower(name) = ?", value.downcase).first
   end
 
-  def step
-    # find step by name
-    step_files
-    Steps::FlipImage
+  def behaviour_class
+    matching_classes = StepClass.all_steps.select{|class_name| class_name.name.demodulize == name}
+    matching_classes.first
+  end
+
+  def self.all_steps
+    [Conversion::Steps::FlipImage,
+     Conversion::Steps::XmlToHtml,
+     Conversion::Steps::DocxToXml,
+     Conversion::Steps::JpgToPng,
+     Conversion::Steps::Step]
   end
 
   private
@@ -31,14 +38,9 @@ class StepClass < ActiveRecord::Base
     attributes[:active] = true if active.nil?
   end
 
-  def step_files
-    # files = Dir.entries("app/logic/steps").select {|f| !File.directory? f}
-    # files.delete("step.rb")
-    classes = []
-    Steps.module_eval do
-      classes = Module.nesting.select {|m| m.is_a? Class}
-    end
-    @step_files ||= classes
+  def name_included_in_all_steps?
+    return if behaviour_class.present?
+    errors[:name] << "#{name} is not included in the behaviour step list"
   end
 
 end

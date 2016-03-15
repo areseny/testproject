@@ -25,7 +25,7 @@ FactoryGirl.define do
 
   factory :step_class do
     sequence :name do |n|
-      "ThingToOtherThing#{n}"
+      "Step"
     end
   end
 

@@ -9,7 +9,6 @@ RSpec.describe ConversionChain, type: :model do
     end
 
     expects_to_be_invalid_without :conversion_chain, :user, :chain_template
-
-
   end
+
 end

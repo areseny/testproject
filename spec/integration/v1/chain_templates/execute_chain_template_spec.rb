@@ -29,30 +29,77 @@ describe "User executes a single chain template" do
       context 'and the chain template exists' do
 
         context 'and it belongs to the user' do
-          it 'responds with success' do
-            perform_execute_request(auth_headers, chain_template.id, execution_params)
 
-            expect(response.status).to eq(200)
+          context 'and a file is supplied' do
+
+            it 'responds with success' do
+              perform_execute_request(auth_headers, execution_params)
+
+              expect(response.status).to eq(200)
+            end
+
+            it 'should return a ConversionChain object' do
+              perform_execute_request(auth_headers, execution_params)
+
+              conversion_chain = chain_template.reload.conversion_chains.first
+
+              expect(body_as_json['conversion_chain']['chain_template_id']).to eq conversion_chain.chain_template_id
+              expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
+              expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
+            end
+
+            context 'and it has steps' do
+              let!(:jpg_class)  { FactoryGirl.create(:step_class, name: "JpgToPng") }
+              let!(:step1)      { FactoryGirl.create(:step_template, chain_template: chain_template, position: 1, step_class: jpg_class) }
+              let!(:step2)      { FactoryGirl.create(:step_template, chain_template: chain_template, position: 2, step_class: jpg_class) }
+
+              it 'should also return the steps' do
+                perform_execute_request(auth_headers, execution_params)
+
+                expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
+              end
+
+              context 'and execution is successful' do
+                it 'should return the objects' do
+                  perform_execute_request(auth_headers, execution_params)
+
+                  expect(response.status).to eq(200)
+                  expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
+                  expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e[:conversion_errors]}).to eq [nil, nil]
+                end
+              end
+
+              context 'and execution fails' do
+
+                let!(:steps)                  { [Conversion::Steps::JpgToPng] }
+                let!(:boobytrapped_step)      { Conversion::Steps::JpgToPng.new }
+
+                before do
+                  expect(boobytrapped_step).to receive(:convert_file) { raise "Oh noes! Error!" }
+                  allow(Conversion::Steps::JpgToPng).to receive(:new).and_return boobytrapped_step
+                end
+
+                it 'should return the errors' do
+                  perform_execute_request(auth_headers, execution_params)
+
+                  expect(response.status).to eq(200)
+                  expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
+                  expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['conversion_errors']}).to eq [["Oh noes! Error!"].to_json, ["Oh noes! Error!"].to_json]
+                end
+              end
+            end
           end
 
-          it 'should return a ConversionChain object' do
-            perform_execute_request(auth_headers, chain_template.id, execution_params)
+          context 'and no file is supplied' do
+            before do
+              # execution_params[:input_file] = nil #this causes a JSON parse error!
+              execution_params.delete(:input_file)
+            end
 
-            conversion_chain = chain_template.reload.conversion_chains.first
+            it 'should return an error' do
+              perform_execute_request(auth_headers, execution_params)
 
-            expect(body_as_json['conversion_chain']['chain_template_id']).to eq conversion_chain.chain_template_id
-            expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
-            expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
-          end
-
-          context 'and it has steps' do
-            let!(:step1)      { FactoryGirl.create(:step_template, chain_template: chain_template, position: 1) }
-            let!(:step2)      { FactoryGirl.create(:step_template, chain_template: chain_template, position: 2) }
-
-            it 'should also return the steps' do
-              perform_execute_request(auth_headers, chain_template.id, execution_params)
-
-              expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
+              expect(response.status).to eq(422)
             end
           end
         end
@@ -66,7 +113,7 @@ describe "User executes a single chain template" do
           end
 
           it 'responds with failure' do
-            perform_execute_request(auth_headers, chain_template.id, execution_params)
+            perform_execute_request(auth_headers, execution_params)
             expect(response.status).to eq(404)
           end
         end
@@ -76,7 +123,7 @@ describe "User executes a single chain template" do
 
         before do
           chain_template.destroy
-          perform_execute_request(auth_headers, "rubbish", execution_params)
+          perform_execute_request(auth_headers, execution_params)
         end
 
         it 'responds with failure' do
@@ -87,7 +134,7 @@ describe "User executes a single chain template" do
 
     context 'if no user is signed in' do
       before do
-        perform_execute_request({}, chain_template.id, execution_params)
+        perform_execute_request({}, execution_params)
       end
 
       it 'should raise an error' do
@@ -102,7 +149,7 @@ describe "User executes a single chain template" do
     context 'if the token has expired' do
       before do
         expire_token(user, auth_headers['client'])
-        perform_execute_request({}, chain_template.id, execution_params)
+        perform_execute_request({}, execution_params)
       end
 
       it 'should raise an error' do
@@ -116,8 +163,8 @@ describe "User executes a single chain template" do
 
   end
   
-  def perform_execute_request(auth_headers, id, data)
-    execute_chain_template_request(version, auth_headers, id, data)
+  def perform_execute_request(auth_headers, data)
+    execute_chain_template_request(version, auth_headers, data)
   end
 
   def version
