@@ -18,13 +18,13 @@ module Api
       def create
         new_chain_template.generate_step_templates(step_template_params)
         new_chain_template.save!
-        render json: new_chain_template, root: false
+        render json: new_chain_template, include: ['step_templates'], root: false
       rescue => e
         render_unprocessable_error(e)
       end
 
       def index
-        render json: chain_templates.to_json
+        render json: chain_templates, include: ['step_templates', 'conversion_chains'], root: false
       end
 
       def show

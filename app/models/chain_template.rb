@@ -39,7 +39,7 @@ class ChainTemplate < ActiveRecord::Base
   end
 
   def times_executed
-
+    conversion_chains.count
   end
 
   private
