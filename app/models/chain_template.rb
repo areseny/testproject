@@ -38,6 +38,10 @@ class ChainTemplate < ActiveRecord::Base
     generate_steps(data[:steps]) if data[:steps].present?
   end
 
+  def times_executed
+
+  end
+
   private
 
   def generate_steps_with_positions(step_template_data)
