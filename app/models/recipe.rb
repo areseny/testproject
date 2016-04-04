@@ -1,6 +1,6 @@
 require 'conversion_errors/conversion_errors'
 
-# create_table "chain_templates", force: :cascade do |t|
+# create_table "recipes", force: :cascade do |t|
 #   t.integer  "user_id",                    null: false
 #   t.string   "name",                       null: false
 #   t.text     "description"
@@ -9,11 +9,11 @@ require 'conversion_errors/conversion_errors'
 #   t.datetime "updated_at",                 null: false
 # end
 
-class ChainTemplate < ActiveRecord::Base
+class Recipe < ActiveRecord::Base
   include ConversionErrors
 
   belongs_to :user
-  has_many :step_templates, inverse_of: :chain_template
+  has_many :step_templates, inverse_of: :recipe
   has_many :conversion_chains
 
   validates_presence_of :name, :user

@@ -1,26 +1,26 @@
 require 'rails_helper'
 
-describe "User archives a single chain template" do
+describe "User archives a single recipe" do
 
-  # URL: /api/chain_template/:id
+  # URL: /api/recipe/:id
   # Method: DELETE
-  # Get a specific template belonging to the current user
+  # Get a specific recipe belonging to the current user
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/chain_templates/:id
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id
 
-  describe "GET archive chain template" do
+  describe "GET archive recipe" do
 
     let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
 
-    let!(:template)         { FactoryGirl.create(:chain_template, user: user) }
+    let!(:recipe)         { FactoryGirl.create(:recipe, user: user) }
 
     context 'if user is signed in' do
 
-      context 'and the chain template exists' do
+      context 'and the recipe exists' do
 
         before do
-          perform_archive_request(auth_headers, template.id)
+          perform_archive_request(auth_headers, recipe.id)
         end
 
         context 'and it belongs to the user' do
@@ -28,10 +28,10 @@ describe "User archives a single chain template" do
             expect(response.status).to eq(200)
           end
 
-          it 'should return a ChainTemplate object' do
-            expect(body_as_json['name']).to eq template.name
-            expect(body_as_json['description']).to eq template.description
-            expect(body_as_json['active']).to eq template.active
+          it 'should return a Recipe object' do
+            expect(body_as_json['name']).to eq recipe.name
+            expect(body_as_json['description']).to eq recipe.description
+            expect(body_as_json['active']).to eq recipe.active
           end
         end
 
@@ -39,20 +39,20 @@ describe "User archives a single chain template" do
           let!(:other_user)     { FactoryGirl.create(:user) }
 
           before do
-            template.update_attribute(:user_id, other_user.id)
+            recipe.update_attribute(:user_id, other_user.id)
           end
 
           it 'responds with failure' do
-            perform_archive_request(auth_headers, template.id)
+            perform_archive_request(auth_headers, recipe.id)
             expect(response.status).to eq(404)
           end
         end
       end
 
-      context 'and the chain template does not exist' do
+      context 'and the recipe does not exist' do
 
         before do
-          template.destroy
+          recipe.destroy
           perform_archive_request(auth_headers, "rubbish")
         end
 
@@ -64,7 +64,7 @@ describe "User archives a single chain template" do
 
     context 'if no user is signed in' do
       before do
-        perform_archive_request({}, template.id)
+        perform_archive_request({}, recipe.id)
       end
 
       it 'should raise an error' do
@@ -79,7 +79,7 @@ describe "User archives a single chain template" do
     context 'if the token has expired' do
       before do
         expire_token(user, auth_headers['client'])
-        perform_archive_request({}, template.id)
+        perform_archive_request({}, recipe.id)
       end
 
       it 'should raise an error' do
@@ -94,6 +94,6 @@ describe "User archives a single chain template" do
   end
   
   def perform_archive_request(auth_headers, id)
-    archive_chain_template_request('v1', auth_headers, id)
+    archive_recipe_request('v1', auth_headers, id)
   end
 end

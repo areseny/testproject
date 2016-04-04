@@ -28,9 +28,9 @@ RSpec.describe ConversionStep, type: :model do
       end
 
       it 'should be unique to that chain template / position combination' do
-        chain_template = FactoryGirl.create(:conversion_chain)
-        FactoryGirl.create(:conversion_step, conversion_chain: chain_template, position: 1)
-        expect(FactoryGirl.build(:conversion_step, conversion_chain: chain_template, position: 1)).to_not be_valid
+        recipe = FactoryGirl.create(:conversion_chain)
+        FactoryGirl.create(:conversion_step, conversion_chain: recipe, position: 1)
+        expect(FactoryGirl.build(:conversion_step, conversion_chain: recipe, position: 1)).to_not be_valid
       end
 
     end

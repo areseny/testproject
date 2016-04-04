@@ -34,9 +34,9 @@ end
 
 #### specific to certain controllers
 
-# chain_template_controller requests
+# recipe_controller requests
 
-def execute_chain_template(version, data = {}.to_json)
+def execute_recipe(version, data = {}.to_json)
   post :execute, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 

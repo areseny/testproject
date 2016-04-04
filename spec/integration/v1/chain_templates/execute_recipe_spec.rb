@@ -2,11 +2,11 @@ require 'rails_helper'
 
 describe "User executes a single chain template" do
 
-  # URL: /api/chain_templates/:id/execute
+  # URL: /api/recipes/:id/execute
   # Method: GET
   # Get a specific template belonging to the current user
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/chain_templates/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute chain template" do
 
@@ -15,12 +15,12 @@ describe "User executes a single chain template" do
     let!(:xml_file)         { fixture_file_upload('spec/fixtures/files/test_file.xml', 'text/xml') }
     let!(:photo_file)       { fixture_file_upload('spec/fixtures/files/kitty.jpeg', 'image/jpeg') }
 
-    let!(:chain_template)   { FactoryGirl.create(:chain_template, user: user) }
+    let!(:recipe)   { FactoryGirl.create(:recipe, user: user) }
 
     let!(:execution_params) {
       {
           input_file: photo_file,
-          id: chain_template.id
+          id: recipe.id
       }
     }
 
@@ -41,17 +41,17 @@ describe "User executes a single chain template" do
             it 'should return a ConversionChain object' do
               perform_execute_request(auth_headers, execution_params)
 
-              conversion_chain = chain_template.reload.conversion_chains.first
+              conversion_chain = recipe.reload.conversion_chains.first
 
-              expect(body_as_json['conversion_chain']['chain_template_id']).to eq conversion_chain.chain_template_id
+              expect(body_as_json['conversion_chain']['recipe_id']).to eq conversion_chain.recipe_id
               expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
               expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
             end
 
             context 'and it has steps' do
               let!(:jpg_class)  { FactoryGirl.create(:step_class, name: "JpgToPng") }
-              let!(:step1)      { FactoryGirl.create(:step_template, chain_template: chain_template, position: 1, step_class: jpg_class) }
-              let!(:step2)      { FactoryGirl.create(:step_template, chain_template: chain_template, position: 2, step_class: jpg_class) }
+              let!(:step1)      { FactoryGirl.create(:step_template, recipe: recipe, position: 1, step_class: jpg_class) }
+              let!(:step2)      { FactoryGirl.create(:step_template, recipe: recipe, position: 2, step_class: jpg_class) }
 
               it 'should also return the steps' do
                 perform_execute_request(auth_headers, execution_params)
@@ -109,7 +109,7 @@ describe "User executes a single chain template" do
           let!(:other_user)     { FactoryGirl.create(:user) }
 
           before do
-            chain_template.update_attribute(:user_id, other_user.id)
+            recipe.update_attribute(:user_id, other_user.id)
           end
 
           it 'responds with failure' do
@@ -122,7 +122,7 @@ describe "User executes a single chain template" do
       context 'and the chain template does not exist' do
 
         before do
-          chain_template.destroy
+          recipe.destroy
           perform_execute_request(auth_headers, execution_params)
         end
 
@@ -164,7 +164,7 @@ describe "User executes a single chain template" do
   end
   
   def perform_execute_request(auth_headers, data)
-    execute_chain_template_request(version, auth_headers, data)
+    execute_recipe_request(version, auth_headers, data)
   end
 
   def version

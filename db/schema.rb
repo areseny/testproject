@@ -11,27 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160315020651) do
+ActiveRecord::Schema.define(version: 20160404030623) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "chain_templates", force: :cascade do |t|
-    t.integer  "user_id",                    null: false
-    t.string   "name",                       null: false
-    t.text     "description"
-    t.boolean  "active",      default: true, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-  end
-
   create_table "conversion_chains", force: :cascade do |t|
-    t.integer  "user_id",           null: false
+    t.integer  "user_id",     null: false
     t.datetime "executed_at"
     t.string   "input_file"
-    t.integer  "chain_template_id", null: false
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.integer  "recipe_id",   null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "conversion_steps", force: :cascade do |t|
@@ -48,6 +39,15 @@ ActiveRecord::Schema.define(version: 20160315020651) do
 
   add_index "conversion_steps", ["position", "conversion_chain_id"], name: "index_conversion_steps_on_position_and_conversion_chain_id", unique: true, using: :btree
 
+  create_table "recipes", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.string   "name",                       null: false
+    t.text     "description"
+    t.boolean  "active",      default: true, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
   create_table "step_classes", force: :cascade do |t|
     t.string   "name",                      null: false
     t.boolean  "active",     default: true, null: false
@@ -56,14 +56,14 @@ ActiveRecord::Schema.define(version: 20160315020651) do
   end
 
   create_table "step_templates", force: :cascade do |t|
-    t.integer  "chain_template_id", null: false
-    t.integer  "step_class_id",     null: false
-    t.integer  "position",          null: false
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.integer  "recipe_id",     null: false
+    t.integer  "step_class_id", null: false
+    t.integer  "position",      null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
-  add_index "step_templates", ["chain_template_id", "position"], name: "chain_step_position_index", unique: true, using: :btree
+  add_index "step_templates", ["recipe_id", "position"], name: "chain_step_position_index", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "provider",               default: "email", null: false

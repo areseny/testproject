@@ -1,26 +1,26 @@
 require 'rails_helper'
 
-describe "User lists all their chain templates" do
+describe "User lists all their recipes" do
 
-  # URL: /api/chain_templates/
+  # URL: /api/recipes/
   # Method: GET
-  # Get all the chain templates belonging to the current user
+  # Get all the recipes belonging to the current user
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/chain_templates
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes
 
-  describe "GET index chain template" do
+  describe "GET index recipe" do
 
     let!(:user)               { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
     let!(:other_user)         { FactoryGirl.create(:user) }
 
     let!(:auth_headers)       { user.create_new_auth_token }
-    let!(:template)           { FactoryGirl.create(:chain_template, user: user) }
-    let!(:inactive_template)  { FactoryGirl.create(:chain_template, user: user, active: false) }
-    let!(:other_template)     { FactoryGirl.create(:chain_template, user: other_user) }
+    let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
+    let!(:inactive_recipe)  { FactoryGirl.create(:recipe, user: user, active: false) }
+    let!(:other_recipe)     { FactoryGirl.create(:recipe, user: other_user) }
 
     context 'if user is signed in' do
 
-      context 'and there are some active chain templates that belong to the user' do
+      context 'and there are some active recipes that belong to the user' do
 
         before do
           perform_index_request(auth_headers)
@@ -30,20 +30,20 @@ describe "User lists all their chain templates" do
           expect(response.status).to eq(200)
         end
 
-        it 'should return a list of ChainTemplate objects' do
+        it 'should return a list of Recipe objects' do
           expect(body_as_json.count).to eq 1
 
-          expect(body_as_json[0]['name']).to eq template.name
-          expect(body_as_json[0]['description']).to eq template.description
-          expect(body_as_json[0]['user_id']).to eq template.user.id
-          expect(body_as_json[0]['active']).to eq template.active
+          expect(body_as_json[0]['name']).to eq recipe.name
+          expect(body_as_json[0]['description']).to eq recipe.description
+          expect(body_as_json[0]['user_id']).to eq recipe.user.id
+          expect(body_as_json[0]['active']).to eq recipe.active
         end
       end
 
-      context 'and there are no active chain templates that belong to the current user' do
+      context 'and there are no active recipes that belong to the current user' do
 
         before do
-          template.destroy
+          recipe.destroy
           perform_index_request(auth_headers)
         end
 
@@ -89,6 +89,6 @@ describe "User lists all their chain templates" do
   end
   
   def perform_index_request(auth_headers)
-    index_chain_template_request('v1', auth_headers)
+    index_recipe_request('v1', auth_headers)
   end
 end

@@ -1,17 +1,17 @@
 FactoryGirl.define do
 
-  factory :chain_template do
+  factory :recipe do
     name "PNG to JPG transmogrifier"
     description "This will allow me to input a PNG and get out a JPG! It's magic!"
     user
     active true
-    factory :archived_chain_template do
+    factory :archived_recipe do
       active false
     end
   end
 
   factory :conversion_chain do
-    chain_template
+    recipe
     user
     input_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
   end
@@ -30,7 +30,7 @@ FactoryGirl.define do
   end
 
   factory :step_template do
-    chain_template
+    recipe
     step_class
     position 1
   end

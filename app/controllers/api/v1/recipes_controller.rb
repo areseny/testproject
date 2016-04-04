@@ -1,12 +1,12 @@
 module Api
   module V1
-    class ChainTemplatesController < ApplicationController
+    class RecipesController < ApplicationController
       before_action :authenticate_api_user!, only: [:index, :show, :create, :update, :destroy, :execute, :members_only]
 
       respond_to :json
 
       def execute
-        @new_chain = chain_template.clone_to_conversion_chain(execution_params)
+        @new_chain = recipe.clone_to_conversion_chain(execution_params)
         @new_chain.save!
         @new_chain.execute_conversion!
         render json: @new_chain, status: 200
@@ -16,33 +16,33 @@ module Api
       end
 
       def create
-        new_chain_template.generate_step_templates(step_template_params)
-        new_chain_template.save!
-        render json: new_chain_template, include: ['step_templates'], root: false
+        new_recipe.generate_step_templates(step_template_params)
+        new_recipe.save!
+        render json: new_recipe, include: ['step_templates'], root: false
       rescue => e
         render_unprocessable_error(e)
       end
 
       def index
-        render json: chain_templates, include: ['step_templates', 'conversion_chains'], root: false
+        render json: recipes, include: ['step_templates', 'conversion_chains'], root: false
       end
 
       def show
-        render json: chain_template, include: ['step_templates'], root: false
+        render json: recipe, include: ['step_templates'], root: false
       rescue => e
         render_not_found_error(e)
       end
 
       def update
-        chain_template.update!(chain_template_params)
-        render json: chain_template, root: false
+        recipe.update!(recipe_params)
+        render json: recipe, root: false
       rescue ActiveRecord::RecordNotFound => e
         render_not_found_error(e)
       end
 
       def destroy
-        chain_template.destroy
-        render json: chain_template, root: false
+        recipe.destroy
+        render json: recipe, root: false
       rescue => e
         render_not_found_error(e)
       end
@@ -68,8 +68,8 @@ module Api
 
       private
 
-      def chain_template_params
-        params.require(:chain_template).permit(:name, :description, :active)
+      def recipe_params
+        params.require(:recipe).permit(:name, :description, :active)
       end
 
       def step_template_params
@@ -81,16 +81,16 @@ module Api
         # params.require(files: [])
       end
 
-      def chain_template
-        @chain_template ||= current_api_user.chain_templates.find(params[:id])
+      def recipe
+        @recipe ||= current_api_user.recipes.find(params[:id])
       end
 
-      def new_chain_template
-        @new_chain_template ||= current_api_user.chain_templates.new(chain_template_params)
+      def new_recipe
+        @new_recipe ||= current_api_user.recipes.new(recipe_params)
       end
 
-      def chain_templates
-        @chain_templates ||= current_api_user.chain_templates.active
+      def recipes
+        @recipes ||= current_api_user.recipes.active
       end
 
     end

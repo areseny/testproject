@@ -8,7 +8,7 @@ RSpec.describe StepTemplate, type: :model do
       expect(FactoryGirl.build(:step_template)).to be_valid
     end
 
-    expects_to_be_invalid_without :step_template, :chain_template, :position
+    expects_to_be_invalid_without :step_template, :recipe, :position
 
     describe 'position' do
       it 'should be an integer' do
@@ -28,9 +28,9 @@ RSpec.describe StepTemplate, type: :model do
       end
 
       it 'should be unique to that chain template / position combination' do
-        chain_template = FactoryGirl.create(:chain_template)
-        FactoryGirl.create(:step_template, chain_template: chain_template, position: 1)
-        expect(FactoryGirl.build(:step_template, chain_template: chain_template, position: 1)).to_not be_valid
+        recipe = FactoryGirl.create(:recipe)
+        FactoryGirl.create(:step_template, recipe: recipe, position: 1)
+        expect(FactoryGirl.build(:step_template, recipe: recipe, position: 1)).to_not be_valid
       end
 
     end

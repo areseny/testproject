@@ -1,4 +1,4 @@
-class ChainTemplateSerializer < ActiveModel::Serializer
+class RecipeSerializer < ActiveModel::Serializer
 
   has_many :step_templates
   has_many :conversion_chains

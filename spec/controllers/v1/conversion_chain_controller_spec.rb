@@ -64,7 +64,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
   end
 
   def perform_execute_request(data = {})
-    execute_chain_template(version, data)
+    execute_recipe(version, data)
   end
 
   def perform_create_request(data = {})

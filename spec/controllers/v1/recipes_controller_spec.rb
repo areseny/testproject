@@ -1,4 +1,4 @@
-describe Api::V1::ChainTemplatesController, type: :controller do
+describe Api::V1::RecipesController, type: :controller do
   include Devise::TestHelpers
 
   let!(:user)           { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
@@ -11,9 +11,9 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
   let!(:attributes)           { [:name, :description] }
 
-  let!(:chain_template_params) {
+  let!(:recipe_params) {
     {
-        chain_template: {
+        recipe: {
             name: name,
             description: description
         }
@@ -26,11 +26,11 @@ describe Api::V1::ChainTemplatesController, type: :controller do
     let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
     let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
     let!(:step_template)    { FactoryGirl.create(:step_template, step_class: demo_step) }
-    let!(:chain_template)   { FactoryGirl.create(:chain_template, user: user, step_templates: [step_template]) }
+    let!(:recipe)   { FactoryGirl.create(:recipe, user: user, step_templates: [step_template]) }
 
     let!(:execution_params) {
         {
-            id: chain_template.id,
+            id: recipe.id,
             input_file: photo_file
         }
     }
@@ -84,14 +84,14 @@ describe Api::V1::ChainTemplatesController, type: :controller do
       context 'if the chain template is valid' do
         it "should assign" do
           request_with_auth(user.create_new_auth_token) do
-            perform_create_request(chain_template_params)
+            perform_create_request(recipe_params)
           end
 
           expect(response.status).to eq 200
-          new_chain_template = assigns[:new_chain_template]
-          expect(new_chain_template).to be_a ChainTemplate
+          new_recipe = assigns[:new_recipe]
+          expect(new_recipe).to be_a Recipe
           attributes.each do |attribute|
-            expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+            expect(new_recipe.send(attribute)).to eq self.send(attribute)
           end
         end
 
@@ -102,22 +102,22 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
             context 'and they are valid' do
               before do
-                chain_template_params[:steps_with_positions] = step_params
+                recipe_params[:steps_with_positions] = step_params
               end
 
               it "should create the template with step templates" do
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 200
-                new_chain_template = assigns[:new_chain_template]
-                expect(new_chain_template).to be_a ChainTemplate
+                new_recipe = assigns[:new_recipe]
+                expect(new_recipe).to be_a Recipe
                 attributes.each do |attribute|
-                  expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+                  expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
-                expect(new_chain_template.step_templates.count).to eq 2
-                expect(new_chain_template.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+                expect(new_recipe.step_templates.count).to eq 2
+                expect(new_recipe.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
               end
             end
 
@@ -125,59 +125,59 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
               it "should not create the template for nonexistent step classes" do
                 docx_to_xml.destroy
-                chain_template_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
 
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 422
               end
 
               it "should not create the template with duplicate numbers" do
-                chain_template_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
 
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 422
               end
 
               it "should not create the template with incorrect numbers" do
-                chain_template_params[:steps_with_positions] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
 
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 422
               end
 
               it "should not create the template with skipped steps" do
-                chain_template_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
 
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 422
               end
 
               it "should create the template with nonsequential numbers" do
-                chain_template_params[:steps_with_positions] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
+                recipe_params[:steps_with_positions] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
 
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 200
-                new_chain_template = assigns[:new_chain_template]
-                expect(new_chain_template).to be_a ChainTemplate
+                new_recipe = assigns[:new_recipe]
+                expect(new_recipe).to be_a Recipe
                 attributes.each do |attribute|
-                  expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+                  expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
-                expect(new_chain_template.step_templates.count).to eq 2
+                expect(new_recipe.step_templates.count).to eq 2
               end
             end
           end
@@ -185,22 +185,22 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           context 'presented as a series of steps with order implicit' do
             context 'and they are valid' do
               before do
-                chain_template_params[:steps] = ["DocxToXml", "XmlToHtml"]
+                recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
               end
 
               it "should create the template with step templates" do
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 200
-                new_chain_template = assigns[:new_chain_template]
-                expect(new_chain_template).to be_a ChainTemplate
+                new_recipe = assigns[:new_recipe]
+                expect(new_recipe).to be_a Recipe
                 attributes.each do |attribute|
-                  expect(new_chain_template.send(attribute)).to eq self.send(attribute)
+                  expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
-                expect(new_chain_template.step_templates.count).to eq 2
-                expect(new_chain_template.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+                expect(new_recipe.step_templates.count).to eq 2
+                expect(new_recipe.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
               end
             end
 
@@ -208,10 +208,10 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
               it "should not create the template for nonexistent step classes" do
                 docx_to_xml.destroy
-                chain_template_params[:steps] = ["DocxToXml", "XmlToHtml"]
+                recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
 
                 request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(chain_template_params)
+                  perform_create_request(recipe_params)
                 end
 
                 expect(response.status).to eq 422
@@ -224,12 +224,12 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
       context 'if the chain template is invalid' do
         before do
-          chain_template_params[:chain_template].delete(:name)
+          recipe_params[:recipe].delete(:name)
         end
 
         it "should not be successful" do
           request_with_auth(user.create_new_auth_token) do
-            perform_create_request(chain_template_params)
+            perform_create_request(recipe_params)
           end
 
           expect(response.status).to eq 422
@@ -241,11 +241,11 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
       it "should not assign anything" do
         request_with_auth do
-          perform_create_request(chain_template_params)
+          perform_create_request(recipe_params)
         end
 
         expect(response.status).to eq 401
-        expect(assigns[:new_chain_template]).to be_nil
+        expect(assigns[:new_recipe]).to be_nil
       end
     end
   end
@@ -253,20 +253,20 @@ describe Api::V1::ChainTemplatesController, type: :controller do
   [:patch, :put].each do |method|
     describe "#{method.upcase} update" do
 
-      let!(:chain_template)   { FactoryGirl.create(:chain_template, user: user) }
+      let!(:recipe)   { FactoryGirl.create(:recipe, user: user) }
 
       context 'if a valid token is supplied' do
 
         it "should assign" do
           request_with_auth(user.create_new_auth_token) do
-            self.send("perform_#{method}_request", chain_template_params.merge(id: chain_template.id))
+            self.send("perform_#{method}_request", recipe_params.merge(id: recipe.id))
           end
 
           expect(response.status).to eq 200
-          chain_template = assigns[:chain_template]
-          expect(chain_template).to be_a ChainTemplate
+          recipe = assigns[:recipe]
+          expect(recipe).to be_a Recipe
           attributes.each do |facet|
-            expect(chain_template.send(facet)).to eq self.send(facet)
+            expect(recipe.send(facet)).to eq self.send(facet)
           end
         end
       end
@@ -275,11 +275,11 @@ describe Api::V1::ChainTemplatesController, type: :controller do
 
         it "should not assign anything" do
           request_with_auth do
-            self.send("perform_#{method}_request", chain_template_params.merge(id: chain_template.id))
+            self.send("perform_#{method}_request", recipe_params.merge(id: recipe.id))
           end
 
           expect(response.status).to eq 401
-          expect(assigns[:new_chain_template]).to be_nil
+          expect(assigns[:new_recipe]).to be_nil
         end
       end
     end
@@ -297,16 +297,16 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           end
 
           expect(response.status).to eq 200
-          expect(assigns[:chain_templates]).to eq []
+          expect(assigns[:recipes]).to eq []
         end
 
       end
 
       context 'there are templates' do
         let!(:other_user)      { FactoryGirl.create(:user) }
-        let!(:template_1)      { FactoryGirl.create(:chain_template, user: user) }
-        let!(:template_2)      { FactoryGirl.create(:chain_template, user: user, active: false) }
-        let!(:template_3)      { FactoryGirl.create(:chain_template, user: other_user) }
+        let!(:template_1)      { FactoryGirl.create(:recipe, user: user) }
+        let!(:template_2)      { FactoryGirl.create(:recipe, user: user, active: false) }
+        let!(:template_3)      { FactoryGirl.create(:recipe, user: other_user) }
 
         it "should find the user's templates" do
           request_with_auth(user.create_new_auth_token) do
@@ -314,7 +314,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           end
 
           expect(response.status).to eq 200
-          expect(assigns[:chain_templates].to_a).to eq [template_1]
+          expect(assigns[:recipes].to_a).to eq [template_1]
         end
       end
     end
@@ -327,7 +327,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
         end
 
         expect(response.status).to eq 401
-        expect(assigns[:chain_template]).to be_nil
+        expect(assigns[:recipe]).to be_nil
       end
     end
   end
@@ -344,7 +344,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           end
 
           expect(response.status).to eq 404
-          expect(assigns[:chain_template]).to be_nil
+          expect(assigns[:recipe]).to be_nil
         end
 
       end
@@ -352,7 +352,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
       context 'the template exists' do
 
         context 'the template belongs to the user' do
-          let!(:template)      { FactoryGirl.create(:chain_template, user: user) }
+          let!(:template)      { FactoryGirl.create(:recipe, user: user) }
 
           it "should find the template" do
             request_with_auth(user.create_new_auth_token) do
@@ -360,13 +360,13 @@ describe Api::V1::ChainTemplatesController, type: :controller do
             end
 
             expect(response.status).to eq 200
-            expect(assigns[:chain_template]).to eq template
+            expect(assigns[:recipe]).to eq template
           end
         end
 
         context 'the template belongs to another user' do
           let!(:other_user)     { FactoryGirl.create(:user) }
-          let!(:template)       { FactoryGirl.create(:chain_template, user: other_user) }
+          let!(:template)       { FactoryGirl.create(:recipe, user: other_user) }
 
           it "should not find the template" do
             request_with_auth(user.create_new_auth_token) do
@@ -374,7 +374,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
             end
 
             expect(response.status).to eq 404
-            expect(assigns[:chain_template]).to be_nil
+            expect(assigns[:recipe]).to be_nil
           end
         end
 
@@ -390,7 +390,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
         end
 
         expect(response.status).to eq 401
-        expect(assigns[:chain_template]).to be_nil
+        expect(assigns[:recipe]).to be_nil
       end
     end
   end
@@ -407,7 +407,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
           end
 
           expect(response.status).to eq 404
-          expect(assigns[:chain_template]).to be_nil
+          expect(assigns[:recipe]).to be_nil
         end
 
       end
@@ -415,7 +415,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
       context 'the template exists' do
 
         context 'the template belongs to the user' do
-          let!(:template)      { FactoryGirl.create(:chain_template, user: user) }
+          let!(:template)      { FactoryGirl.create(:recipe, user: user) }
 
           it "should find the template" do
             request_with_auth(user.create_new_auth_token) do
@@ -423,13 +423,13 @@ describe Api::V1::ChainTemplatesController, type: :controller do
             end
 
             expect(response.status).to eq 200
-            expect(assigns[:chain_template]).to eq template
+            expect(assigns[:recipe]).to eq template
           end
         end
 
         context 'the template belongs to another user' do
           let!(:other_user)     { FactoryGirl.create(:user) }
-          let!(:template)       { FactoryGirl.create(:chain_template, user: other_user) }
+          let!(:template)       { FactoryGirl.create(:recipe, user: other_user) }
 
           it "should not find the template" do
             request_with_auth(user.create_new_auth_token) do
@@ -437,7 +437,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
             end
 
             expect(response.status).to eq 404
-            expect(assigns[:chain_template]).to be_nil
+            expect(assigns[:recipe]).to be_nil
           end
         end
       end
@@ -451,7 +451,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
         end
 
         expect(response.status).to eq 401
-        expect(assigns[:chain_template]).to be_nil
+        expect(assigns[:recipe]).to be_nil
       end
     end
   end
@@ -460,7 +460,7 @@ describe Api::V1::ChainTemplatesController, type: :controller do
   # this is special for controller tests - you can't just merge them in manually for some reason
 
   def perform_execute_request(data = {})
-    execute_chain_template(version, data)
+    execute_recipe(version, data)
   end
 
   def perform_create_request(data = {})

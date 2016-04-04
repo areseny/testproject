@@ -4,7 +4,7 @@ require 'conversion_errors/conversion_errors'
 #   t.integer  "user_id",           null: false
 #   t.datetime "executed_at"
 #   t.string   "input_file"
-#   t.integer  "chain_template_id", null: false
+#   t.integer  "recipe_id", null: false
 #   t.datetime "created_at",        null: false
 #   t.datetime "updated_at",        null: false
 # end
@@ -13,14 +13,14 @@ class ConversionChain < ActiveRecord::Base
   include ConversionErrors
 
   belongs_to :user
-  belongs_to :chain_template
+  belongs_to :recipe
   has_many :conversion_steps, inverse_of: :conversion_chain
 
   mount_uploader :input_file
   # mount_uploaders :files, FileUploader
   # has_many :files, as: :file_handler
 
-  validates_presence_of :user, :chain_template
+  validates_presence_of :user, :recipe
 
   def execute_conversion!
     raise ConversionErrors::NoFileSuppliedError("No input file received") unless input_file.present?
@@ -43,7 +43,7 @@ class ConversionChain < ActiveRecord::Base
   end
 
   def step_classes
-    chain_template.step_templates.sort_by(&:position).inject([]) do |result, step_template|
+    recipe.step_templates.sort_by(&:position).inject([]) do |result, step_template|
       result << step_template.step_class.behaviour_class
     end
   end

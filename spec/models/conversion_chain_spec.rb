@@ -8,7 +8,7 @@ RSpec.describe ConversionChain, type: :model do
       expect(FactoryGirl.build(:conversion_chain)).to be_valid
     end
 
-    expects_to_be_invalid_without :conversion_chain, :user, :chain_template
+    expects_to_be_invalid_without :conversion_chain, :user, :recipe
   end
 
 end
