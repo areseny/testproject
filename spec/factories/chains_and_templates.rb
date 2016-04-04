@@ -29,7 +29,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :step_template do
+  factory :recipe_step do
     recipe
     step_class
     position 1

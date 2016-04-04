@@ -25,8 +25,8 @@ describe Api::V1::RecipesController, type: :controller do
     let!(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }
     let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
     let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let!(:step_template)    { FactoryGirl.create(:step_template, step_class: demo_step) }
-    let!(:recipe)   { FactoryGirl.create(:recipe, user: user, step_templates: [step_template]) }
+    let!(:recipe_step)    { FactoryGirl.create(:recipe_step, step_class: demo_step) }
+    let!(:recipe)   { FactoryGirl.create(:recipe, user: user, recipe_steps: [recipe_step]) }
 
     let!(:execution_params) {
         {
@@ -81,7 +81,7 @@ describe Api::V1::RecipesController, type: :controller do
 
     context 'if a valid token is supplied' do
 
-      context 'if the chain template is valid' do
+      context 'if the recipe is valid' do
         it "should assign" do
           request_with_auth(user.create_new_auth_token) do
             perform_create_request(recipe_params)
@@ -105,7 +105,7 @@ describe Api::V1::RecipesController, type: :controller do
                 recipe_params[:steps_with_positions] = step_params
               end
 
-              it "should create the template with step templates" do
+              it "should create the recipe with recipe steps" do
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
                 end
@@ -116,14 +116,14 @@ describe Api::V1::RecipesController, type: :controller do
                 attributes.each do |attribute|
                   expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
-                expect(new_recipe.step_templates.count).to eq 2
-                expect(new_recipe.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+                expect(new_recipe.recipe_steps.count).to eq 2
+                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
               end
             end
 
             context 'and they are incorrect' do
 
-              it "should not create the template for nonexistent step classes" do
+              it "should not create the recipe for nonexistent step classes" do
                 docx_to_xml.destroy
                 recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
 
@@ -134,7 +134,7 @@ describe Api::V1::RecipesController, type: :controller do
                 expect(response.status).to eq 422
               end
 
-              it "should not create the template with duplicate numbers" do
+              it "should not create the recipe with duplicate numbers" do
                 recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
 
                 request_with_auth(user.create_new_auth_token) do
@@ -144,7 +144,7 @@ describe Api::V1::RecipesController, type: :controller do
                 expect(response.status).to eq 422
               end
 
-              it "should not create the template with incorrect numbers" do
+              it "should not create the recipe with incorrect numbers" do
                 recipe_params[:steps_with_positions] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
 
                 request_with_auth(user.create_new_auth_token) do
@@ -154,7 +154,7 @@ describe Api::V1::RecipesController, type: :controller do
                 expect(response.status).to eq 422
               end
 
-              it "should not create the template with skipped steps" do
+              it "should not create the recipe with skipped steps" do
                 recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
 
                 request_with_auth(user.create_new_auth_token) do
@@ -164,7 +164,7 @@ describe Api::V1::RecipesController, type: :controller do
                 expect(response.status).to eq 422
               end
 
-              it "should create the template with nonsequential numbers" do
+              it "should create the recipe with nonsequential numbers" do
                 recipe_params[:steps_with_positions] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
 
                 request_with_auth(user.create_new_auth_token) do
@@ -177,7 +177,7 @@ describe Api::V1::RecipesController, type: :controller do
                 attributes.each do |attribute|
                   expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
-                expect(new_recipe.step_templates.count).to eq 2
+                expect(new_recipe.recipe_steps.count).to eq 2
               end
             end
           end
@@ -188,7 +188,7 @@ describe Api::V1::RecipesController, type: :controller do
                 recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
               end
 
-              it "should create the template with step templates" do
+              it "should create the recipe with recipe steps" do
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
                 end
@@ -199,14 +199,14 @@ describe Api::V1::RecipesController, type: :controller do
                 attributes.each do |attribute|
                   expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
-                expect(new_recipe.step_templates.count).to eq 2
-                expect(new_recipe.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+                expect(new_recipe.recipe_steps.count).to eq 2
+                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
               end
             end
 
             context 'and they are incorrect' do
 
-              it "should not create the template for nonexistent step classes" do
+              it "should not create the recipe for nonexistent step classes" do
                 docx_to_xml.destroy
                 recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
 
@@ -222,7 +222,7 @@ describe Api::V1::RecipesController, type: :controller do
 
       end
 
-      context 'if the chain template is invalid' do
+      context 'if the recipe is invalid' do
         before do
           recipe_params[:recipe].delete(:name)
         end
@@ -289,9 +289,9 @@ describe Api::V1::RecipesController, type: :controller do
 
     context 'if a valid token is supplied' do
 
-      context 'there are no templates' do
+      context 'there are no recipes' do
 
-        it "should find no templates" do
+        it "should find no recipes" do
           request_with_auth(user.create_new_auth_token) do
             perform_index_request
           end
@@ -302,19 +302,19 @@ describe Api::V1::RecipesController, type: :controller do
 
       end
 
-      context 'there are templates' do
+      context 'there are recipes' do
         let!(:other_user)      { FactoryGirl.create(:user) }
-        let!(:template_1)      { FactoryGirl.create(:recipe, user: user) }
-        let!(:template_2)      { FactoryGirl.create(:recipe, user: user, active: false) }
-        let!(:template_3)      { FactoryGirl.create(:recipe, user: other_user) }
+        let!(:recipe_1)      { FactoryGirl.create(:recipe, user: user) }
+        let!(:recipe_2)      { FactoryGirl.create(:recipe, user: user, active: false) }
+        let!(:recipe_3)      { FactoryGirl.create(:recipe, user: other_user) }
 
-        it "should find the user's templates" do
+        it "should find the user's recipes" do
           request_with_auth(user.create_new_auth_token) do
             perform_index_request
           end
 
           expect(response.status).to eq 200
-          expect(assigns[:recipes].to_a).to eq [template_1]
+          expect(assigns[:recipes].to_a).to eq [recipe_1]
         end
       end
     end
@@ -336,7 +336,7 @@ describe Api::V1::RecipesController, type: :controller do
 
     context 'if a valid token is supplied' do
 
-      context 'if the template does not exist' do
+      context 'if the recipe does not exist' do
 
         it "should return an error" do
           request_with_auth(user.create_new_auth_token) do
@@ -349,28 +349,28 @@ describe Api::V1::RecipesController, type: :controller do
 
       end
 
-      context 'the template exists' do
+      context 'the recipe exists' do
 
-        context 'the template belongs to the user' do
-          let!(:template)      { FactoryGirl.create(:recipe, user: user) }
+        context 'the recipe belongs to the user' do
+          let!(:recipe)      { FactoryGirl.create(:recipe, user: user) }
 
-          it "should find the template" do
+          it "should find the recipe" do
             request_with_auth(user.create_new_auth_token) do
-              perform_show_request({id: template.id})
+              perform_show_request({id: recipe.id})
             end
 
             expect(response.status).to eq 200
-            expect(assigns[:recipe]).to eq template
+            expect(assigns[:recipe]).to eq recipe
           end
         end
 
-        context 'the template belongs to another user' do
+        context 'the recipe belongs to another user' do
           let!(:other_user)     { FactoryGirl.create(:user) }
-          let!(:template)       { FactoryGirl.create(:recipe, user: other_user) }
+          let!(:recipe)       { FactoryGirl.create(:recipe, user: other_user) }
 
-          it "should not find the template" do
+          it "should not find the recipe" do
             request_with_auth(user.create_new_auth_token) do
-              perform_show_request({id: template.id})
+              perform_show_request({id: recipe.id})
             end
 
             expect(response.status).to eq 404
@@ -399,7 +399,7 @@ describe Api::V1::RecipesController, type: :controller do
 
     context 'if a valid token is supplied' do
 
-      context 'if the template does not exist' do
+      context 'if the recipe does not exist' do
 
         it "should return an error" do
           request_with_auth(user.create_new_auth_token) do
@@ -412,28 +412,28 @@ describe Api::V1::RecipesController, type: :controller do
 
       end
 
-      context 'the template exists' do
+      context 'the recipe exists' do
 
-        context 'the template belongs to the user' do
-          let!(:template)      { FactoryGirl.create(:recipe, user: user) }
+        context 'the recipe belongs to the user' do
+          let!(:recipe)      { FactoryGirl.create(:recipe, user: user) }
 
-          it "should find the template" do
+          it "should find the recipe" do
             request_with_auth(user.create_new_auth_token) do
-              perform_destroy_request({id: template.id})
+              perform_destroy_request({id: recipe.id})
             end
 
             expect(response.status).to eq 200
-            expect(assigns[:recipe]).to eq template
+            expect(assigns[:recipe]).to eq recipe
           end
         end
 
-        context 'the template belongs to another user' do
+        context 'the recipe belongs to another user' do
           let!(:other_user)     { FactoryGirl.create(:user) }
-          let!(:template)       { FactoryGirl.create(:recipe, user: other_user) }
+          let!(:recipe)       { FactoryGirl.create(:recipe, user: other_user) }
 
-          it "should not find the template" do
+          it "should not find the recipe" do
             request_with_auth(user.create_new_auth_token) do
-              perform_destroy_request({id: template.id})
+              perform_destroy_request({id: recipe.id})
             end
 
             expect(response.status).to eq 404

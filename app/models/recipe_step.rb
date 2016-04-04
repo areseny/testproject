@@ -1,4 +1,4 @@
-# create_table "step_templates", force: :cascade do |t|
+# create_table "recipe_steps", force: :cascade do |t|
 #   t.integer  "recipe_id", null: false
 #   t.integer  "step_class_id",     null: false
 #   t.integer  "position",          null: false
@@ -6,7 +6,7 @@
 #   t.datetime "updated_at",        null: false
 # end
 
-class StepTemplate < ActiveRecord::Base
+class RecipeStep < ActiveRecord::Base
 
   belongs_to :step_class
   belongs_to :recipe

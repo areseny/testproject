@@ -35,13 +35,13 @@ describe "User finds a single recipe" do
           end
 
           context 'and it has steps' do
-            let!(:step1)      { FactoryGirl.create(:step_template, recipe: recipe, position: 1) }
-            let!(:step2)      { FactoryGirl.create(:step_template, recipe: recipe, position: 2) }
+            let!(:step1)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1) }
+            let!(:step2)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 2) }
 
             it 'should also return the steps' do
               perform_show_request(auth_headers, recipe.id)
 
-              expect(body_as_json['step_templates'].count).to eq 2
+              expect(body_as_json['recipe_steps'].count).to eq 2
             end
           end
         end

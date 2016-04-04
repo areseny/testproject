@@ -16,19 +16,19 @@ module Api
       end
 
       def create
-        new_recipe.generate_step_templates(step_template_params)
+        new_recipe.generate_recipe_steps(recipe_step_params)
         new_recipe.save!
-        render json: new_recipe, include: ['step_templates'], root: false
+        render json: new_recipe, include: ['recipe_steps'], root: false
       rescue => e
         render_unprocessable_error(e)
       end
 
       def index
-        render json: recipes, include: ['step_templates', 'conversion_chains'], root: false
+        render json: recipes, include: ['recipe_steps', 'conversion_chains'], root: false
       end
 
       def show
-        render json: recipe, include: ['step_templates'], root: false
+        render json: recipe, include: ['recipe_steps'], root: false
       rescue => e
         render_not_found_error(e)
       end
@@ -72,7 +72,7 @@ module Api
         params.require(:recipe).permit(:name, :description, :active)
       end
 
-      def step_template_params
+      def recipe_step_params
         params.permit(steps: [], steps_with_positions: [:name, :position])
       end
 

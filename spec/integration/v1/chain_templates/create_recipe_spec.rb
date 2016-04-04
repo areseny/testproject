@@ -66,13 +66,13 @@ describe "User creates recipe" do
               recipe_params[:steps_with_positions] = step_params
             end
 
-            it "should create the recipe with step templates" do
+            it "should create the recipe with recipe steps" do
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
               new_recipe = user.recipes.first
-              expect(new_recipe.step_templates.count).to eq 2
-              expect(new_recipe.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+              expect(new_recipe.recipe_steps.count).to eq 2
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
             end
           end
 
@@ -113,8 +113,8 @@ describe "User creates recipe" do
 
               expect(response.status).to eq 200
               new_recipe = user.recipes.first
-              expect(new_recipe.step_templates.count).to eq 2
-              expect(new_recipe.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+              expect(new_recipe.recipe_steps.count).to eq 2
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
             end
           end
         end
@@ -125,13 +125,13 @@ describe "User creates recipe" do
               recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
             end
 
-            it "should create the recipe with step templates" do
+            it "should create the recipe with recipe steps" do
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
               new_recipe = user.recipes.first
-              expect(new_recipe.step_templates.count).to eq 2
-              expect(new_recipe.step_templates.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+              expect(new_recipe.recipe_steps.count).to eq 2
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
             end
           end
 

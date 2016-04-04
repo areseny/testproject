@@ -43,8 +43,8 @@ class ConversionChain < ActiveRecord::Base
   end
 
   def step_classes
-    recipe.step_templates.sort_by(&:position).inject([]) do |result, step_template|
-      result << step_template.step_class.behaviour_class
+    recipe.recipe_steps.sort_by(&:position).inject([]) do |result, recipe_step|
+      result << recipe_step.step_class.behaviour_class
     end
   end
 

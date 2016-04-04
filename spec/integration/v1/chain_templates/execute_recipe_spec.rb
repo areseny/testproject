@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-describe "User executes a single chain template" do
+describe "User executes a single recipe" do
 
   # URL: /api/recipes/:id/execute
   # Method: GET
-  # Get a specific template belonging to the current user
+  # Execute a specific recipe belonging to the current user
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
-  describe "POST execute chain template" do
+  describe "POST execute recipe" do
 
     let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
@@ -26,7 +26,7 @@ describe "User executes a single chain template" do
 
     context 'if user is signed in' do
 
-      context 'and the chain template exists' do
+      context 'and the recipe exists' do
 
         context 'and it belongs to the user' do
 
@@ -50,8 +50,8 @@ describe "User executes a single chain template" do
 
             context 'and it has steps' do
               let!(:jpg_class)  { FactoryGirl.create(:step_class, name: "JpgToPng") }
-              let!(:step1)      { FactoryGirl.create(:step_template, recipe: recipe, position: 1, step_class: jpg_class) }
-              let!(:step2)      { FactoryGirl.create(:step_template, recipe: recipe, position: 2, step_class: jpg_class) }
+              let!(:step1)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: jpg_class) }
+              let!(:step2)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 2, step_class: jpg_class) }
 
               it 'should also return the steps' do
                 perform_execute_request(auth_headers, execution_params)
@@ -119,7 +119,7 @@ describe "User executes a single chain template" do
         end
       end
 
-      context 'and the chain template does not exist' do
+      context 'and the recipe does not exist' do
 
         before do
           recipe.destroy

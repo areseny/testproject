@@ -11,7 +11,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
     let!(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }
     let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
     let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let!(:step_template)    { FactoryGirl.create(:step_template, step_class: demo_step) }
+    let!(:recipe_step)    { FactoryGirl.create(:recipe_step, step_class: demo_step) }
     let!(:conversion_chain) { FactoryGirl.create(:conversion_chain, user: user) }
 
     let!(:execution_params) {
