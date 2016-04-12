@@ -1,4 +1,4 @@
-class StepTemplateSerializer < ActiveModel::Serializer
+class RecipeStepSerializer < ActiveModel::Serializer
   attributes :id, :position, :recipe_id, :step_class_name
 
   def step_class_name

@@ -30,12 +30,6 @@ class ConversionChain < ActiveRecord::Base
     map_errors(runner, conversion_steps.sort_by(&:position))
   end
 
-  def input_file_name
-    input_file.name
-  rescue => e
-    "cannot render name"
-  end
-
   def output_file
     return unless executed_at
     return unless conversion_steps.any?
@@ -54,6 +48,30 @@ class ConversionChain < ActiveRecord::Base
       step_model.conversion_errors = runner_step.errors
       step_model.save
     end
+  end
+
+  def successful?
+    conversion_steps.each do |step|
+      return false if step.conversion_errors.present?
+    end
+    true
+  end
+
+
+  def input_file_name
+    input_file.path.split("/").last if input_file && input_file.path
+  end
+
+  def input_file_path
+    "#{input_file.store_dir}/#{input_file_name}" if input_file && input_file.path
+  end
+
+  def output_file_name
+    output_file.path.split("/").last if output_file && output_file.path
+  end
+
+  def output_file_path
+    "#{output_file.store_dir}/#{output_file_name}" if output_file && output_file.path
   end
 
 end

@@ -17,6 +17,8 @@ class ConversionStep < ActiveRecord::Base
 
   has_many :files, as: :file_handler
 
+  mount_uploader :output_file
+
   validates_presence_of :conversion_chain, :step_class, :position
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
   validates_uniqueness_of :position, { scope: :conversion_chain, message: "Only one step can be in this position for this chain" }
