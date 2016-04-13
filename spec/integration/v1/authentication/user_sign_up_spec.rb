@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User sign up" do
 
@@ -46,7 +47,7 @@ describe "User sign up" do
   end
 
   def perform_sign_up_request(auth_headers)
-    sign_up_request('v1', auth_headers.to_json)
+    sign_up_request(version, auth_headers.to_json)
   end
 
 end

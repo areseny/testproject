@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User creates recipe" do
 
@@ -183,6 +184,6 @@ describe "User creates recipe" do
   end
   
   def perform_create_request(auth_headers, data)
-    create_recipe_request('v1', auth_headers, data.to_json)
+    create_recipe_request(version, auth_headers, data.to_json)
   end
 end

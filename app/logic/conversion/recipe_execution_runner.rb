@@ -1,5 +1,5 @@
 module Conversion
-  class ChainExecutionRunner
+  class RecipeExecutionRunner
 
     attr_accessor :steps, :step_array
 

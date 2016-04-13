@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User updates recipe" do
 
@@ -171,6 +172,6 @@ describe "User updates recipe" do
   end
   
   def perform_update_request(auth_headers, data)
-    update_recipe_request('v1', auth_headers, data)
+    update_recipe_request(version, auth_headers, data)
   end
 end

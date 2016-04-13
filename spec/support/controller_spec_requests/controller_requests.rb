@@ -40,3 +40,7 @@ def execute_recipe(version, data = {}.to_json)
   post :execute, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
+def download_file(version, data = {}.to_json)
+  get :download_file, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+

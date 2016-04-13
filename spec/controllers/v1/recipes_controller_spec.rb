@@ -1,3 +1,5 @@
+require_relative 'version'
+
 describe Api::V1::RecipesController, type: :controller do
   include Devise::TestHelpers
 
@@ -485,9 +487,5 @@ describe Api::V1::RecipesController, type: :controller do
 
   def perform_destroy_request(data = {})
     delete_destroy_request(version, data)
-  end
-
-  def version
-    'v1'
   end
 end

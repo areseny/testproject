@@ -25,7 +25,7 @@ class ConversionChain < ActiveRecord::Base
   def execute_conversion!
     raise ConversionErrors::NoFileSuppliedError("No input file received") unless input_file.present?
     self.update_attribute(:executed_at, Time.zone.now)
-    runner = Conversion::ChainExecutionRunner.new(step_classes)
+    runner = Conversion::RecipeExecutionRunner.new(step_classes)
     runner.run!(input_file)
     map_errors(runner, conversion_steps.sort_by(&:position))
   end
@@ -46,6 +46,7 @@ class ConversionChain < ActiveRecord::Base
     runner.step_array.each_with_index do |runner_step, index|
       step_model = conversion_steps[index]
       step_model.conversion_errors = runner_step.errors
+      step_model.output_file = runner_step.output_files
       step_model.save
     end
   end

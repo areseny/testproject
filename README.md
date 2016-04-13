@@ -53,13 +53,12 @@ To add a new API version (Assuming upgrading from v1 to v2):
 ** `spec/controllers/v1`
 ** `spec/features/v1`
 
-In each of these, you'll have to rename the `V1` module to `V2`
-You'll also have to update the `perform_request` method at the bottom of each set of controller and integration test.
-In the feature requests and controller specs, there is a `perform_request` method that will have the API version specified in the header. Change this.
+In each of these, you'll have to rename the `V1` module to `V2`.
+Open `spec/controllers/v1/version.rb` and `spec/integration/v1/version.rb` Change the version in your copy to `v2`.
 
 ## Support
 
-Charlie  - charlie@enspiral.com for all your (ink-related) support needs.
+Contact charlie@enspiral.com for all your (ink-related) support needs.
 
 ## License
 

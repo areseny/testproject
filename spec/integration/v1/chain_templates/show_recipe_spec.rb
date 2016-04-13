@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User finds a single recipe" do
 
@@ -106,6 +107,6 @@ describe "User finds a single recipe" do
   end
   
   def perform_show_request(auth_headers, id)
-    show_recipe_request('v1', auth_headers, id)
+    show_recipe_request(version, auth_headers, id)
   end
 end

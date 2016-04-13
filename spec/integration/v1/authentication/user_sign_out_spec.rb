@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User sign out" do
   # include Devise::TestHelpers
@@ -94,7 +95,7 @@ describe "User sign out" do
   end
 
   def perform_sign_out_request(auth_headers)
-    sign_out_request('v1', auth_headers)
+    sign_out_request(version, auth_headers)
   end
 
 end

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User executes a single recipe" do
 
@@ -44,7 +45,8 @@ describe "User executes a single recipe" do
               conversion_chain = recipe.reload.conversion_chains.first
 
               expect(body_as_json['conversion_chain']['recipe_id']).to eq conversion_chain.recipe_id
-              expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.strftime("%d %B, %Y %l:%M %P %Z")
+              # expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.strftime("%d %B, %Y %l:%M %P %Z")
+              expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
               expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
               expect(body_as_json['conversion_chain']['executed_at_for_humans']).to_not be_nil
               expect(body_as_json['conversion_chain']['successful']).to eq true
@@ -66,11 +68,13 @@ describe "User executes a single recipe" do
                   perform_execute_request(auth_headers, execution_params)
 
                   expect(response.status).to eq(200)
+                  expect(body_as_json['conversion_chain']['successful'])
                   expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
-                  expect(body_as_json['conversion_chain']['conversion_steps'].map{|e| e[:conversion_errors]}).to eq [nil, nil]
-                  expect(body_as_json['conversion_chain']['conversion_steps'].map{|e| e[:successful]}).to eq [true, true]
-                  expect(body_as_json['conversion_chain']['conversion_steps'].map{|e| e[:successful]}).to eq [true, true]
-                  expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e[:successful]}).to eq [true, true]
+                  body_as_json['conversion_chain']['conversion_steps'].map do |s|
+                    expect(s['conversion_errors']).to eq ""
+                    expect(s['output_file_path']).to_not be_nil
+                  end
+                  # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['successful']}).to eq [true, true]
                 end
               end
 
@@ -88,6 +92,7 @@ describe "User executes a single recipe" do
                   perform_execute_request(auth_headers, execution_params)
 
                   expect(response.status).to eq(200)
+                  expect(body_as_json['conversion_chain']['successful']).to eq false
                   expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
                   expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['conversion_errors']}).to eq ["Oh noes! Error!", "Oh noes! Error!"]
                 end
@@ -170,9 +175,5 @@ describe "User executes a single recipe" do
   
   def perform_execute_request(auth_headers, data)
     execute_recipe_request(version, auth_headers, data)
-  end
-
-  def version
-    'v1'
   end
 end

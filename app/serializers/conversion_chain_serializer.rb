@@ -8,7 +8,8 @@ class ConversionChainSerializer < ActiveModel::Serializer
   attributes :id, :recipe_id, :successful, :executed_at, :executed_at_for_humans, :input_file_name, :input_file_path, :output_file_path
 
   def executed_at
-    object.executed_at.strftime("%d %B, %Y %l:%M %P %Z")
+    object.executed_at.iso8601
+    # object.executed_at.strftime("%d %B, %Y %l:%M %P %Z")
   end
 
   def executed_at_for_humans

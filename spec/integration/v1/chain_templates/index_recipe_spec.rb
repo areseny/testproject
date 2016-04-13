@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User lists all their recipes" do
 
@@ -89,6 +90,6 @@ describe "User lists all their recipes" do
   end
   
   def perform_index_request(auth_headers)
-    index_recipe_request('v1', auth_headers)
+    index_recipe_request(version, auth_headers)
   end
 end

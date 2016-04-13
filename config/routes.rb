@@ -16,11 +16,19 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :conversion_chains, only: [:execute] do
+      resources :conversion_chains, only: [:execute, :download_file] do
         member do
           post 'execute'
+          get 'download_file'
         end
       end
+
+      resources :conversion_steps, only: [:download_file] do
+        member do
+          get 'download_file'
+        end
+      end
+
     end
 
     # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do

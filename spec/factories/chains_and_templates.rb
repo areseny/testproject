@@ -21,6 +21,7 @@ FactoryGirl.define do
     position 1
     step_class
     notes "yay! done!"
+    output_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
   end
 
   factory :step_class do

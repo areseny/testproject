@@ -14,6 +14,12 @@ module Api
         render_error(e)
       end
 
+      def download_file
+        send_file(conversion_chain.input_file.path,
+                  :disposition => 'attachment',
+                  :url_based_filename => true)
+      end
+
       private
 
       def conversion_chain_params

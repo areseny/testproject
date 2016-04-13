@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User sign in" do
 
@@ -62,7 +63,7 @@ describe "User sign in" do
   end
 
   def perform_sign_in_request(data)
-    sign_in_request('v1', data.to_json)
+    sign_in_request(version, data.to_json)
   end
 
 end

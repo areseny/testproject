@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../version'
 
 describe "User archives a single recipe" do
 
@@ -94,6 +95,6 @@ describe "User archives a single recipe" do
   end
   
   def perform_archive_request(auth_headers, id)
-    archive_recipe_request('v1', auth_headers, id)
+    archive_recipe_request(version, auth_headers, id)
   end
 end

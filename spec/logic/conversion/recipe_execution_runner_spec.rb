@@ -1,6 +1,6 @@
-require 'conversion/chain_execution_runner'
+require 'conversion/recipe_execution_runner'
 
-describe Conversion::ChainExecutionRunner do
+describe Conversion::RecipeExecutionRunner do
 
 
   let!(:xml_file)         { Rack::Test::UploadedFile.new('spec/fixtures/files/test_file.xml', 'text/xml') }
@@ -13,7 +13,7 @@ describe Conversion::ChainExecutionRunner do
     let!(:step2)    { Conversion::Steps::JpgToPng }
     let!(:steps)    { [step1, step2] }
 
-    subject         { Conversion::ChainExecutionRunner.new(steps) }
+    subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
     it 'should hook the steps to each other' do
       result = subject.build_chain
@@ -29,7 +29,7 @@ describe Conversion::ChainExecutionRunner do
     context 'for a successful conversion' do
 
       context 'if there are no steps' do
-        subject         { Conversion::ChainExecutionRunner.new([]) }
+        subject         { Conversion::RecipeExecutionRunner.new([]) }
 
         it 'should return nil - no change was made' do
           result = subject.run!(photo_file)
@@ -40,7 +40,7 @@ describe Conversion::ChainExecutionRunner do
 
       context 'if there is 1 step' do
         let!(:steps)    { [Conversion::Steps::Step] }
-        subject         { Conversion::ChainExecutionRunner.new(steps) }
+        subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
         it 'should return a result' do
           result = subject.run!(photo_file)
@@ -52,7 +52,7 @@ describe Conversion::ChainExecutionRunner do
 
       context 'if there are 3 steps' do
         let!(:steps)    { [Conversion::Steps::Step, Conversion::Steps::Step, Conversion::Steps::JpgToPng] }
-        subject         { Conversion::ChainExecutionRunner.new(steps) }
+        subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
         it 'should return a result' do
           result = subject.run!(photo_file)
@@ -73,7 +73,7 @@ describe Conversion::ChainExecutionRunner do
       end
 
       it 'the step should not have an output file' do
-        subject = Conversion::ChainExecutionRunner.new(steps)
+        subject = Conversion::RecipeExecutionRunner.new(steps)
         result = subject.run!(xml_file)
 
         expect(result).to be_a Conversion::Steps::Step
@@ -81,7 +81,7 @@ describe Conversion::ChainExecutionRunner do
       end
 
       it 'should log the error' do
-        subject = Conversion::ChainExecutionRunner.new(steps)
+        subject = Conversion::RecipeExecutionRunner.new(steps)
         result = subject.run!(xml_file)
 
         expect(result.errors).to eq ["OMG!"]
