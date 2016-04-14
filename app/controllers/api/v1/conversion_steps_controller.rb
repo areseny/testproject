@@ -2,6 +2,7 @@ module Api
   module V1
     class ConversionStepsController < ApplicationController
       before_action :authenticate_api_user!
+      before_action :authorise_user!
 
       respond_to :json
 
@@ -32,6 +33,13 @@ module Api
       # def conversion_steps
       #   @conversion_steps ||= current_api_user.conversion_steps.active
       # end
+
+      def authorise_user!
+        if conversion_step.conversion_chain.user != current_api_user
+          e = ConversionErrors::NotAuthorisedError.new("That file is not accessible to you.")
+          render_error(e)
+        end
+      end
 
     end
   end

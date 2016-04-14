@@ -16,7 +16,7 @@ describe "User executes a single recipe" do
     let!(:xml_file)         { fixture_file_upload('spec/fixtures/files/test_file.xml', 'text/xml') }
     let!(:photo_file)       { fixture_file_upload('spec/fixtures/files/kitty.jpeg', 'image/jpeg') }
 
-    let!(:recipe)   { FactoryGirl.create(:recipe, user: user) }
+    let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
 
     let!(:execution_params) {
       {
@@ -33,35 +33,18 @@ describe "User executes a single recipe" do
 
           context 'and a file is supplied' do
 
-            it 'responds with success' do
-              perform_execute_request(auth_headers, execution_params)
+            context 'and it has no steps' do
+              it 'responds with failure' do
+                perform_execute_request(auth_headers, execution_params)
 
-              expect(response.status).to eq(200)
-            end
-
-            it 'should return a ConversionChain object' do
-              perform_execute_request(auth_headers, execution_params)
-
-              conversion_chain = recipe.reload.conversion_chains.first
-
-              expect(body_as_json['conversion_chain']['recipe_id']).to eq conversion_chain.recipe_id
-              # expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.strftime("%d %B, %Y %l:%M %P %Z")
-              expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
-              expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
-              expect(body_as_json['conversion_chain']['executed_at_for_humans']).to_not be_nil
-              expect(body_as_json['conversion_chain']['successful']).to eq true
+                expect(response.status).to eq(422)
+              end
             end
 
             context 'and it has steps' do
               let!(:jpg_class)  { FactoryGirl.create(:step_class, name: "JpgToPng") }
               let!(:step1)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: jpg_class) }
               let!(:step2)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 2, step_class: jpg_class) }
-
-              it 'should also return the steps' do
-                perform_execute_request(auth_headers, execution_params)
-
-                expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
-              end
 
               context 'and execution is successful' do
                 it 'should return the objects' do
@@ -75,6 +58,25 @@ describe "User executes a single recipe" do
                     expect(s['output_file_path']).to_not be_nil
                   end
                   # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['successful']}).to eq [true, true]
+                end
+
+                it 'should return a ConversionChain object' do
+                  perform_execute_request(auth_headers, execution_params)
+
+                  conversion_chain = recipe.reload.conversion_chains.first
+
+                  expect(body_as_json['conversion_chain']['recipe_id']).to eq conversion_chain.recipe_id
+                  # expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.strftime("%d %B, %Y %l:%M %P %Z")
+                  expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
+                  expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
+                  expect(body_as_json['conversion_chain']['executed_at_for_humans']).to_not be_nil
+                  expect(body_as_json['conversion_chain']['successful']).to eq true
+                end
+
+                it 'should also return the steps' do
+                  perform_execute_request(auth_headers, execution_params)
+
+                  expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
                 end
               end
 

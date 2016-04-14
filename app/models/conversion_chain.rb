@@ -1,4 +1,5 @@
 require 'conversion_errors/conversion_errors'
+require 'yaml'
 
 # create_table "conversion_chains", force: :cascade do |t|
 #   t.integer  "user_id",           null: false
@@ -22,8 +23,13 @@ class ConversionChain < ActiveRecord::Base
 
   validates_presence_of :user, :recipe
 
+  def retry_conversion!
+    file = File.open(input_file.file.file) # LOL
+    recipe.clone_and_execute(file)
+  end
+
   def execute_conversion!
-    raise ConversionErrors::NoFileSuppliedError("No input file received") unless input_file.present?
+    raise ConversionErrors::NoFileSuppliedError.new("No input file received") unless input_file.present?
     self.update_attribute(:executed_at, Time.zone.now)
     runner = Conversion::RecipeExecutionRunner.new(step_classes)
     runner.run!(input_file)
@@ -33,7 +39,11 @@ class ConversionChain < ActiveRecord::Base
   def output_file
     return unless executed_at
     return unless conversion_steps.any?
-    conversion_steps.sort_by(&:position).last.output_file
+    last_step.output_file
+  end
+
+  def last_step
+    conversion_steps.sort_by(&:position).last
   end
 
   def step_classes
@@ -53,7 +63,7 @@ class ConversionChain < ActiveRecord::Base
 
   def successful?
     conversion_steps.each do |step|
-      return false if step.conversion_errors.present?
+      return false if YAML.load(step.conversion_errors).present?
     end
     true
   end
@@ -64,7 +74,8 @@ class ConversionChain < ActiveRecord::Base
   end
 
   def input_file_path
-    "#{input_file.store_dir}/#{input_file_name}" if input_file && input_file.path
+    # "#{input_file.store_dir}/#{input_file_name}" if input_file && input_file.path
+    Rails.application.routes.url_helpers.download_api_conversion_chain_url(self)
   end
 
   def output_file_name
@@ -72,7 +83,8 @@ class ConversionChain < ActiveRecord::Base
   end
 
   def output_file_path
-    "#{output_file.store_dir}/#{output_file_name}" if output_file && output_file.path
+    # "#{output_file.store_dir}/#{output_file_name}" if output_file && output_file.path
+    Rails.application.routes.url_helpers.download_api_conversion_step_url(last_step)
   end
 
 end

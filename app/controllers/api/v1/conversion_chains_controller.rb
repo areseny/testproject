@@ -1,16 +1,19 @@
 module Api
   module V1
     class ConversionChainsController < ApplicationController
-      before_action :authenticate_api_user!, only: [:execute]
+      include ConversionErrors
+
+      before_action :authenticate_api_user!, only: [:retry, :download_file]
+      before_action :authorise_user!
 
       respond_to :json
 
-      def execute
-        conversion_chain_params.inspect #somehow, removal of this line causes the controller test to fail :/
-        conversion_chain.execute_conversion!
-        render json: @conversion_chain, status: 200
+      def retry
+        @new_chain = conversion_chain.retry_conversion!
+        render json: @new_chain, status: 200
       rescue => e
         # puts e.message
+        # puts e.backtrace
         render_error(e)
       end
 
@@ -28,6 +31,13 @@ module Api
 
       def conversion_chain
         @conversion_chain ||= current_api_user.conversion_chains.find(params[:id])
+      end
+
+      def authorise_user!
+        if conversion_chain.user != current_api_user
+          e = ConversionErrors::NotAuthorisedError.new("That recipe is not accessible to you.")
+          render_error(e)
+        end
       end
     end
   end

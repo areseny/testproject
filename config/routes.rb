@@ -19,13 +19,14 @@ Rails.application.routes.draw do
       resources :conversion_chains, only: [:execute, :download_file] do
         member do
           post 'execute'
-          get 'download_file'
+          get 'retry'
+          get 'download_file', as: :download
         end
       end
 
       resources :conversion_steps, only: [:download_file] do
         member do
-          get 'download_file'
+          get 'download_file', as: :download
         end
       end
 

@@ -6,12 +6,11 @@ module Api
       respond_to :json
 
       def execute
-        @new_chain = recipe.clone_to_conversion_chain(execution_params)
-        @new_chain.save!
-        @new_chain.execute_conversion!
+        @new_chain = recipe.clone_and_execute(execution_params)
         render json: @new_chain, status: 200
       rescue => e
         # puts e.message
+        # puts e.backtrace
         render_error(e)
       end
 

@@ -10,6 +10,14 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
+  Rails.application.routes.default_url_options[:host] = 'localhost:8080'
+
+  CarrierWave.configure do |config|
+    config.ignore_integrity_errors = false
+    config.ignore_processing_errors = false
+    config.ignore_download_errors = false
+  end
+
   # Do not eager load code on boot.
   config.eager_load = false
 

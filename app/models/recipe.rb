@@ -24,8 +24,16 @@ class Recipe < ActiveRecord::Base
 
   scope :active, -> { where(active: true) }
 
+  def clone_and_execute(input_file)
+    raise ConversionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
+    new_chain = clone_to_conversion_chain(input_file)
+    new_chain.save!
+    new_chain.execute_conversion!
+    new_chain
+  end
+
   def clone_to_conversion_chain(input_file)
-    raise ConversionErrors::NoFileSuppliedError unless input_file
+    raise ConversionErrors::NoFileSuppliedError.new unless input_file
     new_chain = conversion_chains.new(user: user, input_file: input_file)
     recipe_steps.each do |recipe_step|
       new_chain.conversion_steps.new(position: recipe_step.position, step_class: recipe_step.step_class)
