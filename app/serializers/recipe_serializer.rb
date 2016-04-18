@@ -5,4 +5,8 @@ class RecipeSerializer < ActiveModel::Serializer
 
   attributes :id, :name, :description, :active, :times_executed, :user_id
 
+  def conversion_chains
+    object.conversion_chains.order( 'conversion_chains.executed_at DESC' )
+  end
+
 end

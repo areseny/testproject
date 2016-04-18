@@ -63,6 +63,7 @@ class ConversionChain < ActiveRecord::Base
 
   def successful?
     conversion_steps.each do |step|
+      next if step.conversion_errors.nil?
       return false if YAML.load(step.conversion_errors).present?
     end
     true
