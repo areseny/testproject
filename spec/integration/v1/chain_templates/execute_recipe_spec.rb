@@ -55,9 +55,8 @@ describe "User executes a single recipe" do
                   expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
                   body_as_json['conversion_chain']['conversion_steps'].map do |s|
                     expect(s['conversion_errors']).to eq ""
-                    expect(s['output_file_path']).to_not be_nil
                   end
-                  # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['successful']}).to eq [true, true]
+                  # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
                 end
 
                 it 'should return a ConversionChain object' do

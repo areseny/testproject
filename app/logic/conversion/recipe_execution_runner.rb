@@ -15,6 +15,7 @@ module Conversion
         chain.execute(files)
       rescue => e
         puts e.message
+        puts e.backtrace
       end
       chain
     end

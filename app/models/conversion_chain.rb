@@ -33,7 +33,7 @@ class ConversionChain < ActiveRecord::Base
     self.update_attribute(:executed_at, Time.zone.now)
     runner = Conversion::RecipeExecutionRunner.new(step_classes)
     runner.run!(input_file)
-    map_errors(runner, conversion_steps.sort_by(&:position))
+    map_results(runner, conversion_steps.sort_by(&:position))
   end
 
   def output_file
@@ -52,13 +52,25 @@ class ConversionChain < ActiveRecord::Base
     end
   end
 
-  def map_errors(runner, conversion_steps)
+  def map_results(runner, conversion_steps)
     runner.step_array.each_with_index do |runner_step, index|
       step_model = conversion_steps[index]
       step_model.conversion_errors = runner_step.errors
-      step_model.output_file = runner_step.output_files
-      step_model.save
+      step_model.output_file = open_file(runner_step.output_files)
+      # if runner_step.output_files.respond_to(:map)
+      #   step_model.output_file = runner_step.output_files.map(&:open)
+      # elsif runner_step.output_files.respond_to(:open)
+      #   step_model.output_file = runner_step.output_files.open
+      # end
+      step_model.save!
+
     end
+  end
+
+  def open_file(file_uploader)
+    Pathname.new(file_uploader.file.file).open
+  rescue => e
+    nil
   end
 
   def successful?

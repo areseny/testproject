@@ -2,25 +2,39 @@ require 'conversion/recipe_execution_runner'
 
 describe Conversion::RecipeExecutionRunner do
 
-
   let!(:xml_file)         { Rack::Test::UploadedFile.new('spec/fixtures/files/test_file.xml', 'text/xml') }
   let!(:xslt_file)        { Rack::Test::UploadedFile.new('spec/fixtures/files/xml_to_html_transform.html.xslt.haml', 'text/xsl') }
   let!(:photo_file)       { Rack::Test::UploadedFile.new('spec/fixtures/files/kitty.jpeg', 'image/jpeg') }
 
   describe '#build_chain' do
-
     let!(:step1)    { Conversion::Steps::XmlToHtml }
     let!(:step2)    { Conversion::Steps::JpgToPng }
-    let!(:steps)    { [step1, step2] }
 
-    subject         { Conversion::RecipeExecutionRunner.new(steps) }
+    context 'with 1 step' do
+      let!(:steps)    { [step1] }
 
-    it 'should hook the steps to each other' do
-      result = subject.build_chain
+      subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
-      expect(result).to be_a step1
-      expect(result.next_step).to be_a step2
-      expect(result.next_step.next_step).to eq nil
+      it 'should hook the steps to each other' do
+        result = subject.build_chain
+
+        expect(result).to be_a step1
+        expect(result.next_step).to eq nil
+      end
+    end
+
+    context 'with 2 steps' do
+      let!(:steps)    { [step1, step2] }
+
+      subject         { Conversion::RecipeExecutionRunner.new(steps) }
+
+      it 'should hook the steps to each other' do
+        result = subject.build_chain
+
+        expect(result).to be_a step1
+        expect(result.next_step).to be_a step2
+        expect(result.next_step.next_step).to eq nil
+      end
     end
   end
 
