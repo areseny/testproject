@@ -1,6 +1,6 @@
 ## INK
 
-Ink is an API and extensible step-based framework for file conversions.
+Ink is an API. It provides an extensible step-based framework for file conversions.
 
 ## Ruby version
 
@@ -32,7 +32,7 @@ Run redis in another terminal - `redis-server`
 
 Run sidekiq in another terminal - `bundle exec sidekiq`
 
-Go to localhost:3000 to see if it's up.
+Go to `localhost:8080` to see if it's up.
 
 ## Adding a new step
 
@@ -49,9 +49,9 @@ To add a new API version (Assuming upgrading from v1 to v2):
 * Copy the routes in `config/routes` to add `v2` and set it as the default.
 
 * Copy the following directories and call the copy `v2`
-** `controllers/api/v1`
-** `spec/controllers/v1`
-** `spec/features/v1`
+  * `controllers/api/v1`
+  * `spec/controllers/v1`
+  * `spec/features/v1`
 
 In each of these, you'll have to rename the `V1` module to `V2`.
 Open `spec/controllers/v1/version.rb` and `spec/integration/v1/version.rb` Change the version in your copy to `v2`.
