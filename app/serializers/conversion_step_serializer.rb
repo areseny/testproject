@@ -1,7 +1,7 @@
 require "yaml"
 
 class ConversionStepSerializer < ActiveModel::Serializer
-  attributes :id, :position, :conversion_chain_id, :step_class_name, :notes, :executed_at, :conversion_errors
+  attributes :id, :position, :conversion_chain_id, :step_class_name, :notes, :executed_at, :conversion_errors, :output_file_path
 
   def successful
     object.conversion_errors.blank?

@@ -27,4 +27,8 @@ class ConversionStep < ActiveRecord::Base
     step_class.name
   end
 
+  def output_file_path
+    Rails.application.routes.url_helpers.download_api_conversion_step_url(self)
+  end
+
 end
