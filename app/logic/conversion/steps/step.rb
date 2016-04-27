@@ -1,6 +1,7 @@
 module Conversion
   module Steps
     class Step
+      include AuxiliaryHelpers
 
       attr_accessor :next_step, :input_files, :output_files, :errors
 
@@ -29,6 +30,12 @@ module Conversion
       def raise_and_log_error(message)
         @errors << message
         raise message
+      end
+
+      protected
+
+      def step_logic_file_location
+        "#{Rails.root}#{File::SEPARATOR}app#{File::SEPARATOR}logic#{File::SEPARATOR}conversion#{File::SEPARATOR}step_logic#{File::SEPARATOR}#{class_name.to_underscore!}"
       end
 
     end
