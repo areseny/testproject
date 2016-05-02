@@ -27,7 +27,7 @@ module Conversion
         # http://www.saxonica.com/html/documentation/using-xsl/commandline.html
         # java -jar Saxon-HE-9.7.0-4.jar -s:docx_to_html_test_file.docx -xsl:xslt_file_path -o:conversion_output.html
 
-        conversion_output = system "java -jar #{Rails.root.join("lib")}#{File::SEPARATOR}Saxon-HE-9.7.0-4.jar -s:#{document_xml_path} -xsl:#{xslt_file_path} -o:#{output_file_path}"
+        conversion_output = system "java -jar #{saxon_executable_jar_path} -s:#{document_xml_path} -xsl:#{xslt_file_path} -o:#{output_file_path}"
         begin
           output_file = File.open(output_file_path)
           return output_file
@@ -50,6 +50,10 @@ module Conversion
 
       def file_path(file_name)
         File.join(temp_directory, timestamp_slug, file_name)
+      end
+
+      def saxon_executable_jar_path
+        "#{Rails.root.join("lib")}#{File::SEPARATOR}Saxon-HE-9.7.0-4.jar"
       end
 
       def output_file_path
