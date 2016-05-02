@@ -26,11 +26,11 @@ gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 
 ################### conversion utilities ########################
 
-# xml / xslt conversions
-gem 'nokogiri'
-
 # image manipulation
-gem 'mini_magick'
+gem 'mini_magick' # requires imagemagick to be installed - http://www.imagemagick.org/script/binary-releases.php
+
+# zip zip
+gem 'rubyzip'
 
 ################### css ######################
 

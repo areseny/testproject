@@ -26,6 +26,7 @@ class StepClass < ActiveRecord::Base
 
   def self.all_steps
     [Conversion::Steps::FlipImage,
+     Conversion::Steps::DocxToHtml,
      Conversion::Steps::XmlToHtml,
      Conversion::Steps::DocxToXml,
      Conversion::Steps::JpgToPng,

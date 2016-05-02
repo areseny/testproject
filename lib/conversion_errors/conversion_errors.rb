@@ -1,7 +1,8 @@
 module ConversionErrors
 
-  class NoFileSuppliedError < StandardError; end
-  class NoStepsError < StandardError; end
-  class NotAuthorisedError < StandardError; end
+  class ConversionError < StandardError; end
+  class NoFileSuppliedError < ConversionError; end
+  class NoStepsError < ConversionError; end
+  class NotAuthorisedError < ConversionError; end
 
 end

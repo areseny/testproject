@@ -22,6 +22,19 @@ Copy the `config/database.yml.sample` file into `config/database.yml`
 
 Install Mailcatcher by running `gem install mailcatcher`
 
+## ImageMagick
+
+Used for steps with image manipulation.
+
+Installation directions: http://www.imagemagick.org/script/binary-releases.php
+
+## Saxon
+
+On your machine, set up the Saxon XSLT parser (needed for some steps)
+http://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE/9.7.0-4 (jar only)
+Installation directions for Ubuntu: https://gist.github.com/bauhouse/21afa826ff81409b97b0
+Installation directions for Linux and Windows: http://www.saxonica.com/saxon-c/index.xml#installing
+
 ## Run it
 
 Run the Rails server in a terminal - `bundle exec rails s`

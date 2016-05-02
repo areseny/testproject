@@ -1,3 +1,6 @@
+require 'securerandom'
+require 'base64'
+
 module AuxiliaryHelpers
 
   def snake_case_to_camel_case
@@ -8,6 +11,9 @@ module AuxiliaryHelpers
     self.class.name.split('::').last
   end
 
+  def random_alphanumeric_string
+    Base64.encode64(SecureRandom.uuid)[0..10]
+  end
 end
 
 class String

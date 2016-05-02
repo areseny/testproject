@@ -1,6 +1,7 @@
 module Conversion
   module Steps
     class Step
+      include ConversionErrors
       include AuxiliaryHelpers
 
       attr_accessor :next_step, :input_files, :output_files, :errors
@@ -24,6 +25,7 @@ module Conversion
       # doesn't do anything! just returns the file as-is
       def convert_file(input_file, options_hash = {})
         raise_and_log_error("No file specified") unless input_file
+        # check file extension
         input_file
       end
 
