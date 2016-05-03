@@ -41,7 +41,7 @@ module Conversion
       end
 
       def unzip_directory
-        @unzip_directory ||= "#{temp_directory}#{File::SEPARATOR}#{timestamp_slug}"
+        @unzip_directory ||= File.join(temp_directory, timestamp_slug)
       end
 
       def timestamp_slug
@@ -53,19 +53,19 @@ module Conversion
       end
 
       def saxon_executable_jar_path
-        "#{Rails.root.join("lib")}#{File::SEPARATOR}Saxon-HE-9.7.0-4.jar"
+        Rails.root.join("lib", "Saxon-HE-9.7.0-4.jar")
       end
 
       def output_file_path
-        @output_file_path ||= "#{unzip_directory}#{File::SEPARATOR}conversion_output.html"
+        @output_file_path ||= File.join(unzip_directory, "conversion_output.html") #"#{unzip_directory}#{File::SEPARATOR}conversion_output.html"
       end
 
       def document_xml_path
-        @document_xml_path ||= "#{unzip_directory}#{File::SEPARATOR}word#{File::SEPARATOR}document.xml"
+        @document_xml_path ||= File.join(unzip_directory, "word", "document.xml") #"#{unzip_directory}#{File::SEPARATOR}word#{File::SEPARATOR}document.xml"
       end
 
       def xslt_file_path
-        "#{step_logic_file_location}#{File::SEPARATOR}docx2html.xsl"
+        @xslt_file_path ||= File.join(step_logic_file_location, "docx2html.xsl") #"#{step_logic_file_location}#{File::SEPARATOR}docx2html.xsl"
       end
 
     end

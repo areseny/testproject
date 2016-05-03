@@ -37,7 +37,7 @@ module Conversion
       protected
 
       def step_logic_file_location
-        "#{Rails.root}#{File::SEPARATOR}app#{File::SEPARATOR}logic#{File::SEPARATOR}conversion#{File::SEPARATOR}step_logic#{File::SEPARATOR}#{class_name.to_underscore!}"
+        Rails.root.join("app", "logic", "conversion", "step_logic", class_name.to_underscore!)
       end
 
     end
