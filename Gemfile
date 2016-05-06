@@ -32,6 +32,9 @@ gem 'mini_magick' # requires imagemagick to be installed - http://www.imagemagic
 # zip zip
 gem 'rubyzip'
 
+# js
+gem 'therubyracer'
+
 ################### css ######################
 
 # Use SCSS for stylesheets

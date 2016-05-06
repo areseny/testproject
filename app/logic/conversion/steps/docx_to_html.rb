@@ -23,11 +23,17 @@ module Conversion
         end
       end
 
+      # not my favourite thing, to introduce a Java dependency!
+      # I'd like to use the C version directly via command line instead.
+      # There's also a node.js port incoming
+      # https://github.com/Saxonica/Saxon-CE/issues/1
+      #
+
       def apply_xslt_template
         # http://www.saxonica.com/html/documentation/using-xsl/commandline.html
         # java -jar Saxon-HE-9.7.0-4.jar -s:docx_to_html_test_file.docx -xsl:xslt_file_path -o:conversion_output.html
 
-        conversion_output = system "java -jar #{saxon_executable_jar_path} -s:#{document_xml_path} -xsl:#{xslt_file_path} -o:#{output_file_path}"
+        conversion_output = system "java -jar #{saxon_jar_path} -s:#{document_xml_path} -xsl:#{xslt_file_path} -o:#{output_file_path}"
         begin
           output_file = File.open(output_file_path)
           return output_file
@@ -52,7 +58,11 @@ module Conversion
         File.join(temp_directory, timestamp_slug, file_name)
       end
 
-      def saxon_executable_jar_path
+      def saxon_js_path
+        Rails.root.join("lib", "Saxonce.nocache.js")
+      end
+
+      def saxon_jar_path
         Rails.root.join("lib", "Saxon-HE-9.7.0-4.jar")
       end
 
