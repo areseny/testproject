@@ -1,3 +1,5 @@
+require 'conversion_errors/conversion_errors'
+
 module Conversion
   module Steps
     class Step
