@@ -5,9 +5,6 @@ describe Api::V1::ConversionChainsController, type: :controller do
 
   let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
 
-  let!(:docx_to_xml)      { FactoryGirl.create(:step_class, name: "DocxToXml") }
-  let!(:xml_to_html)      { FactoryGirl.create(:step_class, name: "XmlToHtml") }
-
   describe "GET retry" do
 
     let!(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }

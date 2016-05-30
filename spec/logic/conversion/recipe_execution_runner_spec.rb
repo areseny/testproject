@@ -2,13 +2,12 @@ require 'conversion/recipe_execution_runner'
 
 describe Conversion::RecipeExecutionRunner do
 
-  let!(:xml_file)         { Rack::Test::UploadedFile.new('spec/fixtures/files/test_file.xml', 'text/xml') }
-  let!(:xslt_file)        { Rack::Test::UploadedFile.new('spec/fixtures/files/xml_to_html_transform.html.xslt.haml', 'text/xsl') }
+  let!(:text_file)         { Rack::Test::UploadedFile.new('spec/fixtures/files/plaintext.txt', 'text/plain') }
   let!(:photo_file)       { Rack::Test::UploadedFile.new('spec/fixtures/files/kitty.jpeg', 'image/jpeg') }
 
   describe '#build_chain' do
-    let!(:step1)    { Conversion::Steps::XmlToHtml }
-    let!(:step2)    { Conversion::Steps::JpgToPng }
+    let!(:step1)    { Conversion::Steps::Step }
+    let!(:step2)    { Conversion::Steps::RotThirteen }
 
     context 'with 1 step' do
       let!(:steps)    { [step1] }

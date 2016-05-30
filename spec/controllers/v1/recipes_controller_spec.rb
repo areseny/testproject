@@ -8,8 +8,8 @@ describe Api::V1::RecipesController, type: :controller do
   let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
   let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
 
-  let!(:docx_to_xml)      { FactoryGirl.create(:step_class, name: "DocxToXml") }
-  let!(:xml_to_html)      { FactoryGirl.create(:step_class, name: "XmlToHtml") }
+  let!(:docx_to_xml)      { FactoryGirl.create(:step_class, name: "Step") }
+  let!(:xml_to_html)      { FactoryGirl.create(:step_class, name: "RotThirteen") }
 
   let!(:attributes)           { [:name, :description] }
 
@@ -127,7 +127,7 @@ describe Api::V1::RecipesController, type: :controller do
 
               it "should not create the recipe for nonexistent step classes" do
                 docx_to_xml.destroy
-                recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 1, name: "RotThirteen" }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -137,7 +137,7 @@ describe Api::V1::RecipesController, type: :controller do
               end
 
               it "should not create the recipe with duplicate numbers" do
-                recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 1, name: "RotThirteen" }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -147,7 +147,7 @@ describe Api::V1::RecipesController, type: :controller do
               end
 
               it "should not create the recipe with incorrect numbers" do
-                recipe_params[:steps_with_positions] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 0, name: "Step"}, {position: 1, name: "RotThirteen" }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -157,7 +157,7 @@ describe Api::V1::RecipesController, type: :controller do
               end
 
               it "should not create the recipe with skipped steps" do
-                recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
+                recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 6, name: "RotThirteen" }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -167,7 +167,7 @@ describe Api::V1::RecipesController, type: :controller do
               end
 
               it "should create the recipe with nonsequential numbers" do
-                recipe_params[:steps_with_positions] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
+                recipe_params[:steps_with_positions] = [{position: 2, name: "Step" }, {position: 1, name: "RotThirteen"}]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -187,7 +187,7 @@ describe Api::V1::RecipesController, type: :controller do
           context 'presented as a series of steps with order implicit' do
             context 'and they are valid' do
               before do
-                recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
+                recipe_params[:steps] = ["Step", "RotThirteen"]
               end
 
               it "should create the recipe with recipe steps" do
@@ -210,7 +210,7 @@ describe Api::V1::RecipesController, type: :controller do
 
               it "should not create the recipe for nonexistent step classes" do
                 docx_to_xml.destroy
-                recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
+                recipe_params[:steps] = ["Step", "RotThirteen"]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)

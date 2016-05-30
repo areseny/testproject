@@ -5,6 +5,8 @@
 #   t.datetime "updated_at",                null: false
 # end
 
+
+
 class StepClass < ActiveRecord::Base
 
   validates_presence_of :name
@@ -25,11 +27,9 @@ class StepClass < ActiveRecord::Base
   end
 
   def self.all_steps
-    [Conversion::Steps::FlipImage,
+    [Conversion::Steps::DocxToHtmlOttoville,
      Conversion::Steps::DocxToHtml,
-     Conversion::Steps::XmlToHtml,
-     Conversion::Steps::DocxToXml,
-     Conversion::Steps::JpgToPng,
+     Conversion::Steps::RotThirteen,
      Conversion::Steps::Step]
   end
 

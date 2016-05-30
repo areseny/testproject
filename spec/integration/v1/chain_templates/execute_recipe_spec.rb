@@ -42,9 +42,9 @@ describe "User executes a single recipe" do
             end
 
             context 'and it has steps' do
-              let!(:jpg_class)  { FactoryGirl.create(:step_class, name: "JpgToPng") }
-              let!(:step1)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: jpg_class) }
-              let!(:step2)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 2, step_class: jpg_class) }
+              let!(:rot13)  { FactoryGirl.create(:step_class, name: "RotThirteen") }
+              let!(:step1)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: rot13) }
+              let!(:step2)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 2, step_class: rot13) }
 
               context 'and execution is successful' do
                 it 'should return the objects' do
@@ -81,12 +81,12 @@ describe "User executes a single recipe" do
 
               context 'and execution fails' do
 
-                let!(:steps)                  { [Conversion::Steps::JpgToPng] }
-                let!(:boobytrapped_step)      { Conversion::Steps::JpgToPng.new }
+                let!(:steps)                  { [Conversion::Steps::RotThirteen] }
+                let!(:boobytrapped_step)      { Conversion::Steps::RotThirteen.new }
 
                 before do
                   expect(boobytrapped_step).to receive(:convert_file) { raise "Oh noes! Error!" }
-                  allow(Conversion::Steps::JpgToPng).to receive(:new).and_return boobytrapped_step
+                  allow(Conversion::Steps::RotThirteen).to receive(:new).and_return boobytrapped_step
                 end
 
                 it 'should return the errors' do

@@ -56,11 +56,11 @@ describe "User creates recipe" do
 
       context 'if there are steps supplied' do
 
-        let!(:docx_to_xml)      { FactoryGirl.create(:step_class, name: "DocxToXml") }
-        let!(:xml_to_html)      { FactoryGirl.create(:step_class, name: "XmlToHtml") }
+        let!(:generic_step)      { FactoryGirl.create(:step_class, name: "Step") }
+        let!(:rot13)      { FactoryGirl.create(:step_class, name: "RotThirteen") }
 
         context 'presented as a series of steps with positions included' do
-          let!(:step_params)      { [{position: 1, name: "DocxToXml"}, {position: 2, name: "XmlToHtml" }] }
+          let!(:step_params)      { [{position: 1, name: "Step"}, {position: 2, name: "RotThirteen" }] }
 
           context 'and they are valid' do
             before do
@@ -73,49 +73,49 @@ describe "User creates recipe" do
               expect(response.status).to eq 200
               new_recipe = user.recipes.first
               expect(new_recipe.recipe_steps.count).to eq 2
-              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [generic_step.id, rot13.id]
             end
           end
 
           context 'and they are incorrect' do
 
             it "should not create the recipe for nonexistent step classes" do
-              docx_to_xml.destroy
-              recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              generic_step.destroy
+              recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 1, name: "RotThirteen" }]
               perform_create_request(user.create_new_auth_token, recipe_params.to_json)
 
               expect(response.status).to eq 422
             end
 
             it "should not create the recipe with duplicate numbers" do
-              recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 1, name: "RotThirteen" }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "should not create the recipe with incorrect numbers" do
-              recipe_params[:steps_with_positions] = [{position: 0, name: "DocxToXml"}, {position: 1, name: "XmlToHtml" }]
+              recipe_params[:steps_with_positions] = [{position: 0, name: "Step"}, {position: 1, name: "RotThirteen" }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "should not create the recipe with skipped steps" do
-              recipe_params[:steps_with_positions] = [{position: 1, name: "DocxToXml"}, {position: 6, name: "XmlToHtml" }]
+              recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 6, name: "RotThirteen" }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "should create the recipe with numbers out of order" do
-              recipe_params[:steps_with_positions] = [{position: 2, name: "XmlToHtml" }, {position: 1, name: "DocxToXml"}]
+              recipe_params[:steps_with_positions] = [{position: 2, name: "RotThirteen" }, {position: 1, name: "Step"}]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
               new_recipe = user.recipes.first
               expect(new_recipe.recipe_steps.count).to eq 2
-              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [generic_step.id, rot13.id]
             end
           end
         end
@@ -123,7 +123,7 @@ describe "User creates recipe" do
         context 'presented as a series of steps with order implicit' do
           context 'and they are valid' do
             before do
-              recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
+              recipe_params[:steps] = ["Step", "RotThirteen"]
             end
 
             it "should create the recipe with recipe steps" do
@@ -132,15 +132,15 @@ describe "User creates recipe" do
               expect(response.status).to eq 200
               new_recipe = user.recipes.first
               expect(new_recipe.recipe_steps.count).to eq 2
-              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [generic_step.id, rot13.id]
             end
           end
 
           context 'and they are incorrect' do
 
             it "should not create the recipe for nonexistent step classes" do
-              docx_to_xml.destroy
-              recipe_params[:steps] = ["DocxToXml", "XmlToHtml"]
+              generic_step.destroy
+              recipe_params[:steps] = ["Step", "RotThirteen"]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422

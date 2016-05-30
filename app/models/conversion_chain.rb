@@ -24,8 +24,8 @@ class ConversionChain < ActiveRecord::Base
   validates_presence_of :user, :recipe
 
   def retry_conversion!
-    file = File.open(input_file.file.file) # LOL
-    recipe.clone_and_execute(file)
+    # file = File.open(input_file.file.file) # LOL
+    recipe.clone_and_execute(input_file)
   end
 
   def execute_conversion!
@@ -56,19 +56,18 @@ class ConversionChain < ActiveRecord::Base
     runner.step_array.each_with_index do |runner_step, index|
       step_model = conversion_steps[index]
       step_model.conversion_errors = runner_step.errors
-      step_model.output_file = open_file(runner_step.output_files)
+      step_model.output_file = runner_step.output_files
       # if runner_step.output_files.respond_to(:map)
       #   step_model.output_file = runner_step.output_files.map(&:open)
       # elsif runner_step.output_files.respond_to(:open)
       #   step_model.output_file = runner_step.output_files.open
       # end
       step_model.save!
-
     end
   end
 
   def open_file(file_uploader)
-    Pathname.new(file_uploader.file.file).open
+    file_uploader.read
   rescue => e
     nil
   end
