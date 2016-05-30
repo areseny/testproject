@@ -39,17 +39,15 @@ Installation directions for Linux and Windows: http://www.saxonica.com/saxon-c/i
 
 Run the Rails server in a terminal - `bundle exec rails s`
 
-Run Mailcatcher - `mailcatcher`
-
 Run redis in another terminal - `redis-server`
 
 Run sidekiq in another terminal - `bundle exec sidekiq`
 
-Go to `localhost:8080` to see if it's up.
+Check `localhost:3000/recipes/anyone` to see if it's up.
 
 ## Adding a new step
 
-To add a new step, add the step logic under its own file in `app/logic/steps`. Subclass `Conversion::Steps::Step`.
+To add a new step, add the step logic under its own file in `app/logic/steps`. Subclass `Conversion::Steps::Step`. I've left a couple of sample ones - `RotThirteen` is a basic one that involves serving back a different file than was supplied.
 
 Add the class name into the array `StepClass.all_steps` method. Otherwise the system won't know it's there.
 
@@ -71,7 +69,7 @@ Open `spec/controllers/v1/version.rb` and `spec/integration/v1/version.rb` Chang
 
 ## Support
 
-Contact charlie@enspiral.com for all your (ink-related) support needs.
+Contact the Collaborative Knowledge Foundation (ink-related) support needs.
 
 ## License
 
