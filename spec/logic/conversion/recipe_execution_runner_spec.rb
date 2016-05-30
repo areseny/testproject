@@ -64,7 +64,7 @@ describe Conversion::RecipeExecutionRunner do
       end
 
       context 'if there are 3 steps' do
-        let!(:steps)    { [Conversion::Steps::Step, Conversion::Steps::Step, Conversion::Steps::JpgToPng] }
+        let!(:steps)    { [Conversion::Steps::Step, Conversion::Steps::Step, Conversion::Steps::Step] }
         subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
         it 'should return a result' do
@@ -77,17 +77,17 @@ describe Conversion::RecipeExecutionRunner do
     end
 
     context 'if there is a failure' do
-      let!(:steps)              { [Conversion::Steps::JpgToPng] }
-      let!(:boobytrapped_step)  { Conversion::Steps::JpgToPng.new }
+      let!(:steps)              { [Conversion::Steps::Step] }
+      let!(:boobytrapped_step)  { Conversion::Steps::Step.new }
 
       before do
         expect(boobytrapped_step).to receive(:convert_file) { raise "OMG!" }
-        expect(Conversion::Steps::JpgToPng).to receive(:new).and_return boobytrapped_step
+        expect(Conversion::Steps::Step).to receive(:new).and_return boobytrapped_step
       end
 
       it 'the step should not have an output file' do
         subject = Conversion::RecipeExecutionRunner.new(steps)
-        result = subject.run!(xml_file)
+        result = subject.run!(text_file)
 
         expect(result).to be_a Conversion::Steps::Step
         expect(result.output_files).to eq nil
@@ -95,7 +95,7 @@ describe Conversion::RecipeExecutionRunner do
 
       it 'should log the error' do
         subject = Conversion::RecipeExecutionRunner.new(steps)
-        result = subject.run!(xml_file)
+        result = subject.run!(text_file)
 
         expect(result.errors).to eq ["OMG!"]
       end
