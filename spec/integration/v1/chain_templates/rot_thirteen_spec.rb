@@ -1,5 +1,8 @@
 require 'rails_helper'
 require_relative '../version'
+require 'sidekiq/testing'
+
+Sidekiq::Testing.inline!
 
 describe "User executes a ROT13 recipe" do
 
@@ -29,9 +32,14 @@ describe "User executes a ROT13 recipe" do
     before do
       perform_execute_request(auth_headers, execution_params)
     end
+
+    it 'should be successful' do
+
+    end
+
     it 'should be successful' do
       expect(response.status).to eq(200)
-      expect(body_as_json['conversion_chain']['successful'])
+      expect(body_as_json['conversion_chain']).to_not be_nil
       expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 1
       body_as_json['conversion_chain']['conversion_steps'].map do |s|
         expect(s['conversion_errors']).to eq ""
@@ -40,6 +48,7 @@ describe "User executes a ROT13 recipe" do
     end
 
     it 'should have an expected output file' do
+      wait_for_async
       result = ConversionChain.last.output_file
       expect(result.read).to eq "Guvf vf fbzr grkg."
     end

@@ -23,8 +23,6 @@ module Conversion
         end
       end
 
-
-
       # def apply_to_tmp_file(input_file)
       #   FileUtils::cp input_file.file, file_path(input_file.original_filename)
       #   @docx_temp_path = file_path(input_file.original_filename)
@@ -45,8 +43,8 @@ module Conversion
           output_file = File.open(output_file_path)
           return output_file
         rescue => e
-          puts e.message
-          puts e.backtrace
+          # puts e.message
+          # puts e.backtrace
           raise ConversionErrors::ConversionError.new(conversion_output)
         end
       end

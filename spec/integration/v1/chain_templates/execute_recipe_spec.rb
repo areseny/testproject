@@ -1,5 +1,8 @@
 require 'rails_helper'
 require_relative '../version'
+require 'sidekiq/testing'
+
+Sidekiq::Testing.inline!
 
 describe "User executes a single recipe" do
 

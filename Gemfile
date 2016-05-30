@@ -13,7 +13,10 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'devise'
 gem 'devise_token_auth'
 gem 'omniauth'
-# gem 'jwt'
+
+################### async ##########################
+
+gem 'sidekiq'
 
 ################### data #####################
 
@@ -73,16 +76,21 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
-  gem 'rspec-rails', '~> 3.0'
-  gem 'json_spec'
-
   # factories
   gem 'factory_girl_rails', '~> 4.0'
-
-  # db teardown/cleanup
-  gem 'database_cleaner'
+  # gem 'sidekiq-status'
 
 end
+
+group :test do
+  gem 'rspec-rails', '~> 3.0'
+  gem 'json_spec'
+  # gem 'rspec-sidekiq'
+
+# db teardown/cleanup
+  gem 'database_cleaner'
+end
+
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views

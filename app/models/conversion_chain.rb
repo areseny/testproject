@@ -29,11 +29,10 @@ class ConversionChain < ActiveRecord::Base
   end
 
   def execute_conversion!
+    raise("Chain not saved yet") if self.new_record?
     raise ConversionErrors::NoFileSuppliedError.new("No input file received") unless input_file.present?
     self.update_attribute(:executed_at, Time.zone.now)
-    runner = Conversion::RecipeExecutionRunner.new(step_classes)
-    runner.run!(input_file)
-    map_results(runner, conversion_steps.sort_by(&:position))
+    ConversionWorker.perform_async(self.id)
   end
 
   def output_file
@@ -80,13 +79,11 @@ class ConversionChain < ActiveRecord::Base
     true
   end
 
-
   def input_file_name
     input_file.path.split("/").last if input_file && input_file.path
   end
 
   def input_file_path
-    # "#{input_file.store_dir}/#{input_file_name}" if input_file && input_file.path
     Rails.application.routes.url_helpers.download_api_conversion_chain_url(self)
   end
 
@@ -95,7 +92,6 @@ class ConversionChain < ActiveRecord::Base
   end
 
   def output_file_path
-    # "#{output_file.store_dir}/#{output_file_name}" if output_file && output_file.path
     Rails.application.routes.url_helpers.download_api_conversion_step_url(last_step)
   end
 

@@ -1,5 +1,8 @@
 require 'rails_helper'
 require_relative '../version'
+require 'sidekiq/testing'
+
+Sidekiq::Testing.inline!
 
 describe "User executes a single recipe" do
 
@@ -33,7 +36,7 @@ describe "User executes a single recipe" do
           perform_execute_request(auth_headers, execution_params)
 
           expect(response.status).to eq(200)
-          expect(body_as_json['conversion_chain']['successful'])
+          expect(body_as_json['conversion_chain']['successful']).to_not be_nil
           expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 1
           body_as_json['conversion_chain']['conversion_steps'].map do |s|
             expect(s['conversion_errors']).to eq ""
@@ -44,7 +47,7 @@ describe "User executes a single recipe" do
       end
 
     end
-``  end
+  end
   
   def perform_execute_request(auth_headers, data)
     execute_recipe_request(version, auth_headers, data)
