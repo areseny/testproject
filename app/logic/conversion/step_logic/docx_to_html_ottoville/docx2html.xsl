@@ -200,7 +200,7 @@
 	<xsl:template match="w:style[@w:type='paragraph']">
 		<xsl:if test="@w:default=1">
 			<xsl:value-of select="concat('p.',' { ')"/><xsl:apply-templates select="w:pPr" /> }
-			<xsl:value-of select="concat('p>span { ')"/><xsl:apply-templates select="w:rPr" /> }
+		  	<xsl:value-of select="concat('p>span',' { ')"/><xsl:apply-templates select="w:rPr" /> }
 			<xsl:for-each select="w:pPr/w:tabs/w:tab">
 				<xsl:value-of select="concat('p div.tab:nth-of-type(',position(),') { width: ',(number(./@w:pos) div 20) * (4 div 3),'px !important }')"/>
 			</xsl:for-each>	
@@ -213,7 +213,7 @@
 	</xsl:template>
 	<xsl:template match="w:style[@w:type='character']">
 		<xsl:if test="@w:default=1">
-			<xsl:value-of select="concat('span { ')"/><xsl:apply-templates select="w:rPr" /> }
+		  <xsl:value-of select="concat('span',' { ')"/><xsl:apply-templates select="w:rPr" /> }
 		</xsl:if>
 		<xsl:value-of select="concat('span.',./@w:styleId,' { ')"/><xsl:apply-templates select="w:rPr" /> }
 	</xsl:template>

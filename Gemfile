@@ -17,6 +17,7 @@ gem 'omniauth'
 ################### async ##########################
 
 gem 'sidekiq'
+gem 'sinatra', :require => nil # for sidekiq-web
 
 ################### data #####################
 
