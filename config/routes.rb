@@ -1,8 +1,9 @@
 require 'api_constraints'
+# require 'sidekiq/web'
 
 Rails.application.routes.draw do
 
-  mount Sidekiq::Web, at: "/sidekiq"
+  # mount Sidekiq::Web, at: "/sidekiq"
 
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
