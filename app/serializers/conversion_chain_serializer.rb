@@ -5,7 +5,7 @@ class ConversionChainSerializer < ActiveModel::Serializer
 
   has_many :conversion_steps
 
-  attributes :id, :recipe_id, :successful, :executed_at, :executed_at_for_humans, :input_file_name, :input_file_path, :output_file_path
+  attributes :id, :recipe_id, :successful, :executed_at, :executed_at_for_humans, :input_file_name, :input_file_path, :output_file_path, :finished_at
 
   def conversion_steps
     object.conversion_steps.sort_by{ |step| step.position }

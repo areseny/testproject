@@ -4,27 +4,42 @@ describe Api::V1::ConversionChainsController, type: :controller do
   include Devise::TestHelpers
 
   let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+  let!(:demo_step)        { FactoryGirl.create(:step_class, name: "RotThirteen") }
+  let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plain') }
+  let!(:recipe_step)      { FactoryGirl.create(:recipe_step, step_class: demo_step) }
+  let!(:conversion_step)  { FactoryGirl.create(:conversion_step) }
+  let!(:conversion_chain) { conversion_step.conversion_chain }
+
+  let!(:params) {
+    {
+        id: conversion_chain.id
+    }
+  }
+
+  before do
+    recipe_step.update_attribute(:recipe_id, conversion_chain.recipe.id)
+    conversion_chain.update_attribute(:user_id, user.id)
+    conversion_chain.recipe.update_attribute(:user_id, user.id)
+  end
+
+  describe "GET download" do
+    context 'when there is an output file' do
+      before do
+        FileUploader.enable_processing = true
+        @uploader = FileUploader.new(conversion_chain, :input_file)
+
+        File.open('spec/fixtures/files/plaintext.txt') do |f|
+          @uploader.store!(f)
+        end
+      end
+
+
+    end
+
+
+  end
 
   describe "GET retry" do
-
-    let!(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }
-    let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
-    let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let!(:recipe_step)      { FactoryGirl.create(:recipe_step, step_class: demo_step) }
-    let!(:conversion_step)  { FactoryGirl.create(:conversion_step) }
-    let!(:conversion_chain) { conversion_step.conversion_chain }
-
-    let!(:retry_params) {
-        {
-            id: conversion_chain.id
-        }
-    }
-
-    before do
-      recipe_step.update_attribute(:recipe_id, conversion_chain.recipe.id)
-      conversion_chain.update_attribute(:user_id, user.id)
-      conversion_chain.recipe.update_attribute(:user_id, user.id)
-    end
 
     context 'if a valid token is supplied' do
 
@@ -35,7 +50,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
             FileUploader.enable_processing = true
             @uploader = FileUploader.new(conversion_chain, :input_file)
 
-            File.open('spec/fixtures/files/test_file.xml') do |f|
+            File.open('spec/fixtures/files/plaintext.txt') do |f|
               @uploader.store!(f)
             end
           end
@@ -47,7 +62,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
 
             it 'should try to execute the conversion chain' do
               request_with_auth(user.create_new_auth_token) do
-                perform_retry_request(retry_params)
+                perform_retry_request(params)
               end
 
               expect(response.status).to eq 422
@@ -57,7 +72,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
           context 'if the recipe has steps' do
             it 'should try to execute the conversion chain' do
               request_with_auth(user.create_new_auth_token) do
-                perform_retry_request(retry_params)
+                perform_retry_request(params)
               end
 
               expect(response.status).to eq 200
@@ -73,7 +88,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
 
       it "should not assign anything" do
         request_with_auth do
-          perform_retry_request(retry_params)
+          perform_retry_request(params)
         end
 
         expect(response.status).to eq 401
@@ -84,5 +99,9 @@ describe Api::V1::ConversionChainsController, type: :controller do
 
   def perform_retry_request(data = {})
     retry_conversion(version, data)
+  end
+
+  def perform_download_request(data = {})
+    download_file(version, data)
   end
 end
