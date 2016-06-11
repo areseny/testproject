@@ -54,7 +54,7 @@ class ConversionChain < ActiveRecord::Base
   def map_results(runner, conversion_steps)
     runner.step_array.each_with_index do |runner_step, index|
       step_model = conversion_steps[index]
-      step_model.conversion_errors = runner_step.errors
+      step_model.conversion_errors = [runner_step.errors].flatten
       step_model.output_file = runner_step.output_files
       # if runner_step.output_files.respond_to(:map)
       #   step_model.output_file = runner_step.output_files.map(&:open)

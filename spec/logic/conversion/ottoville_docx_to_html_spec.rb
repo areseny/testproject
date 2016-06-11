@@ -16,7 +16,7 @@ describe Conversion::Steps::DocxToHtml do
         result = subject.convert_file(docx_file_1)
 
         expect(result).to_not be_nil
-        expect(File.read(result)).to_not eq ""
+        expect(File.read(result)).to eq ""
         expect(File.read(result)).to_not eq docx_file_1
         expect(File.read(result)).to eq expected_result_1
       end
@@ -25,7 +25,7 @@ describe Conversion::Steps::DocxToHtml do
         result = subject.convert_file(docx_file_2)
 
         expect(result).to_not be_nil
-        expect(File.read(result)).to_not eq ""
+        expect(File.read(result)).to eq ""
         expect(File.read(result)).to_not eq docx_file_2
         expect(File.read(result)).to eq expected_result_2
       end
@@ -35,7 +35,7 @@ describe Conversion::Steps::DocxToHtml do
         result = subject.convert_file(docx_file_3)
 
         expect(result).to_not be_nil
-        expect(File.read(result)).to_not eq ""
+        expect(File.read(result)).to eq ""
         expect(File.read(result)).to_not eq docx_file_3
         expect(File.read(result)).to eq expected_result_3
       end

@@ -9,7 +9,7 @@ module Conversion
 
       def convert_file(input_file, options_hash = {})
         super
-        unzip_docx(input_file.file)
+        unzip_docx(input_file.file.file)
         apply_xslt_template
       end
 
@@ -21,6 +21,10 @@ module Conversion
             f.extract(path)
           end
         end
+      rescue => e
+        # puts e.message
+        # puts e.backtrace
+        raise ConversionErrors::ConversionError.new("Could not open docx file - please check to ensure it's a valid docx.")
       end
 
       # def apply_to_tmp_file(input_file)
