@@ -1,7 +1,7 @@
 module Api
   module V1
     class RecipesController < ApplicationController
-      before_action :authenticate_api_user!, only: [:index, :show, :create, :update, :destroy, :execute, :members_only]
+      before_action :authenticate_api_user!, only: [:index, :show, :create, :update, :destroy, :execute]
 
       respond_to :json
 
@@ -44,25 +44,6 @@ module Api
         render json: recipe, root: false
       rescue => e
         render_not_found_error(e)
-      end
-
-      # test methods
-
-      def anyone
-        render json: {
-                   data: {
-                       message: "Welcome to api version 1, guest!"
-                   }
-               }, status: 200
-      end
-
-      def members_only
-        render json: {
-                   data: {
-                       message: "Welcome to api version 1, #{current_api_user.name}",
-                       user: current_api_user
-                   }
-               }, status: 200
       end
 
       private

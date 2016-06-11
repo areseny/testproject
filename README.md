@@ -18,10 +18,6 @@ Copy the `config/database.yml.sample` file into `config/database.yml`
 
 `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
-## Mailcatcher
-
-Install Mailcatcher by running `gem install mailcatcher`
-
 ## ImageMagick
 
 Used for steps with image manipulation.
@@ -69,7 +65,7 @@ Open `spec/controllers/v1/version.rb` and `spec/integration/v1/version.rb` Chang
 
 ## Support
 
-Contact the Collaborative Knowledge Foundation (ink-related) support needs.
+Contact charlie@coko.foundation for all your (ink-related) support needs.
 
 ## License
 
