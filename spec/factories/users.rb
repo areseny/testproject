@@ -14,5 +14,18 @@ FactoryGirl.define do
     end
   end
 
+  factory :organisation do
+    name "Random Number Company"
+    description "Very mysterious"
+  end
+  
+  factory :membership do
+    organisation
+    user
+    factory :admin_membership do
+      admin true
+    end
+    
+  end
 
 end
