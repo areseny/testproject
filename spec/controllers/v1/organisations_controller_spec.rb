@@ -10,10 +10,10 @@ describe Api::V1::OrganisationsController, type: :controller do
 
     context 'if a valid token is supplied' do
       context 'with valid parameters' do
-        let!(:organisation_params) {
+        let(:organisation_params) {
           {
             organisations:{
-              name: name, 
+              name: name,
               description: description
             }
           }
@@ -45,10 +45,10 @@ describe Api::V1::OrganisationsController, type: :controller do
         end
       end
       context 'with an invalid name parameters' do
-        let!(:organisation_params) {
+        let(:organisation_params) {
           {
             organisations:{
-              name: '', 
+              name: '',
               description: description
             }
           }
@@ -66,10 +66,10 @@ describe Api::V1::OrganisationsController, type: :controller do
   end
 
   context 'if no token is supplied' do
-    let!(:organisation_params) {
+    let(:organisation_params) {
       {
         organisations:{
-          name: name, 
+          name: name,
           description: description
         }
       }
