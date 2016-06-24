@@ -2,6 +2,7 @@ FactoryGirl.define do
   sequence :email do |n|
     "person#{n}@example.com"
   end
+  
 
   factory :user do
     name "User McFabulous"
@@ -15,7 +16,9 @@ FactoryGirl.define do
   end
 
   factory :organisation do
-    name "Random Number Company"
+    sequence :name do |n|
+      "Random Number Company #{n}"
+    end
     description "Very mysterious"
   end
   
