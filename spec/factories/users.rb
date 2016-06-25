@@ -16,18 +16,20 @@ FactoryGirl.define do
   end
 
   factory :organisation do
-    sequence :name do |n|
-      "Random Number Company #{n}"
-    end
+    # sequence :name do |n|
+    #   "Random Number Company #{n}"
+    # end
+    name "Random Number Company"
     description "Very mysterious"
   end
   
   factory :membership do
     organisation
     user
-    factory :admin_membership do
-      admin true
-    end
+    admin false
+    # factory :admin_membership do
+    #   admin true
+    # end
     
   end
 

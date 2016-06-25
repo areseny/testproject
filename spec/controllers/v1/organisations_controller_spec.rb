@@ -5,7 +5,7 @@ describe Api::V1::OrganisationsController, type: :controller do
   let!(:user)			{ FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
   let(:name){"Mystery Company"}
   let(:description){'Such Mystery. Wow.'}
-
+  
   describe "POST create" do
 
     context 'if a valid token is supplied' do
@@ -28,7 +28,7 @@ describe Api::V1::OrganisationsController, type: :controller do
           expect(new_organisation).to be_a Organisation
           expect(new_organisation.name).to eq name
           expect(new_organisation.description).to eq description
-          expect(response.status).to eq 200
+          
 
         end
         it "creates a new persisted organisation" do

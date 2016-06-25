@@ -1,17 +1,21 @@
 module Api
   module V1
     class OrganisationsController < ApplicationController
-    	before_action :authenticate_api_user!, only: [:create, :list]
+    	before_action :authenticate_api_user!, only: [:create]
+      before_action :super_user_only!, only: [:create, :list]
     	respond_to :json
+
 
     	def create
     		create_new_organisation
 	    	render json: @new_organisation, root: false
 	    rescue => e
-        # puts e.message.inspect
-        # puts e.backtrace
 	    	render_error(e)
 	    end
+
+      def list
+        @organisations = Organisation.all
+      end  
 
 	    private
         def create_new_organisation

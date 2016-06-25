@@ -17,6 +17,5 @@ RSpec.describe Organisation, type: :model do
 
     expects_to_be_invalid_without :organisation, :name
 
-    # expects_to_be_invalid_without an admin membership
   end
 end
