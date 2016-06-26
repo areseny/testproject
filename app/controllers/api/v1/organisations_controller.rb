@@ -2,7 +2,7 @@ module Api
   module V1
     class OrganisationsController < ApplicationController
     	before_action :authenticate_api_user!, only: [:create]
-      before_action :super_user_only!, only: [:create, :list]
+      # before_action :super_user_only!, only: [:create, :index]
     	respond_to :json
 
 
@@ -13,7 +13,7 @@ module Api
 	    	render_error(e)
 	    end
 
-      def list
+      def index
         @organisations = Organisation.all
       end  
 

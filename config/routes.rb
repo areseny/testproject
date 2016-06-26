@@ -35,7 +35,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :organisations, only: [:create, :list]
+      resources :organisations, only: [:create, :index]
       resources :memberships, only: [:create] #add update delete
     end
 

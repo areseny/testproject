@@ -2,7 +2,7 @@ module Api
   module V1
     class MembershipsController < ApplicationController
     	before_action :authenticate_api_user!, only: [:create]
-    	before_action :admin_or_super_user_only!, only: [:create]
+    	# before_action :admin_or_super_user_only!, only: [:create]
     	respond_to :json
 
     	def create

@@ -3,6 +3,4 @@ class Membership < ActiveRecord::Base
 	validates_presence_of :user, :organisation
 	belongs_to :user
 	belongs_to :organisation
-	validates :name, uniqueness: true
-
 end
