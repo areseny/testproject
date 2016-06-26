@@ -2,15 +2,16 @@ module Api
   module V1
     class MembershipsController < ApplicationController
     	before_action :authenticate_api_user!, only: [:create]
-    	# before_action :admin_or_super_user_only!, only: [:create]
+    	before_action :admin_or_super_user_only!, only: [:create]
     	respond_to :json
 
     	def create
     		create_new_membership
-    		new_membership.save!
+    		@new_membership.save!
 
 	    	render json: @new_membership.organisation, root: false
 	    rescue => e
+        puts e.message
 	    	render_error(e)
 	    end
 
@@ -23,7 +24,7 @@ module Api
    		end
 
     	def membership_params
-   			params.require(:memberships).permit(:organisation, :user, :admin)
+   			params.require(:memberships).permit(:organisation_id, :user_id, :admin)
 		end
     end
   end

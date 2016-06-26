@@ -26,7 +26,7 @@ describe Api::V1::MembershipsController, type: :controller do
     		context 'with valid parameters' do
 	        	it "creates a membership for an instance user" do
 	        		request_with_auth(creator.create_new_auth_token) do
-	            		perform_create_request(membership_params)
+	            		perform_create_request(valid_membership_params)
 	          		end
 	        		
 	        		expect(response.status).to eq 200
@@ -39,9 +39,9 @@ describe Api::V1::MembershipsController, type: :controller do
 	        	it "should save the membership" do
 		    		expect{
 		    			request_with_auth(creator.create_new_auth_token) do
-	            			perform_create_request(membership_params)
+	            			perform_create_request(valid_membership_params)
 	            		end
-	            	}.to change(Membership.count).by (1)
+	            	}.to change{Membership.count}.by (1)
 		    	end
 	    	end
 	    	context 'with invalid membership parameters' do
@@ -52,6 +52,11 @@ describe Api::V1::MembershipsController, type: :controller do
 	            	}
 	          	}}
 	          	it "should not create a membership" do
+	          		expect{
+		    			request_with_auth(creator.create_new_auth_token) do
+	            			perform_create_request(invalid_membership_params)
+	            		end
+	            	}.to_not change{Membership.count}
 	          		expect(response.status).to eq 422
 	          	end
 	    	end
@@ -59,7 +64,7 @@ describe Api::V1::MembershipsController, type: :controller do
 	    xcontext 'user is a super user' do
 	    	before do
           		request_with_auth(creator.create_new_auth_token) do
-            		perform_create_request(membership_params)
+            		perform_create_request(valid_membership_params)
           		end
         	end
 	    	it "should create a membership for the given user" do
@@ -72,7 +77,7 @@ describe Api::V1::MembershipsController, type: :controller do
 	    	it "should save the membership" do
 	    		expect{
 	    			request_with_auth(creator.create_new_auth_token) do
-            			perform_create_request(membership_params)
+            			perform_create_request(valid_membership_params)
             		end
             	}.to change(Membership.count).by (1)
 	    	end
@@ -81,7 +86,7 @@ describe Api::V1::MembershipsController, type: :controller do
 		    context 'when a organisation user is not an organisation admin' do
 		    	before do
 	          		request_with_auth(another_user.create_new_auth_token) do
-	            		perform_create_request(membership_params)
+	            		perform_create_request(valid_membership_params)
 	          		end
 	        	end
 	        	it "should not create a membership" do
@@ -91,7 +96,7 @@ describe Api::V1::MembershipsController, type: :controller do
 		    context 'the user is an admin of another organisation and not this one' do
 		    	before do
 	          		request_with_auth(some_user.create_new_auth_token) do
-	            		perform_create_request(membership_params)
+	            		perform_create_request(valid_membership_params)
 	          		end
 	        	end
 	        	it "should not create a membership" do
@@ -103,7 +108,7 @@ describe Api::V1::MembershipsController, type: :controller do
 		    context 'the user is not a member of any organisation' do
 		    	before do
 	          		request_with_auth(other_user.create_new_auth_token) do
-	            		perform_create_request(membership_params)
+	            		perform_create_request(valid_membership_params)
 	          		end
 	        	end
 	        	it "should not create a membership" do

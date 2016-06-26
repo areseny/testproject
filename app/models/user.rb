@@ -33,4 +33,11 @@ class User < ActiveRecord::Base
   has_many :recipes, inverse_of: :user
   has_many :conversion_chains, inverse_of: :user
 
+  def super_user?
+  end
+
+  def is_admin?(organisation)
+  end
+
+
 end
