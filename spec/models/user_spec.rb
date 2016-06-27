@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   let!(:user)				{FactoryGirl.create(:user, name: "Odie the Dog") }
-  let!(:some_user)			{FactoryGirl.create(:user, name: "Nermal the Kitten") }
+  let!(:super_admin_user)	{FactoryGirl.create(:user, name: "Nermal the Kitten", su: true) }
   let!(:the_organisation)	{FactoryGirl.create(:organisation)}
   let!(:other_organisation)	{FactoryGirl.create(:organisation, name: "Cats Incorporated")}
 
@@ -39,4 +39,15 @@ RSpec.describe User, type: :model do
   		expect(user.is_admin?(the_organisation)).to be false 
   	end
   end
+
+  describe 'super_user?' do
+
+  	it 'is a super user' do
+  		expect(super_admin_user.super_user?).to be true 
+  	end
+  	it 'is not a super user' do
+  		expect(user.super_user?).to be false 
+  	end
+  end
+
 end

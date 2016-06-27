@@ -21,6 +21,7 @@
 #   t.json     "tokens"
 #   t.datetime "created_at"
 #   t.datetime "updated_at"
+#   t.boolean  "super_user"
 # end
 
 class User < ActiveRecord::Base
@@ -34,6 +35,7 @@ class User < ActiveRecord::Base
   has_many :conversion_chains, inverse_of: :user
 
   def super_user?
+  	self.super_user
   end
 
   def is_admin?(organisation)
