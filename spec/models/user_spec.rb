@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   let!(:user)				{FactoryGirl.create(:user, name: "Odie the Dog") }
-  let!(:super_admin_user)	{FactoryGirl.create(:user, name: "Nermal the Kitten", su: true) }
+  let!(:super_admin_user)	{FactoryGirl.create(:user, name: "Nermal the Kitten", super_user: true) }
   let!(:the_organisation)	{FactoryGirl.create(:organisation)}
   let!(:other_organisation)	{FactoryGirl.create(:organisation, name: "Cats Incorporated")}
 

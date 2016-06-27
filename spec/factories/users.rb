@@ -9,7 +9,7 @@ FactoryGirl.define do
     password "password!"
     password_confirmation "password!"
     email
-    su false
+    super_user false
     confirmed_at Date.today
     factory :unconfirmed_user do
       confirmed_at nil
