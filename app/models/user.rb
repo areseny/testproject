@@ -37,6 +37,7 @@ class User < ActiveRecord::Base
   end
 
   def is_admin?(organisation)
+  	Membership.where(:organisation_id => organisation.id, :user_id => self.id, :admin => true).exists?
   end
 
 

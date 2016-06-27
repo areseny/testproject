@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  let!(:user)				{FactoryGirl.create(:user, name: "Odie the Dog") }
+  let!(:some_user)			{FactoryGirl.create(:user, name: "Nermal the Kitten") }
+  let!(:the_organisation)	{FactoryGirl.create(:organisation)}
+  let!(:other_organisation)	{FactoryGirl.create(:organisation, name: "Cats Incorporated")}
 
   describe 'model validations' do
 
@@ -11,5 +15,28 @@ RSpec.describe User, type: :model do
     expects_to_be_invalid_without :user, :email, :password
 
 
+
+  end
+  describe 'is_admin?' do
+
+  	it 'is an admin of this org' do
+  		FactoryGirl.create(:membership, user: user, organisation: the_organisation, admin: true)
+  		expect(user.is_admin?(the_organisation)).to be true
+  	end
+  	it 'is a user not admin of this org' do
+  		FactoryGirl.create(:membership, user: user, organisation: the_organisation, admin: false)
+  		expect(user.is_admin?(the_organisation)).to be false
+  	end
+	it 'is an admin of a different org' do
+		FactoryGirl.create(:membership, user: user, organisation: other_organisation, admin: true)
+  		expect(user.is_admin?(the_organisation)).to be false
+	end
+  	it 'is a user of a different org' do
+  		FactoryGirl.create(:membership, user: user, organisation: other_organisation, admin: false)
+  		expect(user.is_admin?(the_organisation)).to be false
+  	end
+  	it 'is none of the above' do 
+  		expect(user.is_admin?(the_organisation)).to be false 
+  	end
   end
 end
