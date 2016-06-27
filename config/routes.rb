@@ -35,8 +35,8 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :organisations, only: [:create, :index]
-      resources :memberships, only: [:create] #add update delete
+      resources :organisations, only: [:create, :index, :update]
+      resources :memberships, only: [:create] #TODO: add update delete
     end
 
     # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do

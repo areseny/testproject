@@ -2,10 +2,20 @@ require_relative 'version'
 
 describe Api::V1::OrganisationsController, type: :controller do
   include Devise::TestHelpers
-  let!(:user)			{ FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
-  let(:name){"Mystery Company"}
-  let(:description){'Such Mystery. Wow.'}
-  
+  let!(:user)			    { FactoryGirl.create(:user) }
+  let!(:super_user)   { FactoryGirl.create(:user, super_user: true) }
+  let(:name)          {"Mystery Company"}
+  let(:description)   {'Such Mystery. Wow.'}
+
+  let!(:org_user)     { FactoryGirl.create(:user, name: "Shirley") }
+  let!(:org_user_2)   { FactoryGirl.create(:user, name: "Roger") }
+  let!(:org_user_3)   { FactoryGirl.create(:user, name: "Victor") }
+  let(:original_organisation) {FactoryGirl.create(:organisation, name: "There is no Company Ltd", description: 'You can find us at 123 nofixed abode')}
+  let(:existing_membership)   {FactoryGirl.create(:membership, user: org_user, organisation: original_organisation)}
+  let(:existing_membership)   {FactoryGirl.create(:membership, user: org_user_2, organisation: original_organisation)}
+  let(:existing_membership)   {FactoryGirl.create(:membership, user: user, organisation: original_organisation, admin: true)}
+
+
   describe "POST create" do
 
     context 'if a valid token is supplied' do
@@ -93,4 +103,21 @@ describe Api::V1::OrganisationsController, type: :controller do
     post_create_request(version, data)
   end
 
+end
+
+describe "Update" do
+  context "with an admin of the organisation" do
+    it "updates the existing organisation to match the user's input" do
+      
+    end
+  context "with a super user" do
+    it "updates the existing organisation to match the user's input" do
+    end
+  end
+  context "with a user that is not an administrator of the organisation" do
+    it "should fail" do
+      expect(response.status).to eq 422
+      # expect() the organisation to remain unchanged
+    end
+  end
 end

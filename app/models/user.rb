@@ -42,5 +42,9 @@ class User < ActiveRecord::Base
   	Membership.where(:organisation_id => organisation.id, :user_id => self.id, :admin => true).exists?
   end
 
+  def administered_organisations
+  	Membership.where(user_id => self.id, admin => true)
+  end
+
 
 end

@@ -19,24 +19,34 @@ RSpec.describe User, type: :model do
   end
   describe 'is_admin?' do
 
-  	it 'is an admin of this org' do
-  		FactoryGirl.create(:membership, user: user, organisation: the_organisation, admin: true)
-  		expect(user.is_admin?(the_organisation)).to be true
+  	context "is an admin of this org" do
+  		it 'returns true' do
+	  		FactoryGirl.create(:membership, user: user, organisation: the_organisation, admin: true)
+	  		expect(user.is_admin?(the_organisation)).to be true
+	  	end
   	end
-  	it 'is a user not admin of this org' do
-  		FactoryGirl.create(:membership, user: user, organisation: the_organisation, admin: false)
-  		expect(user.is_admin?(the_organisation)).to be false
+  	context 'is a user not admin of this org' do
+  		it 'returns false' do
+	  		FactoryGirl.create(:membership, user: user, organisation: the_organisation, admin: false)
+	  		expect(user.is_admin?(the_organisation)).to be false
+	  	end
   	end
-	it 'is an admin of a different org' do
-		FactoryGirl.create(:membership, user: user, organisation: other_organisation, admin: true)
-  		expect(user.is_admin?(the_organisation)).to be false
+	context 'is an admin of a different org' do
+		it 'returns false' do
+			FactoryGirl.create(:membership, user: user, organisation: other_organisation, admin: true)
+	  		expect(user.is_admin?(the_organisation)).to be false
+	  	end
 	end
-  	it 'is a user of a different org' do
-  		FactoryGirl.create(:membership, user: user, organisation: other_organisation, admin: false)
-  		expect(user.is_admin?(the_organisation)).to be false
+  	context 'is a user of a different org' do
+  		it 'returns false' do
+	  		FactoryGirl.create(:membership, user: user, organisation: other_organisation, admin: false)
+	  		expect(user.is_admin?(the_organisation)).to be false
+	  	end
   	end
-  	it 'is none of the above' do 
-  		expect(user.is_admin?(the_organisation)).to be false 
+  	context 'is none of the above' do
+  		it 'returns false' do 
+  			expect(user.is_admin?(the_organisation)).to be false 
+  		end
   	end
   end
 
