@@ -124,3 +124,51 @@ describe Api::V1::MembershipsController, type: :controller do
   end
 
  end
+
+ describe "Update" do
+ 	context 'for an organisation' do
+	  context 'with an admin of the organisation' do
+	    it "grants org admin rights to an org user" do
+	    end
+	    it "revokes admin priveledges of an org user" do
+	    end
+	    it "revokes user priveldges of an org user" do
+	    end
+	    it "can revoke own access if another org admin exists" do
+	    end
+	  context 'with a super user' do
+	    it "grants org admin rights to an org user" do
+	    end
+	    it "revokes admin priveledges of an org user" do
+	    end
+	    it "revokes user priveldges of an org user" do
+	    end
+	  end
+	  context 'with a user that is not an administrator of the organisation' do
+	    it "cannot grant org admin rights for themselves" do
+	    	expect(response.status).to eq 422
+	      # expect() the organisation to remain unchanged
+	    end
+	    it "cannot grant org admin rights to an org user" do
+	    end
+	    it "cannot revoke admin priveledges of an org user" do
+	    end
+	    it "cannot revoke user priveldges of an org user" do
+	    end
+	  end
+	end
+	context 'for a user' do
+		context 'is a standard user' do
+			it "can revoke own admin access if another org admin exists for that org" do
+	    	end
+	    	it "can revoke own user access of any organisation" do
+	    	end
+	    	it "cannot grant admin access for themselves" do
+	    	end
+		end
+		context 'is a super user' do
+			it "can grant admin access for themselves" do
+	    	end
+		end
+	end
+end

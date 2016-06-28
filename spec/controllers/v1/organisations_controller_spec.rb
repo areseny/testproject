@@ -107,17 +107,27 @@ end
 
 describe "Update" do
   context "with an admin of the organisation" do
-    it "updates the existing organisation to match the user's input" do
-      
+    it "changes org description successfully" do
+    end
+    it "changes org name successfully" do
     end
   context "with a super user" do
-    it "updates the existing organisation to match the user's input" do
+    it "changes org description successfully" do
+    end
+    it "changes org name successfully" do
     end
   end
   context "with a user that is not an administrator of the organisation" do
-    it "should fail" do
+    it "cannot change the org description" do
       expect(response.status).to eq 422
       # expect() the organisation to remain unchanged
     end
+    it "cannot change the org name" do
+    end
+
+    # it "should fail" do
+    #   expect(response.status).to eq 422
+    #   # expect() the organisation to remain unchanged
+    # end
   end
 end
