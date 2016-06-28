@@ -12,6 +12,16 @@ describe Api::V1::MembershipsController, type: :controller do
   let!(:admin_membership)		{FactoryGirl.create(:membership, organisation: organisation, user: creator, admin: true)}
   let!(:other_admin_membership)	{FactoryGirl.create(:membership, organisation: other_organisation, user: some_user, admin: true)}
   let!(:membership)				{FactoryGirl.create(:membership, organisation: organisation, user: another_user)}
+  
+  let!(:org_user)     { FactoryGirl.create(:user, name: "Shirley") }
+  let!(:org_user_2)   { FactoryGirl.create(:user, name: "Roger") }
+  let!(:org_user_3)   { FactoryGirl.create(:user, name: "Victor") }
+  let(:original_organisation) {FactoryGirl.create(:organisation, name: "There is no Company Ltd", description: 'You can find us at 123 nofixed abode')}
+  let(:existing_membership)   {FactoryGirl.create(:membership, user: org_user, organisation: original_organisation)}
+  let(:existing_membership)   {FactoryGirl.create(:membership, user: org_user_2, organisation: original_organisation)}
+  let(:existing_membership)   {FactoryGirl.create(:membership, user: user, organisation: original_organisation, admin: true)}
+  
+
   let(:valid_membership_params) {{
     	memberships:{
       		user_id: user.id,
