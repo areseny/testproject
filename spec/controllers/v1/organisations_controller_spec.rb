@@ -163,7 +163,6 @@ describe "Update" do
     it "cannot change the org name" do
       the_organisation = Organisation.find original_organisation.id
       expect(the_organisation.name).to eq original_organisation.name
-
     end
     it "should fail" do
       expect(response.status).to eq 422
@@ -176,10 +175,12 @@ describe "Update" do
       end
     end
     it "cannot change the org description" do
-      # expect() the organisation to remain unchanged
+      the_organisation = Organisation.find original_organisation.id
+      expect(the_organisation.description).to eq original_organisation.description
     end
     it "cannot change the org name" do
-
+      the_organisation = Organisation.find original_organisation.id
+      expect(the_organisation.name).to eq original_organisation.name
     end
     it "should fail" do
       expect(response.status).to eq 422
