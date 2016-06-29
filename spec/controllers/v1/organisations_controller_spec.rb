@@ -118,14 +118,21 @@ describe "Update" do
     before do
       request_with_auth(user.create_new_auth_token) do
         perform_put_request(organisation_params)
+        # self.send("perform_#{method}_request", organisation_params.merge(id: original_organisation.id))
       end
     end
 
     it "changes org description successfully" do
-
+      expect(response.status).to eq 200
+      new_organisation = Organisation.find original_organisation.id
+      expect(new_organisation.description).to eq new_description
     end
     it "changes org name successfully" do
+      expect(response.status).to eq 200
+      new_organisation = Organisation.find original_organisation.id
+      expect(new_organisation.name).to eq new_name
     end
+  end
 
   context "with a super user" do
     let(:organisation_params) {
@@ -142,8 +149,14 @@ describe "Update" do
       end
     end
     it "changes org description successfully" do
+      expect(response.status).to eq 200
+      new_organisation = Organisation.find original_organisation.id
+      expect(new_organisation.description).to eq new_description
     end
     it "changes org name successfully" do
+      expect(response.status).to eq 200
+      new_organisation = Organisation.find original_organisation.id
+      expect(new_organisation.name).to eq new_name
     end
   end
 
@@ -162,9 +175,12 @@ describe "Update" do
       end
     end
     it "cannot change the org description" do
-      # expect() the organisation to remain unchanged
+      the_organisation = Organisation.find original_organisation.id
+      expect(the_organisation.description).to eq original_organisation.description
     end
     it "cannot change the org name" do
+      the_organisation = Organisation.find original_organisation.id
+      expect(the_organisation.name).to eq original_organisation.name
 
     end
     it "should fail" do
