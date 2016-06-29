@@ -258,8 +258,8 @@ describe Api::V1::MembershipsController, type: :controller do
 	    context 'revokes rights' do
 	    	before do
 	    		request_with_auth(super_user.create_new_auth_token) do
-		        perform_put_request(downgrade_admin_membership_params.merge(id: existing_admin_membership_2.id))
-		      end
+			        perform_put_request(downgrade_admin_membership_params.merge(id: existing_admin_membership_2.id))
+			    end
 		    end
 	    	it "can revoke admin priveledges of an org user" do
 		    	expect(response.status).to eq 200
@@ -272,6 +272,14 @@ describe Api::V1::MembershipsController, type: :controller do
 		end
 	  end
 	  context 'with a user that is not an administrator of the organisation' do
+	  	before do
+    		request_with_auth(org_user.create_new_auth_token) do
+		        perform_put_request(downgrade_admin_membership_params.merge(id: existing_admin_membership_2.id))
+		    end
+		    request_with_auth(org_user.create_new_auth_token) do
+		        perform_put_request(existing_user_membership_params.merge(id: existing_user_membership.id))
+		    end
+	    end
 	    it "cannot grant org admin rights for themselves" do
 	    	expect(response.status).to eq 422
 	      # expect() the organisation to remain unchanged
@@ -280,8 +288,9 @@ describe Api::V1::MembershipsController, type: :controller do
 	    end
 	    it "cannot revoke admin priveledges of an org user" do
 	    end
-	    it "cannot revoke user priveldges of an org user" do
-	    end
+
+	    # it "cannot revoke user priveldges of an org user" do
+	    # end
 	  end
 	end
 	context 'for a user' do
