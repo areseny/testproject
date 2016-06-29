@@ -14,7 +14,14 @@ describe Api::V1::OrganisationsController, type: :controller do
   let(:existing_membership)   {FactoryGirl.create(:membership, user: user, organisation: original_organisation, admin: true)}
   let(:new_name)          {"Erma Gerd, Company"}
   let(:new_description)   {'We changed stuff'}
-
+  let(:changed_organisation_params) {
+    {
+      organisations:{
+        name: new_name,
+        description: new_description
+      }
+    }
+  } 
 
   describe "POST create" do
 
@@ -107,18 +114,9 @@ end
 
 describe "Update" do
   context "with an admin of the organisation" do
-    let(:organisation_params) {
-      {
-        organisations:{
-          name: new_name,
-          description: new_description
-        }
-      }
-    }
     before do
       request_with_auth(user.create_new_auth_token) do
-        perform_put_request(organisation_params)
-        # self.send("perform_#{method}_request", organisation_params.merge(id: original_organisation.id))
+        perform_put_request(changed_organisation_params.merge(id: original_organisation.id))
       end
     end
 
@@ -135,17 +133,9 @@ describe "Update" do
   end
 
   context "with a super user" do
-    let(:organisation_params) {
-      {
-        organisations:{
-          name: new_name,
-          description: new_description
-        }
-      }
-    }
     before do
       request_with_auth(super_user.create_new_auth_token) do
-        perform_put_request(organisation_params)
+        perform_put_request(changed_organisation_params.merge(id: original_organisation.id))
       end
     end
     it "changes org description successfully" do
@@ -161,17 +151,9 @@ describe "Update" do
   end
 
   context "with a user that is not an administrator of the organisation" do
-    let(:organisation_params) {
-      {
-        organisations:{
-          name: new_name,
-          description: new_description
-        }
-      }
-    }
     before do
       request_with_auth(org_user.create_new_auth_token) do
-        perform_put_request(organisation_params)
+        perform_put_request(changed_organisation_params.merge(id: original_organisation.id))
       end
     end
     it "cannot change the org description" do
@@ -188,17 +170,9 @@ describe "Update" do
     end
   end
   context "with a user that is not a member of the organisation" do
-    let(:organisation_params) {
-      {
-        organisations:{
-          name: new_name,
-          description: new_description
-        }
-      }
-    }
     before do
       request_with_auth(unassociated_user.create_new_auth_token) do
-        perform_put_request(organisation_params)
+        perform_put_request(changed_organisation_params.merge(id: original_organisation.id))
       end
     end
     it "cannot change the org description" do

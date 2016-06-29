@@ -13,19 +13,27 @@ describe Api::V1::MembershipsController, type: :controller do
   let!(:other_admin_membership)	{FactoryGirl.create(:membership, organisation: other_organisation, user: some_user, admin: true)}
   let!(:membership)				{FactoryGirl.create(:membership, organisation: organisation, user: another_user)}
   
-  let!(:org_user)     { FactoryGirl.create(:user, name: "Shirley") }
-  let!(:org_user_2)   { FactoryGirl.create(:user, name: "Roger") }
-  let!(:org_user_3)   { FactoryGirl.create(:user, name: "Victor") }
-  let(:original_organisation) {FactoryGirl.create(:organisation, name: "There is no Company Ltd", description: 'You can find us at 123 nofixed abode')}
-  let(:existing_membership)   {FactoryGirl.create(:membership, user: org_user, organisation: original_organisation)}
-  let(:existing_membership)   {FactoryGirl.create(:membership, user: org_user_2, organisation: original_organisation)}
-  let(:existing_membership)   {FactoryGirl.create(:membership, user: user, organisation: original_organisation, admin: true)}
-  
+  let!(:org_user)     				{FactoryGirl.create(:user, name: "Shirley") }
+  let!(:org_user_2)   				{FactoryGirl.create(:user, name: "Roger") }
+  let!(:instance_user)   			{FactoryGirl.create(:user, name: "Victor") }
+  let!(:admin_user)   				{FactoryGirl.create(:user, name: "Captain Clarence Oveur") }
+  let(:original_organisation) 		{FactoryGirl.create(:organisation, name: "There is no Company Ltd", description: 'You can find us at 123 nofixed abode')}
+  let(:existing_user_membership)   	{FactoryGirl.create(:membership, user: org_user, organisation: original_organisation)}
+  let(:existing_user_membership_2)  {FactoryGirl.create(:membership, user: org_user_2, organisation: original_organisation)}
+  let(:existing_admin_membership)   {FactoryGirl.create(:membership, user: user, organisation: original_organisation, admin: true)}
+  let(:existing_admin_membership_2) {FactoryGirl.create(:membership, user: admin_user, organisation: original_organisation, admin: true)}
+
 
   let(:valid_membership_params) {{
     	memberships:{
       		user_id: user.id,
       		organisation_id: organisation.id
+    	}
+  	}}
+	let(:instance_user_membership_params) {{
+    	memberships:{
+      		user_id: instance_user.id,
+      		organisation_id: original_organisation.id
     	}
   	}}
 
@@ -135,16 +143,41 @@ describe Api::V1::MembershipsController, type: :controller do
 
  end
 
+#TODO: before and let calls
  describe "Update" do
  	context 'for an organisation' do
 	  context 'with an admin of the organisation' do
-	    it "grants org admin rights to an org user" do
+	    context 'grants rights' do
+	    	it 'grants admin rights to an organisation user' do
+			    expect(response.status).to eq 200
+			    changed_user = Membership.find existing_user_membership.id
+			    expect(changed_user.admin).to eq true
+			end
+			it "cannot grant rights to an instance user that is not a member of the organisation" do
+			    expect{
+		    			request_with_auth(user.create_new_auth_token) do
+        					perform_create_request(instance_user_membership_params)
+	            		end
+	            	}.to_not change{Membership.count}
+	          		expect(response.status).to eq 422
+			end 
 	    end
-	    it "revokes admin priveledges of an org user" do
-	    end
-	    it "revokes user priveldges of an org user" do
-	    end
-	    it "can revoke own access if another org admin exists" do
+	    context 'revokes rights' do
+	    	it "can revoke admin priveledges of an org user" do
+		    	expect(response.status).to eq 200
+			    changed_user = Membership.find existing_admin_membership_2.id
+			    expect(changed_user.admin).to eq false
+		    end
+		    it "can revoke user priveldges of an org user" do
+		    	expect(response.status).to eq 200
+			    changed_user = Membership.find existing_user_membership.id
+			    expect(changed_user.admin).to eq false
+		    end
+		    it "can revoke own access if another org admin exists" do
+		    	expect(response.status).to eq 200
+			    changed_user = Membership.find existing_user_membership.id
+			    expect(changed_user.admin).to eq false
+		    end
 	    end
 	  context 'with a super user' do
 	    it "grants org admin rights to an org user" do
@@ -153,6 +186,10 @@ describe Api::V1::MembershipsController, type: :controller do
 	    end
 	    it "revokes user priveldges of an org user" do
 	    end
+	    it "grants rights to an instance user" do	
+		end 
+		it "grants rights to a non-existent user" do	
+		end 
 	  end
 	  context 'with a user that is not an administrator of the organisation' do
 	    it "cannot grant org admin rights for themselves" do
