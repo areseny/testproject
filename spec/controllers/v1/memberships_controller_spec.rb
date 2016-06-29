@@ -12,15 +12,17 @@ describe Api::V1::MembershipsController, type: :controller do
   let!(:admin_membership)		{FactoryGirl.create(:membership, organisation: organisation, user: creator, admin: true)}
   let!(:other_admin_membership)	{FactoryGirl.create(:membership, organisation: other_organisation, user: some_user, admin: true)}
   let!(:membership)				{FactoryGirl.create(:membership, organisation: organisation, user: another_user)}
-  
+
   let!(:org_user)     				{FactoryGirl.create(:user, name: "Shirley") }
   let!(:org_user_2)   				{FactoryGirl.create(:user, name: "Roger") }
   let!(:instance_user)   			{FactoryGirl.create(:user, name: "Victor") }
   let!(:admin_user)   				{FactoryGirl.create(:user, name: "Captain Clarence Oveur") }
+  let!(:the_user)   				{FactoryGirl.create(:user, name: "Captain Clarence Oveur") }
+  let!(:super_user)   				{FactoryGirl.create(:user, name: "Captain Clarence Oveur") }
   let(:original_organisation) 		{FactoryGirl.create(:organisation, name: "There is no Company Ltd", description: 'You can find us at 123 nofixed abode')}
   let(:existing_user_membership)   	{FactoryGirl.create(:membership, user: org_user, organisation: original_organisation)}
   let(:existing_user_membership_2)  {FactoryGirl.create(:membership, user: org_user_2, organisation: original_organisation)}
-  let(:existing_admin_membership)   {FactoryGirl.create(:membership, user: user, organisation: original_organisation, admin: true)}
+  let(:existing_admin_membership)   {FactoryGirl.create(:membership, user: the_user, organisation: original_organisation, admin: true)}
   let(:existing_admin_membership_2) {FactoryGirl.create(:membership, user: admin_user, organisation: original_organisation, admin: true)}
 
 
@@ -35,6 +37,34 @@ describe Api::V1::MembershipsController, type: :controller do
       		user_id: instance_user.id,
       		organisation_id: original_organisation.id
     	}
+  	}}
+  	let(:existing_user_membership_params){{
+  		memberships:{
+  			user_id: org_user.id,
+  			organisation_id: original_organisation.id,
+  			admin: true
+  		}
+  	}}
+  	let(:downgrade_admin_membership_params){{
+  		memberships:{
+  			user_id: admin_user.id,
+  			organisation_id: original_organisation.id,
+  			admin: false
+  		}
+  	}}
+  	# let(:revoke_membership_params){{
+  	# 	memberships:{
+  	# 		user_id: admin_user.id,
+  	# 		organisation_id: original_organisation.id,
+  	# 		admin: false
+  	# 	}
+  	# }}
+  	let(:downgrade_self_admin_membership_params){{
+  		memberships:{
+  			user_id: the_user.id,
+  			organisation_id: original_organisation.id,
+  			admin: false
+  		}
   	}}
 
   describe "POST create" do
@@ -148,6 +178,11 @@ describe Api::V1::MembershipsController, type: :controller do
  	context 'for an organisation' do
 	  context 'with an admin of the organisation' do
 	    context 'grants rights' do
+	    	before do
+		      request_with_auth(the_user.create_new_auth_token) do
+		        perform_put_request(existing_user_membership_params.merge(id: existing_user_membership.id))
+		      end
+		    end
 	    	it 'grants admin rights to an organisation user' do
 			    expect(response.status).to eq 200
 			    changed_user = Membership.find existing_user_membership.id
@@ -163,33 +198,78 @@ describe Api::V1::MembershipsController, type: :controller do
 			end 
 	    end
 	    context 'revokes rights' do
+	    	before do
+		      request_with_auth(the_user.create_new_auth_token) do
+		        perform_put_request(downgrade_admin_membership_params.merge(id: existing_admin_membership_2.id))
+		      end
+		      request_with_auth(the_user.create_new_auth_token) do
+		        perform_put_request(downgrade_self_admin_membership_params.merge(id: existing_admin_membership.id))
+		      end
+		    end
 	    	it "can revoke admin priveledges of an org user" do
 		    	expect(response.status).to eq 200
 			    changed_user = Membership.find existing_admin_membership_2.id
 			    expect(changed_user.admin).to eq false
 		    end
-		    it "can revoke user priveldges of an org user" do
-		    	expect(response.status).to eq 200
+		    #TODO: this is a delete call
+		    # it "can revoke user priveldges of an org user" do
+		    # 	expect(response.status).to eq 200
+			   #  changed_user = Membership.find existing_user_membership.id
+			   #  expect(changed_user.admin).to eq false
+		    # end
+
+		    #TODO: Make testable
+		    it "cannot revoke own access if no other org admin exists" do
+		    	expect(response.status).to eq 422
 			    changed_user = Membership.find existing_user_membership.id
-			    expect(changed_user.admin).to eq false
+			    expect(changed_user.admin).to eq true
 		    end
 		    it "can revoke own access if another org admin exists" do
 		    	expect(response.status).to eq 200
 			    changed_user = Membership.find existing_user_membership.id
 			    expect(changed_user.admin).to eq false
 		    end
+		    
 	    end
 	  context 'with a super user' do
-	    it "grants org admin rights to an org user" do
+	  	context 'grants rights' do
+	    	before do
+		      request_with_auth(super_user.create_new_auth_token) do
+		        perform_put_request(existing_user_membership_params.merge(id: existing_user_membership.id))
+		      end
+		    end
+	    	it 'grants admin rights to an organisation user' do
+			    expect(response.status).to eq 200
+			    changed_user = Membership.find existing_user_membership.id
+			    expect(changed_user.admin).to eq true
+			end
+			it "grants rights to an instance user" do	
+				expect{
+		    			request_with_auth(super_user.create_new_auth_token) do
+        					perform_create_request(instance_user_membership_params)
+	            		end
+	            	}.to change{Membership.count}.by (1)
+	          	expect(response.status).to eq 200
+			end 
+			it "grants rights to a non-existent user" do	
+				#TODO: fill this in
+			end 
 	    end
-	    it "revokes admin priveledges of an org user" do
-	    end
-	    it "revokes user priveldges of an org user" do
-	    end
-	    it "grants rights to an instance user" do	
-		end 
-		it "grants rights to a non-existent user" do	
-		end 
+	    context 'revokes rights' do
+	    	before do
+	    		request_with_auth(super_user.create_new_auth_token) do
+		        perform_put_request(downgrade_admin_membership_params.merge(id: existing_admin_membership_2.id))
+		      end
+		    end
+	    	it "can revoke admin priveledges of an org user" do
+		    	expect(response.status).to eq 200
+			    changed_user = Membership.find existing_admin_membership_2.id
+			    expect(changed_user.admin).to eq false
+		    end
+		    # TODO: this is a delete call
+		    # it "revokes user priveldges of an org user" do
+		    # end
+		end
 	  end
 	  context 'with a user that is not an administrator of the organisation' do
 	    it "cannot grant org admin rights for themselves" do
