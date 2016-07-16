@@ -28,6 +28,7 @@ module Conversion
       def convert_file(input_file, options_hash = {})
         raise_and_log_error("No file specified") unless input_file
         # check file extension
+        puts "(#{self.class.name}) Converting #{input_file}..."
         input_file
       end
 

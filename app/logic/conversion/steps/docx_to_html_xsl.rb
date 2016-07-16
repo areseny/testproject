@@ -5,7 +5,7 @@ require 'conversion_errors/conversion_errors'
 module Conversion
   module Steps
 
-    class DocxToHtml < Step
+    class DocxToHtmlXsl < Step
 
       def convert_file(input_file, options_hash = {})
         super

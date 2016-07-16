@@ -24,6 +24,10 @@ Used for steps with image manipulation.
 
 Installation directions: http://www.imagemagick.org/script/binary-releases.php
 
+## Pandoc
+
+Set up directions here: http://pandoc.org/installing.html
+
 ## Saxon
 
 On your machine, set up the Saxon XSLT parser (needed for some steps)

@@ -28,7 +28,7 @@ describe "User executes a single recipe" do
     }
 
     context 'if user is signed in' do
-      let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "DocxToHtml") }
+      let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "DocxToHtmlXsl") }
       let!(:step1)             { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
 
       context 'and execution is successful' do

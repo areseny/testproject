@@ -9,4 +9,4 @@ User.create(name: "Haley", password: "password", password_confirmation: "passwor
 
 StepClass.create(name: "Step", description: "A test converion that returns the same file you supplied. Useful for testing purposes but not much else.")
 StepClass.create(name: "Docx2Html", description: "A comprehensive conversion sing ottoville/docx2html.xsl")
-StepClass.create(name: "DocxToHtml", description: "A simpler docx to html conversion")
+StepClass.create(name: "DocxToHtmlXsl", description: "A simpler docx to html conversion")
