@@ -31,4 +31,8 @@ class ConversionStep < ActiveRecord::Base
     Rails.application.routes.url_helpers.download_api_conversion_step_url(self)
   end
 
+  def output_file_name
+    output_file.path.split("/").last if output_file && output_file.path
+  end
+
 end
