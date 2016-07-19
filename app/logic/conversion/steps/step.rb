@@ -28,7 +28,7 @@ module Conversion
       def convert_file(input_file, options_hash = {})
         raise_and_log_error("No file specified") unless input_file
         # check file extension
-        puts "(#{self.class.name}) Converting #{input_file}..."
+        puts "(#{self.class.name}) Converting #{input_filename(input_file)}..."
         input_file
       end
 
@@ -43,6 +43,19 @@ module Conversion
         Rails.root.join("app", "logic", "conversion", "step_logic", class_name.to_underscore!)
       end
 
+      def input_filename(input_file)
+        return input_file if input_file.is_a? String
+        return File.basename(File.absolute_path(input_file)) if input_file.is_a? File
+        input_file.file.file
+      end
+
+      def input_file_extension(input_file)
+        puts "file extension start"
+        puts "file extension #{File.extname(input_filename(input_file))}"
+        ext = File.extname(input_filename(input_file))
+        puts "file extension done"
+        ext
+      end
     end
 
   end

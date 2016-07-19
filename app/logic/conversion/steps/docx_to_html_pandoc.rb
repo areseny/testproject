@@ -11,10 +11,9 @@ module Conversion
 
       def convert_file(input_file, options_hash = {})
         super
-        input_filename = input_file.file.file
         output_filename = Rails.root.join(temp_directory, "pandoc_conversion_result_#{Time.now.to_i}_#{Random.rand(10000)}.html")
         # puts "converting #{input_filename} to #{output_filename}"
-        do_conversion(input_filename, output_filename)
+        do_conversion(input_filename(input_file), output_filename)
         File.open(Rails.root.join(temp_directory, output_filename))
       end
 

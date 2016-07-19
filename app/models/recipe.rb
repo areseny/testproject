@@ -1,4 +1,5 @@
 require 'conversion_errors/conversion_errors'
+require 'sidekiq/api'
 
 # create_table "recipes", force: :cascade do |t|
 #   t.integer  "user_id",                    null: false
@@ -50,6 +51,30 @@ class Recipe < ActiveRecord::Base
     conversion_chains.count
   end
 
+  def execute_recipe_in_progress?
+    Sidekiq::Workers.new.each do |process_id, thread_id, work|
+      puts ""
+      return true if work['payload']['args'].include?(self.id)
+      # process_id is a unique identifier per Sidekiq process
+      # thread_id is a unique identifier per thread
+      # work is a Hash which looks like:
+      # { 'queue' => name, 'run_at' => timestamp, 'payload' => msg }
+      # run_at is an epoch Integer.
+      # payload is a Hash which looks like:
+      # { 'retry' => true,
+      #   'queue' => 'default',
+      #   'class' => 'Redacted',
+      #   'args' => [1, 2, 'foo'],
+      #   'jid' => '80b1e7e46381a20c0c567285',
+      #   'enqueued_at' => 1427811033.2067106 }
+    end
+
+    Sidekiq::Queue.new.each do |job|
+      return true if job.args.include?(self.id)
+    end
+    false
+  end
+
   private
 
   def generate_steps_with_positions(recipe_step_data)
@@ -87,5 +112,7 @@ class Recipe < ActiveRecord::Base
     contiguous = array.sort.each_cons(2).all? { |x,y| y == x + 1 }
     errors.add(:recipe_step_positions, "must be contiguous") unless contiguous
   end
+
+
 
 end
