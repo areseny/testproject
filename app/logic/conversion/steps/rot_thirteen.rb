@@ -10,8 +10,14 @@ module Conversion
       def convert_file(input_file, options_hash = {})
         super
         contents = input_file.read
-        result = contents.rot13
-        filename = "rot13_result_#{Time.now.to_i}_#{Random.rand(10000)}.txt"
+        begin
+          result = contents.rot13
+        rescue => e
+          puts e.message.inspect
+          puts e.backtrace
+        end
+        # puts "extension: #{input_file_extension(input_file)}"
+        filename = "rot13_result_#{Time.now.to_i}_#{Random.rand(10000)}.#{input_file_extension(input_file)}"
         File.write(Rails.root.join(temp_directory, filename), result)
         File.open(Rails.root.join(temp_directory, filename))
       end
@@ -31,13 +37,28 @@ end
 
 # from https://gist.github.com/rwoeber/274126
 class String
-  def rot13
+  def rot13(format_html = true)
+    inside_html_tag = false
     split('').inject('') do |text, char|
       text << case char
         when 'a'..'m', 'A'..'M'
-          char.ord + 13
+          if inside_html_tag && format_html
+            char.ord
+          else
+            char.ord + 13
+          end
         when 'n'..'z', 'N'..'Z'
-          char.ord - 13
+          if inside_html_tag && format_html
+            char.ord
+          else
+            char.ord - 13
+          end
+        when '>'
+          inside_html_tag = false
+          char.ord
+        when '<'
+          inside_html_tag = true
+          char.ord
         else
           char.ord
       end

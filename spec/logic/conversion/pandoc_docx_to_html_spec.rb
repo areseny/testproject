@@ -1,4 +1,4 @@
-require 'conversion/steps/pandoc_docx_to_html'
+require 'conversion/steps/docx_to_html_pandoc'
 
 describe Conversion::Steps::DocxToHtmlPandoc do
 
@@ -19,7 +19,6 @@ describe Conversion::Steps::DocxToHtmlPandoc do
       specify do
         test_file_conversion(docx_file_2, expected_result_2)
       end
-
 
       specify do
         test_file_conversion(docx_file_3, expected_result_3)

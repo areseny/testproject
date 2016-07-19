@@ -30,6 +30,7 @@ class StepClass < ActiveRecord::Base
      Conversion::Steps::RotThirteen,
      Conversion::Steps::Step,
      Conversion::Steps::DocxToHtmlPandoc
+     # Conversion::Steps::HtmlValidation
     ]
   end
 
