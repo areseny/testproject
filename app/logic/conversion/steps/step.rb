@@ -37,7 +37,7 @@ module Conversion
         raise message
       end
 
-      protectedebook-convert input_file output_file
+      protected
 
       def step_logic_file_location
         Rails.root.join("app", "logic", "conversion", "step_logic", class_name.to_underscore!)
@@ -50,7 +50,11 @@ module Conversion
       end
 
       def input_file_extension(input_file)
-        File.extname(input_filename(input_file))
+        puts "file extension start"
+        puts "file extension #{File.extname(input_filename(input_file))}"
+        ext = File.extname(input_filename(input_file))
+        puts "file extension done"
+        ext
       end
     end
 
