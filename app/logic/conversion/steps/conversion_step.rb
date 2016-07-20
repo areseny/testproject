@@ -33,7 +33,7 @@ module Conversion
         elsif input_file.is_a? String && File.exist?(input_file)
           File.read(input_file)
         else
-          input_file
+          raise input_file
         end
       end
 

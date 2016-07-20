@@ -18,23 +18,20 @@ describe "User executes a ROT13 recipe" do
 
   let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
 
-  let!(:execution_params) {
-    {
-        input_file: text_file,
-        id: recipe.id
-    }
-  }
 
-    let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "RotThirteen") }
-    let!(:step1)             { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
+  let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "RotThirteen") }
+  let!(:step1)             { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
 
   context 'if the conversion is successful' do
+    let!(:execution_params) {
+      {
+          input_file: text_file,
+          id: recipe.id
+      }
+    }
+
     before do
       perform_execute_request(auth_headers, execution_params)
-    end
-
-    it 'should be successful' do
-
     end
 
     it 'should be successful' do
@@ -51,6 +48,25 @@ describe "User executes a ROT13 recipe" do
       wait_for_async
       result = ConversionChain.last.output_file
       expect(result.read).to eq "Guvf vf fbzr grkg."
+    end
+  end
+
+  context 'if the execution fails' do
+    let!(:photo_file)        { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
+
+    let!(:execution_params) {
+      {
+          input_file: photo_file,
+          id: recipe.id
+      }
+    }
+
+    it 'fails nicely' do
+      perform_execute_request(auth_headers, execution_params)
+
+      wait_for_async
+      result = ConversionChain.last.output_file
+      expect(result).to be_nil
     end
   end
 

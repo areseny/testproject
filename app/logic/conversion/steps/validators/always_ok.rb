@@ -1,7 +1,7 @@
 module Conversion
   module Steps
     module Validators
-      class AlwaysOK < ValidationStep
+      class AlwaysOk < ValidationStep
 
 
 
