@@ -8,6 +8,7 @@ require 'rspec/rails'
 require 'support/async_wait'
 
 require 'database_cleaner'
+include ActionDispatch::TestProcess
 
 # Add additional requires below this line. Rails is not loaded until this point!
 

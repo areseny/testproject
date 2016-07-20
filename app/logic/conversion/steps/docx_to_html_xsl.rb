@@ -5,7 +5,7 @@ require 'conversion_errors/conversion_errors'
 module Conversion
   module Steps
 
-    class DocxToHtmlXsl < Step
+    class DocxToHtmlXsl < ConversionStep
 
       def convert_file(input_file, options_hash = {})
         super
@@ -51,25 +51,6 @@ module Conversion
           # puts e.backtrace
           raise ConversionErrors::ConversionError.new(conversion_output)
         end
-      end
-
-      def temp_directory
-        @temp_directory ||= Rails.root.join('tmp')
-      end
-
-      def unzip_directory
-        @unzip_directory ||= File.join(temp_directory, timestamp_slug)
-      end
-
-      def timestamp_slug
-        @timestamp ||= "#{Time.now.to_i}_#{random_alphanumeric_string}"
-      end
-
-      def file_path(file_name = nil)
-        tmp_path = File.join(temp_directory, timestamp_slug)
-        FileUtils::mkdir tmp_path unless File.exists?(tmp_path)
-        return File.join(temp_directory, timestamp_slug, file_name) if file_name
-        tmp_path
       end
 
       def saxon_jar_path

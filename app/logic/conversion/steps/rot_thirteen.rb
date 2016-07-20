@@ -5,19 +5,19 @@ require 'conversion_errors/conversion_errors'
 module Conversion
   module Steps
 
-    class RotThirteen < Step
+    class RotThirteen < ConversionStep
 
       def convert_file(input_file, options_hash = {})
         super
-        contents = input_file.read
+        contents = extract_contents(input_file)
         begin
           result = contents.rot13
         rescue => e
           puts e.message.inspect
           puts e.backtrace
         end
-        # puts "extension: #{input_file_extension(input_file)}"
-        filename = "rot13_result_#{Time.now.to_i}_#{Random.rand(10000)}.#{input_file_extension(input_file)}"
+        puts "converting!!!"
+        filename = "rot13_result_#{Time.now.to_i}_#{Random.rand(10000)}#{input_file_extension(input_file)}"
         File.write(Rails.root.join(temp_directory, filename), result)
         File.open(Rails.root.join(temp_directory, filename))
       end

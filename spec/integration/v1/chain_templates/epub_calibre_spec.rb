@@ -4,7 +4,7 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a ROT13 recipe" do
+describe "User executes a single-step epub calibre recipe" do
 
   # URL: /api/recipes/:id/execute
   # Method: GET
@@ -14,18 +14,18 @@ describe "User executes a ROT13 recipe" do
 
   let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
   let!(:auth_headers)     { user.create_new_auth_token }
-  let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plain') }
+  let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
   let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
 
   let!(:execution_params) {
     {
-        input_file: text_file,
+        input_file: html_file,
         id: recipe.id
     }
   }
 
-    let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "RotThirteen") }
+    let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "EpubCalibre") }
     let!(:step1)             { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
 
   context 'if the conversion is successful' do
@@ -33,11 +33,7 @@ describe "User executes a ROT13 recipe" do
       perform_execute_request(auth_headers, execution_params)
     end
 
-    it 'should be successful' do
-
-    end
-
-    it 'should be successful' do
+    specify do
       expect(response.status).to eq(200)
       expect(body_as_json['conversion_chain']).to_not be_nil
       expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 1
@@ -50,7 +46,7 @@ describe "User executes a ROT13 recipe" do
     it 'should have an expected output file' do
       wait_for_async
       result = ConversionChain.last.output_file
-      expect(result.read).to eq "Guvf vf fbzr grkg."
+      expect(File.extname(result.path)).to eq '.epub'
     end
   end
 

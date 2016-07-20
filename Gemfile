@@ -61,6 +61,9 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 
 
+######################## aux ########################
+
+gem 'awesome_print'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -80,7 +83,6 @@ group :development, :test do
   # factories
   gem 'factory_girl_rails', '~> 4.0'
   # gem 'sidekiq-status'
-
 end
 
 group :test do

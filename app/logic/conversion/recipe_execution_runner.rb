@@ -14,8 +14,8 @@ module Conversion
         chain = build_chain
         chain.execute(files)
       rescue => e
-        puts e.message
-        puts e.backtrace
+        ap e.message
+        ap e.backtrace
       end
       chain
     end

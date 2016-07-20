@@ -29,8 +29,9 @@ class StepClass < ActiveRecord::Base
      Conversion::Steps::DocxToHtmlXsl,
      Conversion::Steps::RotThirteen,
      Conversion::Steps::Step,
-     Conversion::Steps::DocxToHtmlPandoc
-     # Conversion::Steps::HtmlValidation
+     Conversion::Steps::DocxToHtmlPandoc,
+     Conversion::Steps::EpubCalibre,
+     Conversion::Steps::Validators::AlwaysOK
     ]
   end
 

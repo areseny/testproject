@@ -16,8 +16,8 @@ describe "User executes a single recipe" do
 
     let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
-    let!(:xml_file)         { fixture_file_upload('spec/fixtures/files/test_file.xml', 'text/xml') }
-    let!(:photo_file)       { fixture_file_upload('spec/fixtures/files/kitty.jpeg', 'image/jpeg') }
+    let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
+    let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
 
     let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
 

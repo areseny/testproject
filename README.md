@@ -1,4 +1,4 @@
-## INK
+### INK
 
 Ink is an API. It provides an extensible step-based framework for file conversions.
 
@@ -18,6 +18,15 @@ Copy the `config/database.yml.sample` file into `config/database.yml`
 
 `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
+### Step Third-party Binary Dependencies
+
+## Calibre
+
+For ebook conversion.
+
+Installation: https://calibre-ebook.com/download
+Usage directions and options (lots): https://manual.calibre-ebook.com/generated/en/ebook-convert.html
+
 ## ImageMagick
 
 Used for steps with image manipulation.
@@ -26,16 +35,20 @@ Installation directions: http://www.imagemagick.org/script/binary-releases.php
 
 ## Pandoc
 
+Used for document conversion from docx => html
+
 Set up directions here: http://pandoc.org/installing.html
 
 ## Saxon
+
+Used for custom conversions using xsl.
 
 On your machine, set up the Saxon XSLT parser (needed for some steps)
 http://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE/9.7.0-4 (jar only)
 Installation directions for Ubuntu: https://gist.github.com/bauhouse/21afa826ff81409b97b0
 Installation directions for Linux and Windows: http://www.saxonica.com/saxon-c/index.xml#installing
 
-## Run it
+### Run it
 
 Run the Rails server in a terminal - `bundle exec rails s`
 
@@ -45,9 +58,13 @@ Run sidekiq in another terminal - `bundle exec sidekiq`
 
 Check `localhost:3000/recipes/anyone` to see if it's up.
 
+### Further development
+
 ## Adding a new step
 
-To add a new step, add the step logic under its own file in `app/logic/steps`. Subclass `Conversion::Steps::Step`. I've left a couple of sample ones - `RotThirteen` is a basic one that involves serving back a different file than was supplied.
+To add a new step, add the step logic under its own file in `app/logic/steps`. Subclass `Conversion::Steps::ConversionStep` (for file conversion steps) or `Conversion::Steps::ValidationStep` for validation steps. 
+
+I've left a couple of sample conversion steps - `RotThirteen` is a basic one that involves serving back a different file than was supplied.
 
 Add the class name into the array `StepClass.all_steps` method. Otherwise the system won't know it's there.
 

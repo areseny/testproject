@@ -1,6 +1,6 @@
 require 'conversion/steps/docx_to_html_ottoville'
 
-describe Conversion::Steps::DocxToHtmlPandoc do
+describe Conversion::Steps::DocxToHtmlOttoville do
 
   let!(:subject)             { Conversion::Steps::DocxToHtmlOttoville.new }
   let!(:docx_file_1)         { Rack::Test::UploadedFile.new('spec/fixtures/files/demo.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }

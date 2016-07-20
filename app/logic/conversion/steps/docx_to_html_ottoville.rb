@@ -5,7 +5,7 @@ require 'conversion_errors/conversion_errors'
 module Conversion
   module Steps
 
-    class DocxToHtmlOttoville < Step
+    class DocxToHtmlOttoville < ConversionStep
 
       def convert_file(input_file, options_hash = {})
         super
@@ -41,18 +41,6 @@ module Conversion
         rescue
           raise ConversionErrors::ConversionError.new(conversion_output)
         end
-      end
-
-      def temp_directory
-        @temp_directory ||= Rails.root.join('tmp')
-      end
-
-      def unzip_directory
-        @unzip_directory ||= File.join(temp_directory, timestamp_slug)
-      end
-
-      def timestamp_slug
-        @timestamp ||= "#{Time.now.to_i}_#{random_alphanumeric_string}"
       end
 
       def file_path(file_name)

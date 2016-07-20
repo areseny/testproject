@@ -1,4 +1,5 @@
 require 'conversion_errors/conversion_errors'
+require 'open3'
 
 module Conversion
   module Steps
@@ -6,7 +7,7 @@ module Conversion
       include ConversionErrors
       include AuxiliaryHelpers
 
-      attr_accessor :next_step, :input_files, :output_files, :errors
+      attr_accessor :next_step, :input_files, :output_files, :errors, :status_code
 
       def initialize(next_step=nil)
         @next_step = next_step
@@ -17,18 +18,24 @@ module Conversion
         @input_files = [files]
         modified_object = convert_file(files, options_hash)
       rescue => e
+        ap e.message
+        ap e.backtrace
         raise_and_log_error(e.message)
       ensure
-        @output_files = modified_object
-        return modified_object if next_step.nil?
-        next_step.execute(modified_object, options_hash)
+        if @errors.any?
+          return
+        else
+          @output_files = modified_object
+          return modified_object if next_step.nil?
+          next_step.execute(modified_object, options_hash)
+        end
       end
 
       # doesn't do anything! just returns the file as-is
       def convert_file(input_file, options_hash = {})
         raise_and_log_error("No file specified") unless input_file
         # check file extension
-        puts "(#{self.class.name}) Converting #{input_filename(input_file)}..."
+        print_step "Converting #{input_filename(input_file)}..."
         input_file
       end
 
@@ -45,16 +52,24 @@ module Conversion
 
       def input_filename(input_file)
         return input_file if input_file.is_a? String
-        return File.basename(File.absolute_path(input_file)) if input_file.is_a? File
+        return input_file.original_filename if input_file.is_a? Rack::Test::UploadedFile
+        return File.basename(input_file) if input_file.is_a? File
         input_file.file.file
       end
 
       def input_file_extension(input_file)
-        puts "file extension start"
-        puts "file extension #{File.extname(input_filename(input_file))}"
-        ext = File.extname(input_filename(input_file))
-        puts "file extension done"
-        ext
+        File.extname(input_filename(input_file))
+      end
+
+      def absolute_file_path(input_file)
+        return File.absolute_path(input_file) if input_file.is_a? File
+        return input_file.path if input_file.is_a? Rack::Test::UploadedFile
+        return input_file.file.file if input_file.respond_to?(:file)
+        input_file
+      end
+
+      def print_step(message)
+        ap "[#{self.class.name.demodulize}] - #{message}"
       end
     end
 

@@ -16,7 +16,7 @@ describe "User executes a single recipe" do
 
     let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
-    let!(:docx_file)        { fixture_file_upload('spec/fixtures/files/basic_doc.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
+    let!(:docx_file)        { fixture_file_upload('files/basic_doc.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
     let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
 
