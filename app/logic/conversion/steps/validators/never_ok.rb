@@ -1,11 +1,11 @@
 module Conversion
   module Steps
     module Validators
-      class AlwaysOk < ValidationStep
+      class NeverOk < ValidationStep
 
         def convert_file(input_file, options_hash = {})
           super
-          "Looks great! A-OK!"
+          @errors << "FAILSAUCE"
         end
 
       end

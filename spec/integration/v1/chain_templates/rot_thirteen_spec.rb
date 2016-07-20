@@ -52,7 +52,8 @@ describe "User executes a ROT13 recipe" do
   end
 
   context 'if the execution fails' do
-    let!(:photo_file)        { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
+    let!(:photo_file)         { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
+    let!(:boobytrapped_step)  { Conversion::Steps::RotThirteen.new }
 
     let!(:execution_params) {
       {
@@ -60,6 +61,11 @@ describe "User executes a ROT13 recipe" do
           id: recipe.id
       }
     }
+
+    before do
+      expect(boobytrapped_step).to receive(:convert_file) { raise "OMG!" }
+      expect(Conversion::Steps::RotThirteen).to receive(:new).and_return(boobytrapped_step)
+    end
 
     it 'fails nicely' do
       perform_execute_request(auth_headers, execution_params)

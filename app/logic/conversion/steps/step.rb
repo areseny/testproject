@@ -21,6 +21,7 @@ module Conversion
         ap e.message
         ap e.backtrace
         raise_and_log_error(e.message)
+        raise e
       ensure
         if @errors.any?
           return

@@ -32,6 +32,7 @@ class StepClass < ActiveRecord::Base
      Conversion::Steps::DocxToHtmlPandoc,
      Conversion::Steps::EpubCalibre,
      Conversion::Steps::Validators::AlwaysOk,
+     Conversion::Steps::Validators::NeverOk,
      Conversion::Steps::Shoutifier
     ]
   end
