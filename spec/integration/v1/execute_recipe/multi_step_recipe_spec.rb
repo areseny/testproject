@@ -88,7 +88,7 @@ describe "User executes a recipe with multiple real steps" do
         expect(body_as_json['conversion_chain']['conversion_steps'].last['executed_at']).to_not be_nil
       end
 
-      it 'does not execute the later steps' do
+      xit 'does not execute the later steps' do
         expect(Conversion::Steps::EpubCalibre).to_not have_received(:execute)
       end
     end
