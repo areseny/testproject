@@ -72,10 +72,11 @@ describe "User executes a recipe with multiple real steps" do
 
     context 'and execution fails' do
       let!(:boobytrapped_step)      { Conversion::Steps::RotThirteen.new }
+      let(:step_spy)                { double(:epub_calibre) }
 
       before do
         allow(Conversion::Steps::RotThirteen).to receive(:new).and_return boobytrapped_step
-        expect(boobytrapped_step).to receive(:convert_file) { raise "Oh noes! Error!" }
+        allow(boobytrapped_step).to receive(:convert_file) { raise "Oh noes! Error!" }
       end
 
       it 'halts execution after a failed step' do
@@ -88,8 +89,11 @@ describe "User executes a recipe with multiple real steps" do
         expect(body_as_json['conversion_chain']['conversion_steps'].last['executed_at']).to_not be_nil
       end
 
-      xit 'does not execute the later steps' do
-        expect(Conversion::Steps::EpubCalibre).to_not have_received(:execute)
+      it 'does not execute the later steps' do
+        allow(Conversion::Steps::EpubCalibre).to receive(:new).and_return(step_spy)
+        allow(step_spy).to receive(:execute)
+
+        expect(step_spy).to_not have_received(:execute)
       end
     end
   end
