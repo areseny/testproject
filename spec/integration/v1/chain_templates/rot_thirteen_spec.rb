@@ -72,7 +72,7 @@ describe "User executes a ROT13 recipe" do
 
       wait_for_async
       result = ConversionChain.last.output_file
-      expect(result).to be_nil
+      expect(result.file).to be_nil
     end
   end
 

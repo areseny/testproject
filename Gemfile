@@ -39,6 +39,9 @@ gem 'rubyzip'
 # js
 gem 'therubyracer'
 
+# file info
+gem 'ruby-filemagic'
+
 ################### css ######################
 
 # Use SCSS for stylesheets

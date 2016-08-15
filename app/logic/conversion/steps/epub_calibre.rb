@@ -9,7 +9,6 @@ module Conversion
         output_file_path = Rails.root.join(temp_directory, "epub_calibre_#{Time.now.to_i}_#{Random.rand(10000)}.epub")
         print_step "converting #{input_filename(input_file)} to #{output_file_path}"
         print_step "path: #{absolute_file_path(input_file)}"
-        # ap "EXIST?? #{File.exist?(absolute_file_path(input_file))}"
         do_conversion(absolute_file_path(input_file), output_file_path)
         if @success
           File.open(Rails.root.join(temp_directory, output_file_path))

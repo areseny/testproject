@@ -1,7 +1,18 @@
 require 'securerandom'
 require 'base64'
+require 'filemagic'
 
 module AuxiliaryHelpers
+  def binary?(filename)
+    begin
+      fm= FileMagic.new(FileMagic::MAGIC_MIME)
+      !(fm.file(filename)=~ /^text\//)
+    rescue => e
+      ap e.message
+    ensure
+      fm.close
+    end
+  end
 
   def snake_case_to_camel_case
     class_name.split('_').collect(&:capitalize).join

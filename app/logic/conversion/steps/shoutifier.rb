@@ -8,7 +8,7 @@ module Conversion
 
       def convert_file(input_file, options_hash = {})
         super
-        check_if_text_file
+        #is_text_file?
         contents = extract_contents(input_file)
         result = contents.shoutify
         filename = "shouty_result_#{Time.now.to_i}_#{Random.rand(10000)}#{input_file_extension(input_file)}"
@@ -23,12 +23,6 @@ module Conversion
       def file_path(file_name)
         File.join(temp_directory, timestamp_slug, file_name)
       end
-
-      def check_if_text_file
-        # require 'filemagic'
-        #
-        # puts FileMagic.new(FileMagic::MAGIC_MIME).file(__FILE__)
-      end
     end
   end
 end
@@ -36,6 +30,7 @@ end
 class String
   def shoutify(format_html = true)
     inside_html_tag = false
+    raise "The file is either empty or does not have text" if length == 0
     split('').inject('') do |text, char|
       text << case char
         when 'a'..'z', 'A'..'Z'

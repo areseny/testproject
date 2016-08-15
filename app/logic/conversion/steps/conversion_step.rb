@@ -14,6 +14,28 @@ module Conversion
         @timestamp ||= "#{Time.now.to_i}_#{random_alphanumeric_string}"
       end
 
+      def is_text_file?(file)
+        if file.respond_to?(:content_type)
+          return text_mime_type?(file.content_type)
+        end
+        return_value = false
+        fm= FileMagic.new(FileMagic::MAGIC_MIME)
+        text_file = text_mime_type?(fm.file(filename))
+        return_value = true if text_file
+      rescue => e
+        ap "Cannot read that file with FileMagick"
+        ap e.message
+        return nil
+      ensure
+        fm.close if fm.respond_to?(:close)
+        return_value
+      end
+
+      def text_mime_type?(mime_type)
+        # ap "checking mime type #{mime_type} to contain text -- #{!!(mime_type =~ /^text\//)}"
+        !!(mime_type =~ /^text\//)
+      end
+
       def file_path(file_name = nil)
         tmp_path = File.join(temp_directory, timestamp_slug)
         FileUtils::mkdir tmp_path unless File.exists?(tmp_path)
@@ -22,11 +44,6 @@ module Conversion
       end
 
       def extract_contents(input_file)
-        # if File.exists?(input_file)
-        #   contents = File.read(input_file)
-        # else
-        #   contents = input_file.read
-        # end
         print_step input_file.inspect
         if input_file.respond_to? :read
           input_file.read

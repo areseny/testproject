@@ -20,6 +20,14 @@ Copy the `config/database.yml.sample` file into `config/database.yml`
 
 ### Step Third-party Binary Dependencies
 
+## FileMagic
+
+On Ubuntu:
+`sudo apt-get install libmagic-dev`
+
+On OSX:
+`sudo brew install libmagic`
+
 ## Calibre
 
 For ebook conversion.
@@ -35,7 +43,7 @@ Installation directions: http://www.imagemagick.org/script/binary-releases.php
 
 ## Pandoc
 
-Used for document conversion from docx => html
+Used for document conversion from docx => html (as well as a lot of other things!)
 
 Set up directions here: http://pandoc.org/installing.html
 
