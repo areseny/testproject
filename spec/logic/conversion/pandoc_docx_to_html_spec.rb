@@ -12,6 +12,9 @@ describe Conversion::Steps::DocxToHtmlPandoc do
 
     context 'converting a file successfully using DocxToHTML (Pandoc)' do
 
+      after :each do
+        sleep 2
+      end
       specify do
         test_file_conversion(docx_file_1, expected_result_1)
       end
@@ -24,7 +27,7 @@ describe Conversion::Steps::DocxToHtmlPandoc do
         test_file_conversion(docx_file_3, expected_result_3)
       end
 
-      it 'should be fine' do
+      specify do
         test_file_conversion(docx_file_4, expected_result_4)
       end
 

@@ -1,8 +1,8 @@
-require 'conversion/steps/docx_to_html_ottoville'
+require 'conversion/steps/docx_to_html_xsl'
 
-describe Conversion::Steps::DocxToHtmlOttoville do
+describe Conversion::Steps::DocxToHtmlXsl do
 
-  let!(:subject)             { Conversion::Steps::DocxToHtmlOttoville.new }
+  let!(:subject)             { Conversion::Steps::DocxToHtmlXsl.new }
   let!(:docx_file_1)         { Rack::Test::UploadedFile.new('spec/fixtures/files/demo.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
   let!(:docx_file_2)         { Rack::Test::UploadedFile.new('spec/fixtures/files/test-1.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
   let!(:docx_file_3)         { Rack::Test::UploadedFile.new('spec/fixtures/files/basic_doc.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
@@ -10,7 +10,7 @@ describe Conversion::Steps::DocxToHtmlOttoville do
 
   xdescribe 'file conversion step tests' do
 
-    context 'converting a file successfully using DocxToHTML (Ottoville)' do
+    context 'converting a file successfully using DocxToHTML (XSL)' do
 
       it 'should return a result for the first test document' do
         result = subject.convert_file(docx_file_1)

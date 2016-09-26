@@ -3,11 +3,14 @@ module Conversion
     class ConversionStep < Step
 
       def temp_directory
-        @temp_directory ||= Rails.root.join('tmp')
+        tmp = Rails.root.join('tmp')
+        @temp_directory = File.join(tmp, timestamp_slug)
+        FileUtils::mkdir @temp_directory unless File.exists?(@temp_directory)
+        @temp_directory
       end
 
       def unzip_directory
-        @unzip_directory ||= File.join(temp_directory, timestamp_slug)
+        @unzip_directory ||= File.join(temp_directory, "unzip")
       end
 
       def timestamp_slug
@@ -36,12 +39,12 @@ module Conversion
         !!(mime_type =~ /^text\//)
       end
 
-      def file_path(file_name = nil)
-        tmp_path = File.join(temp_directory, timestamp_slug)
-        FileUtils::mkdir tmp_path unless File.exists?(tmp_path)
-        return File.join(temp_directory, timestamp_slug, file_name) if file_name
-        tmp_path
-      end
+      # def file_path(file_name = nil)
+      #   # tmp_path = File.join(temp_directory, timestamp_slug)
+      #   FileUtils::mkdir temp_directory unless File.exists?(temp_directory)
+      #   return File.join(temp_directory, file_name) if file_name
+      #   temp_directory
+      # end
 
       def extract_contents(input_file)
         print_step input_file.inspect

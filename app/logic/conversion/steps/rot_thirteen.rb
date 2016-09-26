@@ -17,14 +17,6 @@ module Conversion
         File.open(Rails.root.join(temp_directory, filename))
       end
 
-      def temp_directory
-        @temp_directory ||= Rails.root.join('tmp')
-      end
-
-      def file_path(file_name)
-        File.join(temp_directory, timestamp_slug, file_name)
-      end
-
       def check_if_text_file
         # require 'filemagic'
         #

@@ -15,14 +15,6 @@ module Conversion
         end
       end
 
-      def temp_directory
-        @temp_directory ||= Rails.root.join('tmp')
-      end
-
-      def file_path(file_name)
-        File.join(temp_directory, timestamp_slug, file_name)
-      end
-
       private
 
       def do_conversion(source_filename, destination_filename)

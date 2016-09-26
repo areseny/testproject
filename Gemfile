@@ -42,6 +42,9 @@ gem 'therubyracer'
 # file info
 gem 'ruby-filemagic'
 
+# git!
+gem 'git'
+
 ################### css ######################
 
 # Use SCSS for stylesheets
