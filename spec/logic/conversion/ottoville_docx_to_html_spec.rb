@@ -1,4 +1,4 @@
-require 'conversion/steps/docx_to_html_ottoville'
+require 'rails_helper'
 
 describe Conversion::Steps::DocxToHtmlOttoville do
 

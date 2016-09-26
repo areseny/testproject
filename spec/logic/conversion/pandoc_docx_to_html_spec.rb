@@ -1,4 +1,4 @@
-require 'conversion/steps/docx_to_html_pandoc'
+require 'rails_helper'
 
 describe Conversion::Steps::DocxToHtmlPandoc do
 
@@ -15,6 +15,7 @@ describe Conversion::Steps::DocxToHtmlPandoc do
       after :each do
         sleep 2
       end
+
       specify do
         test_file_conversion(docx_file_1, expected_result_1)
       end

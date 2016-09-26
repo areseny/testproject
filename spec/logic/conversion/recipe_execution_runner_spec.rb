@@ -1,4 +1,4 @@
-require 'conversion/recipe_execution_runner'
+require 'rails_helper'
 
 describe Conversion::RecipeExecutionRunner do
 

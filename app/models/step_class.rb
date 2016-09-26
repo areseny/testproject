@@ -34,7 +34,7 @@ class StepClass < ActiveRecord::Base
      Conversion::Steps::Validators::AlwaysOk,
      Conversion::Steps::Validators::NeverOk,
      Conversion::Steps::Shoutifier,
-     Conversion::Steps::DocxToHtmlPipelineFromGit
+     Conversion::Steps::XSweetDocxToHtmlPipeline
     ]
   end
 

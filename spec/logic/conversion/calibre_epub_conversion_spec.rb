@@ -1,4 +1,3 @@
-require 'conversion/steps/epub_calibre'
 require 'rails_helper'
 
 describe Conversion::Steps::EpubCalibre do

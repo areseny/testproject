@@ -3,8 +3,8 @@ module Conversion
     module SaxonXsltMethods
       attr_accessor :xslt_file_name, :xslt_file_path, :original_file_path
 
-      def setup_xslt(name, file_path)
-        @xslt_file_name = name
+      def setup_xslt(xslt_filename, file_path)
+        @xslt_file_name = xslt_filename
         @original_file_path = file_path
         set_xslt_file_path xslt_file_name
       end
