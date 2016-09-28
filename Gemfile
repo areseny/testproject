@@ -42,13 +42,8 @@ gem 'therubyracer'
 # file info
 gem 'ruby-filemagic'
 
-# git!
-gem 'git'
-
-################### css ######################
-
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+# downloading things
+gem 'httparty'
 
 ################### javascript ###############
 
@@ -89,6 +84,8 @@ group :development, :test do
   # factories
   gem 'factory_girl_rails', '~> 4.0'
   # gem 'sidekiq-status'
+
+  gem 'pry'
 end
 
 group :test do
@@ -96,8 +93,11 @@ group :test do
   gem 'json_spec'
   # gem 'rspec-sidekiq'
 
-# db teardown/cleanup
+  # db teardown/cleanup
   gem 'database_cleaner'
+
+  # mocking external services during testing
+  gem 'webmock'
 end
 
 

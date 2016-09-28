@@ -6,18 +6,18 @@ module Conversion
   module Steps
 
     class DocxToHtmlOttoville < ConversionStep
-      include Conversion::Modules::SaxonXsltMethods
+      include Conversion::Modules::SaxonXslMethods
 
       def initialize
         super
-        setup_xslt "docx2html.xsl", document_xml_path
+        setup_xsl(file_path: document_xml_path, xslt_file_path: File.join(step_logic_file_location, "docx2html.xsl"))
       end
 
       def convert_file(input_file, options_hash = {})
         super
 
         unzip_docx(input_file)
-        apply_xslt_template
+        apply_xsl_template
       end
 
       def unzip_docx(input_file)
@@ -28,10 +28,6 @@ module Conversion
             f.extract(path)
           end
         end
-      end
-
-      def output_file_path
-        @output_file_path ||= File.join(unzip_directory, "ottoville_conversion_output.html") #"#{unzip_directory}#{File::SEPARATOR}conversion_output.html"
       end
 
       def document_xml_path

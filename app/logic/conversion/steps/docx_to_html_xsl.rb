@@ -6,12 +6,11 @@ module Conversion
   module Steps
 
     class DocxToHtmlXsl < ConversionStep
-      include Conversion::Modules::SaxonXsltMethods
+      include Conversion::Modules::SaxonXslMethods
 
       def initialize
         super
-
-        setup_xslt("docx-to-html-2-0.xsl", document_xml_path)
+        setup_xsl(file_path: document_xml_path, xslt_file_path: File.join(step_logic_file_location, "docx-to-html-2-0.xsl"))
       end
 
       def convert_file(input_file, options_hash = {})
@@ -19,7 +18,7 @@ module Conversion
 
         unzip_docx(input_file)
 
-        apply_xslt_template
+        apply_xsl_template
       end
 
       def unzip_docx(input_file)
@@ -34,10 +33,6 @@ module Conversion
         # puts e.message
         # puts e.backtrace
         raise ConversionErrors::ConversionError.new("Could not open docx file - please check to ensure it's a valid docx.")
-      end
-
-      def output_file_path
-        @output_file_path ||= File.join(temp_directory, "conversion_output.html")
       end
 
       def document_xml_path

@@ -39,13 +39,6 @@ module Conversion
         !!(mime_type =~ /^text\//)
       end
 
-      # def file_path(file_name = nil)
-      #   # tmp_path = File.join(temp_directory, timestamp_slug)
-      #   FileUtils::mkdir temp_directory unless File.exists?(temp_directory)
-      #   return File.join(temp_directory, file_name) if file_name
-      #   temp_directory
-      # end
-
       def extract_contents(input_file)
         print_step input_file.inspect
         if input_file.respond_to? :read
