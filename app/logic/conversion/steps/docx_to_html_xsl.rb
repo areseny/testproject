@@ -18,7 +18,7 @@ module Conversion
 
         unzip_docx(input_file)
 
-        apply_xsl_template
+        apply_xslt_transformation
       end
 
       def unzip_docx(input_file)

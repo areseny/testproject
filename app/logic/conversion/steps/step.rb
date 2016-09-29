@@ -7,15 +7,20 @@ module Conversion
       include ConversionErrors
       include AuxiliaryHelpers
 
-      attr_accessor :next_step, :input_files, :output_files, :errors, :status_code
+      attr_accessor :next_step, :input_files, :output_files, :errors, :status_code, :required_parameters
 
       def initialize(next_step=nil)
         @next_step = next_step
         @errors = []
+        @required_parameters = []
+      end
+
+      def self.require_parameters(*value)
+        @required_parameters = value
       end
 
       def execute(files, options_hash = {})
-        @input_files = [files]
+        @input_files = [files].flatten
         modified_object = convert_file(files, options_hash)
       rescue => e
         ap e.message
@@ -35,6 +40,8 @@ module Conversion
       # doesn't do anything! just returns the file as-is
       def convert_file(input_file, options_hash = {})
         raise_and_log_error("No file specified") unless input_file
+        missing_parameters = @required_parameters - options_hash.keys
+        raise ArgumentError.new("Missing parameters: #{missing_parameters.join(", ")}") if missing_parameters.any?
         # check file extension
         print_step "Converting #{input_filename(input_file)}..."
         input_file
