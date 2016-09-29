@@ -35,10 +35,10 @@ class StepClass < ActiveRecord::Base
      Conversion::Steps::Validators::NeverOk,
      Conversion::Steps::Shoutifier,
      Conversion::Steps::XSweetDocxToHtmlExtract,
-     Conversion::Steps::XSweetDocxToHtmlHandleNotes,
-     Conversion::Steps::XSweetDocxToHtmlScrub,
-     Conversion::Steps::XSweetDocxToHtmlJoinElements,
-     Conversion::Steps::XSweetDocxToHtmlZorbaMap,
+     Conversion::Steps::XSweetHtmlHandleNotes,
+     Conversion::Steps::XSweetHtmlScrub,
+     Conversion::Steps::XSweetHtmlJoinElements,
+     Conversion::Steps::XSweetHtmlZorbaMap,
      Conversion::Steps::DownloadAndExecuteXslWithSaxon,
      Conversion::Steps::DownloadAndExecuteXslWithSaxonOnDocx
     ]
