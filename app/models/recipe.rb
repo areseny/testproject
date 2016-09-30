@@ -6,6 +6,7 @@ require 'sidekiq/api'
 #   t.string   "name",                       null: false
 #   t.text     "description"
 #   t.boolean  "active",      default: true, null: false
+#   t.boolean  "public",     default: false, null: false
 #   t.datetime "created_at",                 null: false
 #   t.datetime "updated_at",                 null: false
 # end
@@ -19,11 +20,14 @@ class Recipe < ActiveRecord::Base
 
   validates_presence_of :name, :user
   validates_inclusion_of :active, :in => [true, false]
+  validates_inclusion_of :public, :in => [true, false]
   validate :steps_have_unique_positions, :steps_contiguous?
 
   after_initialize :set_as_active
 
   scope :active, -> { where(active: true) }
+
+  scope :available_to_user, -> (user_id) { active.where("PUBLIC = ? OR USER_ID = ?", true, user_id) }
 
   def clone_and_execute(input_file)
     raise ConversionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
