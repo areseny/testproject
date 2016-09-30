@@ -11,7 +11,7 @@ describe "User creates recipe" do
 
   describe "POST create new recipe" do
 
-    let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
     let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
     let!(:auth_headers)     { user.create_new_auth_token }
@@ -56,8 +56,8 @@ describe "User creates recipe" do
 
       context 'if there are steps supplied' do
 
-        let!(:generic_step)      { FactoryGirl.create(:step_class, name: "Step") }
-        let!(:rot13)      { FactoryGirl.create(:step_class, name: "RotThirteen") }
+        let!(:generic_step)      { create(:step_class, name: "Step") }
+        let!(:rot13)             { create(:step_class, name: "RotThirteen") }
 
         context 'presented as a series of steps with positions included' do
           let!(:step_params)      { [{position: 1, name: "Step"}, {position: 2, name: "RotThirteen" }] }

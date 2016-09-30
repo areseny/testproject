@@ -11,7 +11,7 @@ describe "User sign up" do
 
 
   describe "POST sign_up" do
-    let(:email)              { FactoryGirl.generate(:email) }
+    let(:email)              { generate(:email) }
     let(:password)           { "password" }
 
     context 'is successful' do

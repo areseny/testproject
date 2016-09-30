@@ -12,15 +12,15 @@ describe "User executes a ROT13 recipe" do
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
-  let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+  let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
   let!(:auth_headers)     { user.create_new_auth_token }
   let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plain') }
 
-  let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
+  let!(:recipe)           { create(:recipe, user: user) }
 
 
-  let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "RotThirteen") }
-  let!(:step1)             { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
+  let!(:conversion_class)  { create(:step_class, name: "RotThirteen") }
+  let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
 
   context 'if the conversion is successful' do
     let!(:execution_params) {

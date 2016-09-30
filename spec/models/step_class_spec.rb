@@ -5,13 +5,13 @@ RSpec.describe StepClass, type: :model do
   describe 'model validations' do
 
     it 'has a valid factory' do
-      expect(FactoryGirl.build(:step_class)).to be_valid
+      expect(build(:step_class)).to be_valid
     end
 
     expects_to_be_invalid_without :step_class, :name, :active
 
     it 'should not be valid without a name in the "all_classes" method' do
-      expect(FactoryGirl.build(:step_class, name: "nonsense")).to_not be_valid
+      expect(build(:step_class, name: "nonsense")).to_not be_valid
     end
   end
 
@@ -22,7 +22,7 @@ RSpec.describe StepClass, type: :model do
     end
 
     it 'should find the correct behavioural class' do
-      expect(FactoryGirl.build(:step_class, name: "RotThirteen").behaviour_class).to eq Conversion::Steps::RotThirteen
+      expect(build(:step_class, name: "RotThirteen").behaviour_class).to eq Conversion::Steps::RotThirteen
     end
 
   end

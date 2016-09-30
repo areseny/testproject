@@ -3,14 +3,14 @@ require_relative 'version'
 describe Api::V1::RecipesController, type: :controller do
   include Devise::TestHelpers
 
-  let!(:user)           { FactoryGirl.create(:user) }
-  let!(:other_user)     { FactoryGirl.create(:user) }
+  let!(:user)           { create(:user) }
+  let!(:other_user)     { create(:user) }
 
   let!(:name)           { "My Splendiferous PNG to JPG transmogrifier" }
   let!(:description)    { "It transmogrifies! It transforms! It even goes across filetypes!" }
 
-  let!(:step)           { FactoryGirl.create(:step_class, name: "Step") }
-  let!(:xml_to_html)    { FactoryGirl.create(:step_class, name: "RotThirteen") }
+  let!(:step)           { create(:step_class, name: "Step") }
+  let!(:xml_to_html)    { create(:step_class, name: "RotThirteen") }
 
   let!(:attributes)     { [:name, :description] }
 
@@ -25,11 +25,11 @@ describe Api::V1::RecipesController, type: :controller do
 
   describe "POST execute" do
 
-    let(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }
+    let(:demo_step)        { create(:step_class, name: "Step") }
     let(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
     let(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let(:recipe_step)      { FactoryGirl.create(:recipe_step, step_class: demo_step) }
-    let(:recipe)   { FactoryGirl.create(:recipe, user: user, recipe_steps: [recipe_step]) }
+    let(:recipe_step)      { create(:recipe_step, step_class: demo_step) }
+    let(:recipe)   { create(:recipe, user: user, recipe_steps: [recipe_step]) }
 
     let!(:execution_params) {
         {
@@ -314,7 +314,7 @@ describe Api::V1::RecipesController, type: :controller do
   [:patch, :put].each do |method|
     describe "#{method.upcase} update" do
 
-      let!(:recipe)   { FactoryGirl.create(:recipe, user: user) }
+      let!(:recipe)   { create(:recipe, user: user) }
 
       context 'if a valid token is supplied' do
 
@@ -364,10 +364,10 @@ describe Api::V1::RecipesController, type: :controller do
       end
 
       context 'there are recipes' do
-        let!(:other_user)      { FactoryGirl.create(:user) }
-        let!(:recipe_1)      { FactoryGirl.create(:recipe, user: user) }
-        let!(:recipe_2)      { FactoryGirl.create(:recipe, user: user, active: false) }
-        let!(:recipe_3)      { FactoryGirl.create(:recipe, user: other_user) }
+        let!(:other_user)      { create(:user) }
+        let!(:recipe_1)      { create(:recipe, user: user) }
+        let!(:recipe_2)      { create(:recipe, user: user, active: false) }
+        let!(:recipe_3)      { create(:recipe, user: other_user) }
 
         it "should find the user's recipes" do
           request_with_auth(user.create_new_auth_token) do
@@ -413,7 +413,7 @@ describe Api::V1::RecipesController, type: :controller do
       context 'the recipe exists' do
 
         context 'the recipe belongs to the user' do
-          let!(:recipe)      { FactoryGirl.create(:recipe, user: user) }
+          let!(:recipe)      { create(:recipe, user: user) }
 
           it "should find the recipe" do
             request_with_auth(user.create_new_auth_token) do
@@ -426,8 +426,8 @@ describe Api::V1::RecipesController, type: :controller do
         end
 
         context 'the recipe belongs to another user' do
-          let!(:other_user)     { FactoryGirl.create(:user) }
-          let!(:recipe)       { FactoryGirl.create(:recipe, user: other_user) }
+          let!(:other_user)     { create(:user) }
+          let!(:recipe)       { create(:recipe, user: other_user) }
 
           it "should not find the recipe" do
             request_with_auth(user.create_new_auth_token) do
@@ -476,7 +476,7 @@ describe Api::V1::RecipesController, type: :controller do
       context 'the recipe exists' do
 
         context 'the recipe belongs to the user' do
-          let!(:recipe)      { FactoryGirl.create(:recipe, user: user) }
+          let!(:recipe)      { create(:recipe, user: user) }
 
           it "should find the recipe" do
             request_with_auth(user.create_new_auth_token) do
@@ -489,8 +489,8 @@ describe Api::V1::RecipesController, type: :controller do
         end
 
         context 'the recipe belongs to another user' do
-          let!(:other_user)     { FactoryGirl.create(:user) }
-          let!(:recipe)       { FactoryGirl.create(:recipe, user: other_user) }
+          let!(:other_user)     { create(:user) }
+          let!(:recipe)       { create(:recipe, user: other_user) }
 
           it "should not find the recipe" do
             request_with_auth(user.create_new_auth_token) do

@@ -12,7 +12,7 @@ describe "User sign in" do
 
   describe "POST sign in" do
     let!(:password)       { "password" }
-    let!(:user)           { FactoryGirl.create(:user, password: password, password_confirmation: password) }
+    let!(:user)           { create(:user, password: password, password_confirmation: password) }
     let!(:valid_params)   {
       {
           email: user.email,

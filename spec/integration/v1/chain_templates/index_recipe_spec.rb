@@ -11,13 +11,13 @@ describe "User lists all their recipes" do
 
   describe "GET index recipe" do
 
-    let!(:user)               { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
-    let!(:other_user)         { FactoryGirl.create(:user) }
+    let!(:user)               { create(:user, password: "password", password_confirmation: "password") }
+    let!(:other_user)         { create(:user) }
 
     let!(:auth_headers)       { user.create_new_auth_token }
-    let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
-    let!(:inactive_recipe)  { FactoryGirl.create(:recipe, user: user, active: false) }
-    let!(:other_recipe)     { FactoryGirl.create(:recipe, user: other_user) }
+    let!(:recipe)           { create(:recipe, user: user) }
+    let!(:inactive_recipe)  { create(:recipe, user: user, active: false) }
+    let!(:other_recipe)     { create(:recipe, user: other_user) }
 
     context 'if user is signed in' do
 

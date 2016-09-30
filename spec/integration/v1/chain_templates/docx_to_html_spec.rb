@@ -14,11 +14,11 @@ describe "User executes a single recipe" do
 
   describe "POST execute recipe" do
 
-    let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:docx_file)        { fixture_file_upload('files/basic_doc.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
-    let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user) }
 
     let!(:execution_params) {
       {
@@ -28,8 +28,8 @@ describe "User executes a single recipe" do
     }
 
     context 'if user is signed in' do
-      let!(:conversion_class)  { FactoryGirl.create(:step_class, name: "Step") }
-      let!(:step1)             { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
+      let!(:conversion_class)  { create(:step_class, name: "Step") }
+      let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
 
       context 'and execution is successful' do
         it 'should return the objects' do

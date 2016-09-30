@@ -11,12 +11,12 @@ describe "User updates recipe" do
 
   describe "PUT update recipe" do
 
-    let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
     let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
     let!(:active)           { false }
     let!(:auth_headers)     { user.create_new_auth_token }
-    let!(:recipe)   { FactoryGirl.create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user) }
 
     let!(:recipe_params) {
       {
@@ -117,7 +117,7 @@ describe "User updates recipe" do
       end
 
       context 'and the recipe does not belong to the user' do
-        let!(:other_user)     { FactoryGirl.create(:user) }
+        let!(:other_user)     { create(:user) }
 
         before do
           recipe.update_attribute(:user_id, other_user.id)

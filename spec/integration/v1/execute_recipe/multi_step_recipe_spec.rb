@@ -14,12 +14,12 @@ describe "User executes a recipe with multiple real steps" do
 
   describe "POST execute recipe" do
 
-    let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:html_file)         { fixture_file_upload('files/test.html', 'text/html') }
     let!(:docx_file)         { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
-    let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user) }
 
     let!(:execution_params) {
       {
@@ -28,12 +28,12 @@ describe "User executes a recipe with multiple real steps" do
       }
     }
 
-    let!(:pandoc)     { FactoryGirl.create(:step_class, name: "DocxToHtmlPandoc") }
-    let!(:rot13)      { FactoryGirl.create(:step_class, name: "RotThirteen") }
-    let!(:epub)       { FactoryGirl.create(:step_class, name: "EpubCalibre") }
-    let!(:step1)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: pandoc) }
-    let!(:step2)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 2, step_class: rot13) }
-    let!(:step3)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 3, step_class: epub) }
+    let!(:pandoc)     { create(:step_class, name: "DocxToHtmlPandoc") }
+    let!(:rot13)      { create(:step_class, name: "RotThirteen") }
+    let!(:epub)       { create(:step_class, name: "EpubCalibre") }
+    let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class: pandoc) }
+    let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class: rot13) }
+    let!(:step3)      { create(:recipe_step, recipe: recipe, position: 3, step_class: epub) }
 
     context 'and execution is successful' do
       it 'should return the objects' do

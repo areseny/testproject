@@ -3,11 +3,11 @@ require_relative 'version'
 describe Api::V1::ConversionStepsController, type: :controller do
   include Devise::TestHelpers
 
-  let!(:user)           { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+  let!(:user)           { create(:user, password: "password", password_confirmation: "password") }
 
   describe "GET download" do
 
-    let!(:conversion_step)        { FactoryGirl.create(:conversion_step) }
+    let!(:conversion_step)        { create(:conversion_step) }
 
     let!(:download_params) {
       {id: conversion_step.id }
@@ -33,7 +33,7 @@ describe Api::V1::ConversionStepsController, type: :controller do
 
       context 'and the file belongs to a different user' do
         before do
-          other_user = FactoryGirl.create(:user)
+          other_user = create(:user)
           conversion_step.conversion_chain.update_attribute(:user_id, other_user.id)
         end
 

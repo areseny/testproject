@@ -2,15 +2,15 @@ require 'rails_helper'
 
 RSpec.describe ConversionChain, type: :model do
 
-  let!(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }
-  let!(:recipe_step)      { FactoryGirl.create(:recipe_step, step_class: demo_step) }
-  let!(:conversion_step)  { FactoryGirl.create(:conversion_step, step_class: demo_step) }
+  let!(:demo_step)        { create(:step_class, name: "Step") }
+  let!(:recipe_step)      { create(:recipe_step, step_class: demo_step) }
+  let!(:conversion_step)  { create(:conversion_step, step_class: demo_step) }
   let!(:conversion_chain) { conversion_step.conversion_chain }
 
   describe 'model validations' do
 
     it 'has a valid factory' do
-      expect(FactoryGirl.build(:conversion_chain)).to be_valid
+      expect(build(:conversion_chain)).to be_valid
     end
 
     expects_to_be_invalid_without :conversion_chain, :user, :recipe

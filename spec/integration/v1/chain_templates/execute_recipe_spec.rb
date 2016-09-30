@@ -14,12 +14,12 @@ describe "User executes a single recipe" do
 
   describe "POST execute recipe" do
 
-    let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
     let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
 
-    let!(:recipe)           { FactoryGirl.create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user) }
 
     let!(:execution_params) {
       {
@@ -45,9 +45,9 @@ describe "User executes a single recipe" do
             end
 
             context 'and it has steps' do
-              let!(:rot13)  { FactoryGirl.create(:step_class, name: "RotThirteen") }
-              let!(:step1)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 1, step_class: rot13) }
-              let!(:step2)      { FactoryGirl.create(:recipe_step, recipe: recipe, position: 2, step_class: rot13) }
+              let!(:rot13)  { create(:step_class, name: "RotThirteen") }
+              let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class: rot13) }
+              let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class: rot13) }
 
               context 'and execution is successful' do
                 it 'should return the objects' do
@@ -120,7 +120,7 @@ describe "User executes a single recipe" do
 
         context 'and it belongs to a different user' do
 
-          let!(:other_user)     { FactoryGirl.create(:user) }
+          let!(:other_user)     { create(:user) }
 
           before do
             recipe.update_attribute(:user_id, other_user.id)

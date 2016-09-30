@@ -11,10 +11,10 @@ describe "User archives a single recipe" do
 
   describe "GET archive recipe" do
 
-    let!(:user)             { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
 
-    let!(:recipe)         { FactoryGirl.create(:recipe, user: user) }
+    let!(:recipe)         { create(:recipe, user: user) }
 
     context 'if user is signed in' do
 
@@ -37,7 +37,7 @@ describe "User archives a single recipe" do
         end
 
         context 'and it belongs to a different user' do
-          let!(:other_user)     { FactoryGirl.create(:user) }
+          let!(:other_user)     { create(:user) }
 
           before do
             recipe.update_attribute(:user_id, other_user.id)

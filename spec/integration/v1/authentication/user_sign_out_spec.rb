@@ -12,7 +12,7 @@ describe "User sign out" do
 
   describe "DELETE sign out" do
     let!(:auth_headers) { user.create_new_auth_token }
-    let!(:user)           { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)           { create(:user, password: "password", password_confirmation: "password") }
 
     context 'if user is signed in' do
 
