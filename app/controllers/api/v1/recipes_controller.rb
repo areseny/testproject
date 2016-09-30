@@ -62,7 +62,7 @@ module Api
       end
 
       def recipe
-        @recipe ||= current_api_user.recipes.find(params[:id])
+        @recipe ||= Recipe.available_to_user(current_api_user.id).find(params[:id])
       end
 
       def new_recipe
@@ -70,7 +70,7 @@ module Api
       end
 
       def recipes
-        @recipes ||= current_api_user.recipes.active
+        @recipes ||= Recipe.available_to_user(current_api_user.id)
       end
 
     end

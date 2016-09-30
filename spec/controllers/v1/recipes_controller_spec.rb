@@ -3,15 +3,16 @@ require_relative 'version'
 describe Api::V1::RecipesController, type: :controller do
   include Devise::TestHelpers
 
-  let!(:user)           { FactoryGirl.create(:user, password: "password", password_confirmation: "password") }
+  let!(:user)           { FactoryGirl.create(:user) }
+  let!(:other_user)     { FactoryGirl.create(:user) }
 
-  let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
-  let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
+  let!(:name)           { "My Splendiferous PNG to JPG transmogrifier" }
+  let!(:description)    { "It transmogrifies! It transforms! It even goes across filetypes!" }
 
-  let!(:docx_to_xml)      { FactoryGirl.create(:step_class, name: "Step") }
-  let!(:xml_to_html)      { FactoryGirl.create(:step_class, name: "RotThirteen") }
+  let!(:step)           { FactoryGirl.create(:step_class, name: "Step") }
+  let!(:xml_to_html)    { FactoryGirl.create(:step_class, name: "RotThirteen") }
 
-  let!(:attributes)           { [:name, :description] }
+  let!(:attributes)     { [:name, :description] }
 
   let!(:recipe_params) {
     {
@@ -24,11 +25,11 @@ describe Api::V1::RecipesController, type: :controller do
 
   describe "POST execute" do
 
-    let!(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }
-    let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
-    let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let!(:recipe_step)    { FactoryGirl.create(:recipe_step, step_class: demo_step) }
-    let!(:recipe)   { FactoryGirl.create(:recipe, user: user, recipe_steps: [recipe_step]) }
+    let(:demo_step)        { FactoryGirl.create(:step_class, name: "Step") }
+    let(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
+    let(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
+    let(:recipe_step)      { FactoryGirl.create(:recipe_step, step_class: demo_step) }
+    let(:recipe)   { FactoryGirl.create(:recipe, user: user, recipe_steps: [recipe_step]) }
 
     let!(:execution_params) {
         {
@@ -38,15 +39,73 @@ describe Api::V1::RecipesController, type: :controller do
     }
 
     context 'if a valid token is supplied' do
-
       context 'if a file is supplied' do
-        it 'should try to execute the conversion chain' do
-          request_with_auth(user.create_new_auth_token) do
-            perform_execute_request(execution_params)
+        context 'if the recipe is public' do
+          context 'if the recipe belongs to that user' do
+            before do
+              recipe.update_attribute(:user_id, user.id)
+              recipe.update_attribute(:public, true)
+            end
+
+            it 'should try to execute the conversion chain' do
+              request_with_auth(user.create_new_auth_token) do
+                perform_execute_request(execution_params)
+              end
+
+              expect(response.status).to eq 200
+              expect(assigns(:new_chain)).to_not be_nil
+            end
           end
 
-          expect(response.status).to eq 200
-          expect(assigns(:new_chain)).to_not be_nil
+          context 'if the recipe belongs to a different user' do
+            before do
+              recipe.update_attribute(:user_id, other_user.id)
+              recipe.update_attribute(:public, true)
+            end
+
+            it 'should try to execute the conversion chain' do
+              request_with_auth(user.create_new_auth_token) do
+                perform_execute_request(execution_params)
+              end
+
+              expect(response.status).to eq 200
+              expect(assigns(:new_chain)).to_not be_nil
+            end
+
+          end
+        end
+
+        context 'if the recipe is not public' do
+          context 'if the recipe belongs to that user' do
+            before do
+              recipe.update_attribute(:public, false)
+            end
+
+            it 'should try to execute the conversion chain' do
+              request_with_auth(user.create_new_auth_token) do
+                perform_execute_request(execution_params)
+              end
+
+              expect(response.status).to eq 200
+              expect(assigns(:new_chain)).to_not be_nil
+            end
+          end
+
+          context 'if the recipe belongs to a different user' do
+            before do
+              recipe.update_attribute(:user_id, other_user.id)
+              recipe.update_attribute(:public, false)
+            end
+
+            it 'should fail' do
+              request_with_auth(user.create_new_auth_token) do
+                perform_execute_request(execution_params)
+              end
+
+              expect(response.status).to eq 404
+              expect(assigns(:new_chain)).to be_nil
+            end
+          end
         end
       end
 
@@ -100,7 +159,7 @@ describe Api::V1::RecipesController, type: :controller do
         context 'if there are steps supplied' do
 
           context 'presented as a series of steps with positions included' do
-            let!(:step_params)      { [{position: 1, name: docx_to_xml.name}, {position: 2, name: xml_to_html.name }] }
+            let!(:step_params)      { [{position: 1, name: step.name}, {position: 2, name: xml_to_html.name }] }
 
             context 'and they are valid' do
               before do
@@ -119,14 +178,14 @@ describe Api::V1::RecipesController, type: :controller do
                   expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
                 expect(new_recipe.recipe_steps.count).to eq 2
-                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [step.id, xml_to_html.id]
               end
             end
 
             context 'and they are incorrect' do
 
               it "should not create the recipe for nonexistent step classes" do
-                docx_to_xml.destroy
+                step.destroy
                 recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 1, name: "RotThirteen" }]
 
                 request_with_auth(user.create_new_auth_token) do
@@ -202,14 +261,14 @@ describe Api::V1::RecipesController, type: :controller do
                   expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
                 expect(new_recipe.recipe_steps.count).to eq 2
-                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [docx_to_xml.id, xml_to_html.id]
+                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [step.id, xml_to_html.id]
               end
             end
 
             context 'and they are incorrect' do
 
               it "should not create the recipe for nonexistent step classes" do
-                docx_to_xml.destroy
+                step.destroy
                 recipe_params[:steps] = ["Step", "RotThirteen"]
 
                 request_with_auth(user.create_new_auth_token) do
