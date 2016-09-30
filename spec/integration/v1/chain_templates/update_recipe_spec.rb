@@ -5,16 +5,17 @@ describe "User updates recipe" do
 
   # URL: /api/recipes/:id/
   # Method: PUT or PATCH
-  # Use this route to end the user's current session. This route will invalidate the user's authentication token.
+  # Update the details of a recipe.
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X PUT http://localhost:3000/api/recipes/:id
 
   describe "PUT update recipe" do
 
     let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-    let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
+    let!(:name)             { "My Splendiferous HTML to PDF transmogrifier" }
     let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
     let!(:active)           { false }
+    let!(:public)           { true }
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:recipe)           { create(:recipe, user: user) }
 
@@ -24,13 +25,14 @@ describe "User updates recipe" do
               name: name,
               description: description,
               uid: user.email,
-              active: active
+              active: active,
+              public: public
           },
           id: recipe.id
       }
     }
 
-    let!(:recipe_attributes){ [:name, :description, :active]  }
+    let!(:recipe_attributes){ [:name, :description, :active, :public]  }
 
     context 'if user is signed in' do
 
@@ -49,6 +51,7 @@ describe "User updates recipe" do
             expect(body_as_json['name']).to eq name
             expect(body_as_json['description']).to eq description
             expect(body_as_json['active']).to eq active
+            expect(body_as_json['public']).to eq public
           end
 
           it 'should modify the Recipe object' do
@@ -66,6 +69,7 @@ describe "User updates recipe" do
             expect(recipe.name).to eq name
             expect(recipe.description).to eq description
             expect(recipe.active).to be_falsey
+            expect(recipe.public).to be_truthy
           end
         end
 
@@ -93,6 +97,7 @@ describe "User updates recipe" do
             expect(body_as_json['name']).to eq name
             expect(body_as_json['description']).to_not eq description
             expect(body_as_json['active']).to_not eq active
+            expect(body_as_json['public']).to_not eq public
           end
 
           it 'should modify the Recipe object' do
@@ -110,6 +115,7 @@ describe "User updates recipe" do
             recipe = user.recipes.first
             expect(recipe.user).to eq user
             expect(recipe.name).to eq name
+            expect(recipe.public).to eq original_recipe.public
             expect(recipe.description).to eq original_recipe.description
             expect(recipe.active).to eq original_recipe.active
           end
