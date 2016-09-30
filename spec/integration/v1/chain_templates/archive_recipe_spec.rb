@@ -5,7 +5,7 @@ describe "User archives a single recipe" do
 
   # URL: /api/recipe/:id
   # Method: DELETE
-  # Get a specific recipe belonging to the current user
+  # Use this route to archive a recipe so it still exists, but can't be accessed by anyone but an administrator
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id
 

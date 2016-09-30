@@ -5,7 +5,7 @@ describe "User creates recipe" do
 
   # URL: /api/recipes
   # Method: POST
-  # Use this route to end the user's current session. This route will invalidate the user's authentication token.
+  # Use this route to create a recipe.
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST http://localhost:3000/api/recipes
 
