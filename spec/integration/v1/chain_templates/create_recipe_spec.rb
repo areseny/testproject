@@ -15,13 +15,15 @@ describe "User creates recipe" do
     let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
     let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
     let!(:auth_headers)     { user.create_new_auth_token }
+    let(:public)            { true }
 
     let!(:recipe_params) {
       {
           recipe: {
               name: name,
               description: description,
-              uid: user.email
+              uid: user.email,
+              public: public
           }
       }
     }
@@ -40,7 +42,8 @@ describe "User creates recipe" do
         it 'should return a Recipe object' do
           expect(body_as_json['name']).to eq name
           expect(body_as_json['description']).to eq description
-          expect(body_as_json['active']).to eq true
+          expect(body_as_json['active']).to be_truthy
+          expect(body_as_json['public']).to be_truthy
         end
 
         it 'should create a new recipe with the parameters' do
@@ -51,6 +54,7 @@ describe "User creates recipe" do
           expect(recipe.name).to eq name
           expect(recipe.description).to eq description
           expect(recipe.active).to be_truthy
+          expect(recipe.public).to be_truthy
         end
       end
 
