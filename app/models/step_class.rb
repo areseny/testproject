@@ -25,22 +25,19 @@ class StepClass < ActiveRecord::Base
   end
 
   def self.all_steps
-    [Conversion::Steps::DocxToHtmlOttoville,
-     Conversion::Steps::DocxToHtmlXsl,
-     Conversion::Steps::RotThirteen,
-     Conversion::Steps::Step,
-     Conversion::Steps::DocxToHtmlPandoc,
-     Conversion::Steps::EpubCalibre,
-     Conversion::Steps::Validators::AlwaysOk,
-     Conversion::Steps::Validators::NeverOk,
-     Conversion::Steps::Shoutifier,
-     Conversion::Steps::XSweetDocxToHtmlExtract,
-     Conversion::Steps::XSweetHtmlHandleNotes,
-     Conversion::Steps::XSweetHtmlScrub,
-     Conversion::Steps::XSweetHtmlJoinElements,
-     Conversion::Steps::XSweetHtmlZorbaMap,
-     Conversion::Steps::DownloadAndExecuteXslWithSaxon,
-     Conversion::Steps::DownloadAndExecuteXslWithSaxonOnDocx
+    [
+      Conversion::Steps::Step,
+      Conversion::Steps::RotThirteen,
+      Conversion::Steps::DocxToHtmlPandoc,
+      Conversion::Steps::EpubCalibre,
+      Conversion::Steps::Shoutifier,
+      Conversion::Steps::XSweetDocxToHtmlExtract,
+      Conversion::Steps::XSweetHtmlHandleNotes,
+      Conversion::Steps::XSweetHtmlScrub,
+      Conversion::Steps::XSweetHtmlJoinElements,
+      Conversion::Steps::XSweetHtmlZorbaMap,
+      Conversion::Steps::DownloadAndExecuteXslWithSaxon,
+      Conversion::Steps::DownloadAndExecuteXslWithSaxonOnDocx
     ]
   end
 

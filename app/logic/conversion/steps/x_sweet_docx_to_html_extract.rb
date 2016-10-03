@@ -1,7 +1,3 @@
-require 'zip'
-require 'auxiliary_helpers'
-require 'conversion_errors/conversion_errors'
-
 module Conversion
   module Steps
     class XSweetDocxToHtmlExtract < DownloadAndExecuteXslWithSaxonOnDocx

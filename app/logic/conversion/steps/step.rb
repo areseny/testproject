@@ -4,8 +4,17 @@ require 'open3'
 module Conversion
   module Steps
     class Step
-      include ConversionErrors
-      include AuxiliaryHelpers
+
+######################3
+
+
+      def random_alphanumeric_string
+        Base64.encode64(SecureRandom.uuid)[0..10]
+      end
+
+      #######################
+
+
 
       attr_accessor :next_step, :input_files, :output_files, :errors, :status_code, :required_parameters
 
