@@ -3,7 +3,7 @@ module Conversion
 
     class RotThirteen < ConversionStep
 
-      def convert_file(input_file, options_hash = {})
+      def perform_step(input_file, options_hash = {})
         super
         check_if_text_file
         contents = extract_contents(input_file)

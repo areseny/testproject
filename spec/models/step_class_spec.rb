@@ -18,11 +18,11 @@ RSpec.describe StepClass, type: :model do
   describe '#behaviour_class' do
 
     before do
-      expect(StepClass).to receive(:all_steps) { [Conversion::Steps::RotThirteen] }
+      expect(StepClass).to receive(:all_steps) { [Conversion::Steps::Step] }
     end
 
     it 'should find the correct behavioural class' do
-      expect(build(:step_class, name: "RotThirteen").behaviour_class).to eq Conversion::Steps::RotThirteen
+      expect(build(:step_class, name: "Step").behaviour_class).to eq Conversion::Steps::Step
     end
 
   end

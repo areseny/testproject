@@ -14,8 +14,8 @@ describe Conversion::Steps::Step do
       specify do
         subject.required_parameters = []
 
-        expect{subject.convert_file(input_file, options_hash = {})}.to_not raise_error
-        expect{subject.convert_file(input_file, options_hash = {other_param: "some_value"})}.to_not raise_error
+        expect{subject.perform_step(input_file, options_hash = {})}.to_not raise_error
+        expect{subject.perform_step(input_file, options_hash = {other_param: "some_value"})}.to_not raise_error
       end
 
     end
@@ -25,7 +25,7 @@ describe Conversion::Steps::Step do
         specify do
           subject.required_parameters = [:fancy_param]
 
-          expect{subject.convert_file(input_file, fancy_param: "funny hats")}.to_not raise_error
+          expect{subject.perform_step(input_file, fancy_param: "funny hats")}.to_not raise_error
         end
       end
 
@@ -33,8 +33,8 @@ describe Conversion::Steps::Step do
         specify do
           subject.required_parameters = [:fancy_param, :silly_param]
 
-          expect{subject.convert_file(input_file)}.to raise_error("Missing parameters: fancy_param, silly_param")
-          expect{subject.convert_file(input_file, {other_param: "some_value"})}.to raise_error("Missing parameters: fancy_param, silly_param")
+          expect{subject.perform_step(input_file)}.to raise_error("Missing parameters: fancy_param, silly_param")
+          expect{subject.perform_step(input_file, {other_param: "some_value"})}.to raise_error("Missing parameters: fancy_param, silly_param")
         end
       end
     end

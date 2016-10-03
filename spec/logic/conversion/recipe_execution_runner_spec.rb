@@ -81,7 +81,7 @@ describe Conversion::RecipeExecutionRunner do
       let!(:boobytrapped_step)  { Conversion::Steps::Step.new }
 
       before do
-        expect(boobytrapped_step).to receive(:convert_file) { raise "OMG!" }
+        expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }
         expect(Conversion::Steps::Step).to receive(:new).and_return boobytrapped_step
       end
 

@@ -63,7 +63,7 @@ describe "User executes a ROT13 recipe" do
     }
 
     before do
-      expect(boobytrapped_step).to receive(:convert_file) { raise "OMG!" }
+      expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }
       expect(Conversion::Steps::RotThirteen).to receive(:new).and_return(boobytrapped_step)
     end
 

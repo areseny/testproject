@@ -38,7 +38,7 @@ describe Conversion::Steps::DocxToHtmlPandoc do
 end
 
 def test_file_conversion(input_fixture_file, expected_result)
-  result = subject.convert_file(input_fixture_file.path)
+  result = subject.perform_step(input_fixture_file.path)
 
   expect(result).to_not be_nil
   expect(File.read(result)).to eq expected_result

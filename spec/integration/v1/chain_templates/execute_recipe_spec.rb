@@ -88,7 +88,7 @@ describe "User executes a single recipe" do
                 let!(:boobytrapped_step)      { Conversion::Steps::RotThirteen.new }
 
                 before do
-                  expect(boobytrapped_step).to receive(:convert_file) { raise "Oh noes! Error!" }
+                  expect(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
                   allow(Conversion::Steps::RotThirteen).to receive(:new).and_return boobytrapped_step
                 end
 

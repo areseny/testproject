@@ -5,7 +5,7 @@ module Conversion
 
       # http://pandoc.org/getting-started.html
 
-      def convert_file(input_file, options_hash = {})
+      def perform_step(input_file, options_hash = {})
         super
         output_filename = Rails.root.join(temp_directory, "pandoc_conversion_result_#{Time.now.to_i}_#{Random.rand(10000)}.html")
         print_step "converting #{input_filename(input_file)} to #{output_filename}"

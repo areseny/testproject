@@ -2,7 +2,7 @@ module Conversion
   module Steps
     class Shoutifier < ConversionStep
 
-      def convert_file(input_file, options_hash = {})
+      def perform_step(input_file, options_hash = {})
         super
         #is_text_file?
         contents = extract_contents(input_file)

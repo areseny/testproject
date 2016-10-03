@@ -15,7 +15,7 @@ describe Conversion::Steps::EpubCalibre do
         the_file = File.read(html_file.path)
         File.write('tmp/test.html', the_file)
 
-        result = subject.convert_file(File.new('tmp/test.html'))
+        result = subject.perform_step(File.new('tmp/test.html'))
 
         expect(result).to_not be_nil
         expect(File.extname(result)).to eq ".epub"

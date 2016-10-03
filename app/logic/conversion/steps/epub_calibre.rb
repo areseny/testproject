@@ -4,7 +4,7 @@ module Conversion
 
       # http://pandoc.org/getting-started.html
 
-      def convert_file(input_file, options_hash = {})
+      def perform_step(input_file, options_hash = {})
         super
         output_file_path = Rails.root.join(temp_directory, "epub_calibre_#{Time.now.to_i}_#{Random.rand(10000)}.epub")
         print_step "converting #{input_filename(input_file)} to #{output_file_path}"

@@ -76,7 +76,7 @@ describe "User executes a recipe with multiple real steps" do
 
       before do
         allow(Conversion::Steps::RotThirteen).to receive(:new).and_return boobytrapped_step
-        allow(boobytrapped_step).to receive(:convert_file) { raise "Oh noes! Error!" }
+        allow(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
       end
 
       it 'halts execution after a failed step' do

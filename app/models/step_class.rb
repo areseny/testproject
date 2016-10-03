@@ -31,13 +31,6 @@ class StepClass < ActiveRecord::Base
       Conversion::Steps::DocxToHtmlPandoc,
       Conversion::Steps::EpubCalibre,
       Conversion::Steps::Shoutifier,
-      Conversion::Steps::XSweetDocxToHtmlExtract,
-      Conversion::Steps::XSweetHtmlHandleNotes,
-      Conversion::Steps::XSweetHtmlScrub,
-      Conversion::Steps::XSweetHtmlJoinElements,
-      Conversion::Steps::XSweetHtmlZorbaMap,
-      Conversion::Steps::DownloadAndExecuteXslWithSaxon,
-      Conversion::Steps::DownloadAndExecuteXslWithSaxonOnDocx
     ]
   end
 
