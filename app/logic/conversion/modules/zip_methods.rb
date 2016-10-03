@@ -1,3 +1,5 @@
+require 'zip'
+
 module Conversion
   module Modules
     module ZipMethods
