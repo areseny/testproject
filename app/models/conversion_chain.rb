@@ -46,9 +46,7 @@ class ConversionChain < ActiveRecord::Base
   end
 
   def step_classes
-    recipe.recipe_steps.sort_by(&:position).inject([]) do |result, recipe_step|
-      result << recipe_step.step_class.behaviour_class
-    end
+    recipe.recipe_steps.sort_by(&:position).map(&:step_class)
   end
 
   def map_results(runner, conversion_steps)

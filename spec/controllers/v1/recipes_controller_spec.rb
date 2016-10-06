@@ -9,8 +9,8 @@ describe Api::V1::RecipesController, type: :controller do
   let!(:name)           { "My Splendiferous PNG to JPG transmogrifier" }
   let!(:description)    { "It transmogrifies! It transforms! It even goes across filetypes!" }
 
-  let!(:step)           { create(:step_class, name: "Step") }
-  let!(:xml_to_html)    { create(:step_class, name: "RotThirteen") }
+  let!(:step)           { "InkStep::BasicStep" }
+  let!(:rot_thirteen)   { "RotThirteenStep" }
 
   let!(:attributes)     { [:name, :description] }
 
@@ -25,11 +25,11 @@ describe Api::V1::RecipesController, type: :controller do
 
   describe "POST execute" do
 
-    let(:demo_step)        { create(:step_class, name: "Step") }
-    let(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
-    let(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let(:recipe_step)      { create(:recipe_step, step_class: demo_step) }
-    let(:recipe)   { create(:recipe, user: user, recipe_steps: [recipe_step]) }
+    let(:demo_step)         { "InkStep::BasicStep" }
+    let(:xml_file)          { fixture_file_upload('files/test_file.xml', 'text/xml') }
+    let(:photo_file)        { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
+    let(:recipe_step)       { create(:recipe_step, step_class_name: demo_step) }
+    let(:recipe)            { create(:recipe, user: user, recipe_steps: [recipe_step]) }
 
     let!(:execution_params) {
         {
@@ -159,7 +159,7 @@ describe Api::V1::RecipesController, type: :controller do
         context 'if there are steps supplied' do
 
           context 'presented as a series of steps with positions included' do
-            let!(:step_params)      { [{position: 1, name: step.name}, {position: 2, name: xml_to_html.name }] }
+            let!(:step_params)      { [{position: 1, step_class_name: step }, {position: 2, step_class_name: rot_thirteen }] }
 
             context 'and they are valid' do
               before do
@@ -178,25 +178,24 @@ describe Api::V1::RecipesController, type: :controller do
                   expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
                 expect(new_recipe.recipe_steps.count).to eq 2
-                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [step.id, xml_to_html.id]
+                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [step, rot_thirteen]
               end
-            end
 
-            context 'and they are incorrect' do
-
-              it "should not create the recipe for nonexistent step classes" do
-                step.destroy
-                recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 1, name: "RotThirteen" }]
+              it "should create the recipe for nonexistent step classes" do
+                recipe_params[:steps_with_positions] = [{position: 1, step_class_name: "NonexistentStep"}, {position: 2, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
                 end
 
-                expect(response.status).to eq 422
+                expect(response.status).to eq 200
               end
+            end
+
+            context 'and they are incorrect' do
 
               it "should not create the recipe with duplicate numbers" do
-                recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 1, name: "RotThirteen" }]
+                recipe_params[:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -206,7 +205,7 @@ describe Api::V1::RecipesController, type: :controller do
               end
 
               it "should not create the recipe with incorrect numbers" do
-                recipe_params[:steps_with_positions] = [{position: 0, name: "Step"}, {position: 1, name: "RotThirteen" }]
+                recipe_params[:steps_with_positions] = [{position: 0, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -216,7 +215,7 @@ describe Api::V1::RecipesController, type: :controller do
               end
 
               it "should not create the recipe with skipped steps" do
-                recipe_params[:steps_with_positions] = [{position: 1, name: "Step"}, {position: 6, name: "RotThirteen" }]
+                recipe_params[:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 6, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -226,7 +225,7 @@ describe Api::V1::RecipesController, type: :controller do
               end
 
               it "should create the recipe with nonsequential numbers" do
-                recipe_params[:steps_with_positions] = [{position: 2, name: "Step" }, {position: 1, name: "RotThirteen"}]
+                recipe_params[:steps_with_positions] = [{position: 2, step_class_name: step }, {position: 1, step_class_name: rot_thirteen}]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -246,7 +245,7 @@ describe Api::V1::RecipesController, type: :controller do
           context 'presented as a series of steps with order implicit' do
             context 'and they are valid' do
               before do
-                recipe_params[:steps] = ["Step", "RotThirteen"]
+                recipe_params[:steps] = [step, rot_thirteen]
               end
 
               it "should create the recipe with recipe steps" do
@@ -261,21 +260,17 @@ describe Api::V1::RecipesController, type: :controller do
                   expect(new_recipe.send(attribute)).to eq self.send(attribute)
                 end
                 expect(new_recipe.recipe_steps.count).to eq 2
-                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_id)).to eq [step.id, xml_to_html.id]
+                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [step, rot_thirteen]
               end
-            end
 
-            context 'and they are incorrect' do
-
-              it "should not create the recipe for nonexistent step classes" do
-                step.destroy
-                recipe_params[:steps] = ["Step", "RotThirteen"]
+              it "should create the recipe for nonexistent step classes" do
+                recipe_params[:steps] = ["NonexistentStep", rot_thirteen]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
                 end
 
-                expect(response.status).to eq 422
+                expect(response.status).to eq 200
               end
             end
           end
@@ -364,7 +359,7 @@ describe Api::V1::RecipesController, type: :controller do
       end
 
       context 'there are recipes' do
-        let!(:other_user)      { create(:user) }
+        let!(:other_user)    { create(:user) }
         let!(:recipe_1)      { create(:recipe, user: user) }
         let!(:recipe_2)      { create(:recipe, user: user, active: false) }
         let!(:recipe_3)      { create(:recipe, user: other_user) }
@@ -438,8 +433,6 @@ describe Api::V1::RecipesController, type: :controller do
             expect(assigns[:recipe]).to be_nil
           end
         end
-
-
       end
     end
 

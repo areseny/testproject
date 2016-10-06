@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160930004233) do
+ActiveRecord::Schema.define(version: 20161004235515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,23 +29,23 @@ ActiveRecord::Schema.define(version: 20160930004233) do
   create_table "conversion_steps", force: :cascade do |t|
     t.integer  "conversion_chain_id", null: false
     t.integer  "position",            null: false
-    t.integer  "step_class_id",       null: false
     t.text     "notes"
     t.datetime "executed_at"
     t.string   "output_file"
     t.text     "conversion_errors"
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
+    t.string   "step_class_name",     null: false
   end
 
   add_index "conversion_steps", ["position", "conversion_chain_id"], name: "index_conversion_steps_on_position_and_conversion_chain_id", unique: true, using: :btree
 
   create_table "recipe_steps", force: :cascade do |t|
-    t.integer  "recipe_id",     null: false
-    t.integer  "step_class_id", null: false
-    t.integer  "position",      null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.integer  "recipe_id",       null: false
+    t.integer  "position",        null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "step_class_name", null: false
   end
 
   add_index "recipe_steps", ["recipe_id", "position"], name: "chain_step_position_index", unique: true, using: :btree
@@ -58,14 +58,6 @@ ActiveRecord::Schema.define(version: 20160930004233) do
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
     t.boolean  "public",      default: false, null: false
-  end
-
-  create_table "step_classes", force: :cascade do |t|
-    t.string   "name",                       null: false
-    t.boolean  "active",      default: true, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.string   "description"
   end
 
   create_table "users", force: :cascade do |t|

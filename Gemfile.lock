@@ -15,6 +15,17 @@ GIT
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
 
+PATH
+  remote: ~/RubymineProjects/rot_thirteen
+  specs:
+    rot_thirteen (0.0.1)
+
+PATH
+  remote: ~/RubymineProjects/step
+  specs:
+    ink_step (0.0.1)
+      awesome_print
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -282,6 +293,7 @@ DEPENDENCIES
   devise_token_auth
   factory_girl_rails (~> 4.0)
   httparty
+  ink_step!
   jbuilder (~> 2.0)
   jquery-rails
   json_spec
@@ -292,6 +304,7 @@ DEPENDENCIES
   rack-cors
   rails (= 4.2.5.1)
   rails-api
+  rot_thirteen!
   rspec-rails (~> 3.0)
   ruby-filemagic
   rubyzip

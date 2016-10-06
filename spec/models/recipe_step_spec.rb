@@ -8,7 +8,7 @@ RSpec.describe RecipeStep, type: :model do
       expect(build(:recipe_step)).to be_valid
     end
 
-    expects_to_be_invalid_without :recipe_step, :recipe, :position
+    expects_to_be_invalid_without :recipe_step, :recipe, :position, :step_class_name
 
     describe 'position' do
       it 'should be an integer' do

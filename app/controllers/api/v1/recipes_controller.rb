@@ -19,6 +19,7 @@ module Api
         new_recipe.save!
         render json: new_recipe, include: ['recipe_steps'], root: false
       rescue => e
+        puts e.message
         render_unprocessable_error(e)
       end
 
@@ -53,7 +54,7 @@ module Api
       end
 
       def recipe_step_params
-        params.permit(steps: [], steps_with_positions: [:name, :position])
+        params.permit(steps: [], steps_with_positions: [:step_class_name, :position])
       end
 
       def execution_params

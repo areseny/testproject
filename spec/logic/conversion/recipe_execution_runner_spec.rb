@@ -2,12 +2,12 @@ require 'rails_helper'
 
 describe Conversion::RecipeExecutionRunner do
 
-  let!(:text_file)         { Rack::Test::UploadedFile.new('spec/fixtures/files/plaintext.txt', 'text/plain') }
-  let!(:photo_file)       { Rack::Test::UploadedFile.new('spec/fixtures/files/kitty.jpeg', 'image/jpeg') }
+  let!(:text_file)         { File.new('spec/fixtures/files/plaintext.txt', 'r') }
+  let!(:photo_file)        { File.new('spec/fixtures/files/kitty.jpeg', 'r') }
 
   describe '#build_chain' do
-    let!(:step1)    { Conversion::Steps::Step }
-    let!(:step2)    { Conversion::Steps::RotThirteen }
+    let!(:step1)    { InkStep::BasicStep}
+    let!(:step2)    { RotThirteenStep }
 
     context 'with 1 step' do
       let!(:steps)    { [step1] }
@@ -52,44 +52,44 @@ describe Conversion::RecipeExecutionRunner do
       end
 
       context 'if there is 1 step' do
-        let!(:steps)    { [Conversion::Steps::Step] }
+        let!(:steps)    { [InkStep::BasicStep] }
         subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
         it 'should return a result' do
           result = subject.run!(photo_file)
 
-          expect(result).to be_a Conversion::Steps::Step
+          expect(result).to be_a InkStep::BasicStep
           expect(result.output_files).to eq photo_file
         end
       end
 
       context 'if there are 3 steps' do
-        let!(:steps)    { [Conversion::Steps::Step, Conversion::Steps::Step, Conversion::Steps::Step] }
+        let!(:steps)    { [InkStep::BasicStep, InkStep::BasicStep, InkStep::BasicStep] }
         subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
         it 'should return a result' do
           result = subject.run!(photo_file)
 
-          expect(result).to be_a Conversion::Steps::Step
+          expect(result).to be_a InkStep::BasicStep
           expect(result.output_files).to eq photo_file
         end
       end
     end
 
     context 'if there is a failure' do
-      let!(:steps)              { [Conversion::Steps::Step] }
-      let!(:boobytrapped_step)  { Conversion::Steps::Step.new }
+      let!(:steps)              { [InkStep::BasicStep] }
+      let!(:boobytrapped_step)  { InkStep::BasicStep.new }
 
       before do
         expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }
-        expect(Conversion::Steps::Step).to receive(:new).and_return boobytrapped_step
+        expect(InkStep::BasicStep).to receive(:new).and_return boobytrapped_step
       end
 
       it 'the step should not have an output file' do
         subject = Conversion::RecipeExecutionRunner.new(steps)
         result = subject.run!(text_file)
 
-        expect(result).to be_a Conversion::Steps::Step
+        expect(result).to be_a InkStep::BasicStep
         expect(result.output_files).to eq nil
       end
 

@@ -41,7 +41,7 @@ class Recipe < ActiveRecord::Base
     raise ConversionErrors::NoFileSuppliedError.new unless input_file
     new_chain = conversion_chains.new(user: user, input_file: input_file)
     recipe_steps.each do |recipe_step|
-      new_chain.conversion_steps.new(position: recipe_step.position, step_class: recipe_step.step_class)
+      new_chain.conversion_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)
     end
     new_chain
   end
@@ -82,20 +82,20 @@ class Recipe < ActiveRecord::Base
   private
 
   def generate_steps_with_positions(recipe_step_data)
-    # [ {position: 1, name: "DocxToXml"}, {position: 2, name: "XmlToHtml" } ]
+    # [ {position: 1, name: "InkStep::DocxToXml"}, {position: 2, name: "InkStep::XmlToHtml" } ]
     return unless recipe_step_data.present?
     recipe_step_data.each do |st|
-      recipe_steps.new(position: st[:position], step_class: StepClass.find_by_name(st[:name]))
+      recipe_steps.new(position: st[:position], step_class_name: st[:step_class_name])
     end
   end
 
   def generate_steps(recipe_step_data)
-    # [ "DocxToXml", "XmlToHtml" ]
+    # [ "InkStep::DocxToXml", "InkStep::XmlToHtml" ]
     return unless recipe_step_data.present?
     count = 0
     recipe_step_data.each do |step_class_name|
       count += 1
-      ste = recipe_steps.new(position: count, step_class: StepClass.find_by_name(step_class_name))
+      ste = recipe_steps.new(position: count, step_class_name: step_class_name)
     end
   end
 

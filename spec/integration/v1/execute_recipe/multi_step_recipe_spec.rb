@@ -28,12 +28,12 @@ describe "User executes a recipe with multiple real steps" do
       }
     }
 
-    let!(:pandoc)     { create(:step_class, name: "DocxToHtmlPandoc") }
-    let!(:rot13)      { create(:step_class, name: "RotThirteen") }
-    let!(:epub)       { create(:step_class, name: "EpubCalibre") }
-    let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class: pandoc) }
-    let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class: rot13) }
-    let!(:step3)      { create(:recipe_step, recipe: recipe, position: 3, step_class: epub) }
+    let!(:pandoc)     { "DocxToHtmlPandoc" }
+    let!(:rot13)      { "RotThirteenStep" }
+    let!(:epub)       { "EpubCalibre" }
+    let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: pandoc) }
+    let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
+    let!(:step3)      { create(:recipe_step, recipe: recipe, position: 3, step_class_name: epub) }
 
     context 'and execution is successful' do
       it 'should return the objects' do
@@ -71,11 +71,11 @@ describe "User executes a recipe with multiple real steps" do
     end
 
     context 'and execution fails' do
-      let!(:boobytrapped_step)      { Conversion::Steps::RotThirteen.new }
+      let!(:boobytrapped_step)      { RotThirteenStep.new }
       let(:step_spy)                { double(:epub_calibre) }
 
       before do
-        allow(Conversion::Steps::RotThirteen).to receive(:new).and_return boobytrapped_step
+        allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
         allow(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
       end
 
@@ -90,7 +90,7 @@ describe "User executes a recipe with multiple real steps" do
       end
 
       it 'does not execute the later steps' do
-        allow(Conversion::Steps::EpubCalibre).to receive(:new).and_return(step_spy)
+        allow(EpubCalibre).to receive(:new).and_return(step_spy)
         allow(step_spy).to receive(:execute)
 
         expect(step_spy).to_not have_received(:execute)

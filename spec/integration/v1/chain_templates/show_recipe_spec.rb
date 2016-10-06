@@ -42,6 +42,8 @@ describe "User finds a single recipe" do
             it 'should also return the steps' do
               perform_show_request(auth_headers, recipe.id)
 
+              ap body_as_json
+
               expect(body_as_json['recipe_steps'].count).to eq 2
             end
           end

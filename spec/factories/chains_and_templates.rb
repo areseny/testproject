@@ -19,20 +19,15 @@ FactoryGirl.define do
   factory :conversion_step do
     conversion_chain
     position 1
-    step_class
+    step_class_name "InkStep::BasicStep"
     notes "yay! done!"
-    output_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
-  end
-
-  factory :step_class do
-    sequence :name do |n|
-      "Step"
-    end
+    # output_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
+    output_file { File.new('spec/fixtures/files/test_file.xml', 'r') }
   end
 
   factory :recipe_step do
     recipe
-    step_class
+    step_class_name "InkStep::BasicStep"
     position 1
   end
 

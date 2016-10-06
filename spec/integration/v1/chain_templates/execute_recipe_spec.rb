@@ -45,9 +45,9 @@ describe "User executes a single recipe" do
             end
 
             context 'and it has steps' do
-              let!(:rot13)  { create(:step_class, name: "RotThirteen") }
-              let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class: rot13) }
-              let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class: rot13) }
+              let!(:rot13)      { "RotThirteenStep" }
+              let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot13) }
+              let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
 
               context 'and execution is successful' do
                 it 'should return the objects' do
@@ -84,12 +84,12 @@ describe "User executes a single recipe" do
 
               context 'and execution fails' do
 
-                let!(:steps)                  { [Conversion::Steps::RotThirteen] }
-                let!(:boobytrapped_step)      { Conversion::Steps::RotThirteen.new }
+                let!(:steps)                  { [RotThirteenStep] }
+                let!(:boobytrapped_step)      { RotThirteenStep.new }
 
                 before do
                   expect(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
-                  allow(Conversion::Steps::RotThirteen).to receive(:new).and_return boobytrapped_step
+                  allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
                 end
 
                 it 'should return the errors' do

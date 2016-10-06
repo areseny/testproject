@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ConversionChain, type: :model do
 
-  let!(:demo_step)        { create(:step_class, name: "Step") }
-  let!(:recipe_step)      { create(:recipe_step, step_class: demo_step) }
-  let!(:conversion_step)  { create(:conversion_step, step_class: demo_step) }
+  let!(:demo_step)        { "InkStep::BasicStep" }
+  let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step) }
+  let!(:conversion_step)  { create(:conversion_step, step_class_name: demo_step) }
   let!(:conversion_chain) { conversion_step.conversion_chain }
 
   describe 'model validations' do
@@ -23,7 +23,7 @@ RSpec.describe ConversionChain, type: :model do
     end
 
     it 'should return the step classes' do
-      expect(conversion_chain.step_classes).to eq [Conversion::Steps::Step]
+      expect(conversion_chain.step_classes).to eq [InkStep::BasicStep]
     end
 
   end

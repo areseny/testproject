@@ -4,9 +4,9 @@ describe Api::V1::ConversionChainsController, type: :controller do
   include Devise::TestHelpers
 
   let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-  let!(:demo_step)        { create(:step_class, name: "RotThirteen") }
-  let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plain') }
-  let!(:recipe_step)      { create(:recipe_step, step_class: demo_step) }
+  let!(:demo_step)        { "RotThirteenStep" }
+  let!(:text_file)        { File.new('spec/fixtures/files/plaintext.txt', 'r') }
+  let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step) }
   let!(:conversion_step)  { create(:conversion_step) }
   let!(:conversion_chain) { conversion_step.conversion_chain }
 

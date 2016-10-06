@@ -19,8 +19,8 @@ describe "User executes a ROT13 recipe" do
   let!(:recipe)           { create(:recipe, user: user) }
 
 
-  let!(:conversion_class)  { create(:step_class, name: "RotThirteen") }
-  let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class: conversion_class) }
+  let!(:conversion_class)  { "RotThirteenStep" }
+  let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: conversion_class) }
 
   context 'if the conversion is successful' do
     let!(:execution_params) {
@@ -53,7 +53,7 @@ describe "User executes a ROT13 recipe" do
 
   context 'if the execution fails' do
     let!(:photo_file)         { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let!(:boobytrapped_step)  { Conversion::Steps::RotThirteen.new }
+    let!(:boobytrapped_step)  { RotThirteenStep.new }
 
     let!(:execution_params) {
       {
@@ -64,7 +64,7 @@ describe "User executes a ROT13 recipe" do
 
     before do
       expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }
-      expect(Conversion::Steps::RotThirteen).to receive(:new).and_return(boobytrapped_step)
+      expect(RotThirteenStep).to receive(:new).and_return(boobytrapped_step)
     end
 
     it 'fails nicely' do

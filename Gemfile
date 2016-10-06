@@ -30,6 +30,8 @@ gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 
 ################### conversion utilities ########################
 
+# gem 'ink_step', git: 'https://gitlab.coko.foundation/INK/ink_step.git'
+
 # image manipulation
 gem 'mini_magick' # requires imagemagick to be installed - http://www.imagemagick.org/script/binary-releases.php
 
@@ -81,6 +83,9 @@ group :development, :test do
   # gem 'sidekiq-status'
 
   gem 'pry'
+
+  gem 'ink_step', path: "~/RubymineProjects/step"
+  gem 'rot_thirteen', path: "~/RubymineProjects/rot_thirteen"
 end
 
 group :test do
