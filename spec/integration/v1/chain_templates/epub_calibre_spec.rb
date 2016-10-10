@@ -25,7 +25,7 @@ describe "User executes a single-step epub calibre recipe" do
     }
   }
 
-    let!(:conversion_class)  { "EpubCalibre" }
+    let!(:conversion_class)  { "EpubCalibreStep" }
     let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: conversion_class) }
 
   context 'if the conversion is successful' do

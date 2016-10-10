@@ -28,24 +28,23 @@ gem 'pg', '~> 0.15'
 
 gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 
-################### conversion utilities ########################
+################### basic steps #############################
 
-# gem 'ink_step', git: 'https://gitlab.coko.foundation/INK/ink_step.git'
+gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/step.git'
+gem 'rot_thirteen', git: 'git@gitlab.coko.foundation:INK/rot_thirteen.git'
+gem 'epub_calibre', git: 'git@gitlab.coko.foundation:INK/epub_calibre.git'
+gem 'docx_to_html_pandoc', git: 'git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git'
+
+################### conversion utilities ########################
 
 # image manipulation
 gem 'mini_magick' # requires imagemagick to be installed - http://www.imagemagick.org/script/binary-releases.php
-
-# zip zip
-gem 'rubyzip'
 
 # js
 gem 'therubyracer'
 
 # file info
 gem 'ruby-filemagic'
-
-# downloading things
-gem 'httparty'
 
 ################### javascript ###############
 
@@ -83,9 +82,6 @@ group :development, :test do
   # gem 'sidekiq-status'
 
   gem 'pry'
-
-  gem 'ink_step', path: "~/RubymineProjects/step"
-  gem 'rot_thirteen', path: "~/RubymineProjects/rot_thirteen"
 end
 
 group :test do
@@ -99,7 +95,6 @@ group :test do
   # mocking external services during testing
   gem 'webmock'
 end
-
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views

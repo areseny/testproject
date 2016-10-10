@@ -28,9 +28,9 @@ describe "User executes a recipe with multiple real steps" do
       }
     }
 
-    let!(:pandoc)     { "DocxToHtmlPandoc" }
+    let!(:pandoc)     { "DocxToHtmlPandocStep" }
     let!(:rot13)      { "RotThirteenStep" }
-    let!(:epub)       { "EpubCalibre" }
+    let!(:epub)       { "EpubCalibreStep" }
     let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: pandoc) }
     let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
     let!(:step3)      { create(:recipe_step, recipe: recipe, position: 3, step_class_name: epub) }
@@ -90,7 +90,7 @@ describe "User executes a recipe with multiple real steps" do
       end
 
       it 'does not execute the later steps' do
-        allow(EpubCalibre).to receive(:new).and_return(step_spy)
+        allow(EpubCalibreStep).to receive(:new).and_return(step_spy)
         allow(step_spy).to receive(:execute)
 
         expect(step_spy).to_not have_received(:execute)

@@ -15,13 +15,27 @@ GIT
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
 
-PATH
-  remote: ~/RubymineProjects/rot_thirteen
+GIT
+  remote: git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git
+  revision: 6e039a3924842693763a1bacc919887eb0c18499
+  specs:
+    docx_to_html_pandoc (0.0.1)
+
+GIT
+  remote: git@gitlab.coko.foundation:INK/epub_calibre.git
+  revision: 19c4fbeed0d8343ddd03182c3f8104d90b79df43
+  specs:
+    epub_calibre (0.0.1)
+
+GIT
+  remote: git@gitlab.coko.foundation:INK/rot_thirteen.git
+  revision: 0d8101f75a2612c2c76e478305d579f5ecd577f1
   specs:
     rot_thirteen (0.0.1)
 
-PATH
-  remote: ~/RubymineProjects/step
+GIT
+  remote: git@gitlab.coko.foundation:INK/step.git
+  revision: 15c60ab35b2f69d4517cf53fc627f60d00387ceb
   specs:
     ink_step (0.0.1)
       awesome_print
@@ -124,8 +138,6 @@ GEM
       activesupport (>= 4.1.0)
     hashdiff (0.3.0)
     hashie (3.4.3)
-    httparty (0.14.0)
-      multi_xml (>= 0.5.2)
     i18n (0.7.0)
     jbuilder (2.4.1)
       activesupport (>= 3.0.0, < 5.1)
@@ -149,7 +161,6 @@ GEM
     mini_portile2 (2.0.0)
     minitest (5.8.4)
     multi_json (1.11.2)
-    multi_xml (0.5.5)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
@@ -224,7 +235,6 @@ GEM
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
     ruby-filemagic (0.7.1)
-    rubyzip (1.2.0)
     safe_yaml (1.0.4)
     sidekiq (4.1.2)
       concurrent-ruby (~> 1.0)
@@ -291,8 +301,9 @@ DEPENDENCIES
   database_cleaner
   devise
   devise_token_auth
+  docx_to_html_pandoc!
+  epub_calibre!
   factory_girl_rails (~> 4.0)
-  httparty
   ink_step!
   jbuilder (~> 2.0)
   jquery-rails
@@ -307,7 +318,6 @@ DEPENDENCIES
   rot_thirteen!
   rspec-rails (~> 3.0)
   ruby-filemagic
-  rubyzip
   sidekiq
   sinatra
   spring

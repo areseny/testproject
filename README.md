@@ -28,13 +28,6 @@ On Ubuntu:
 On OSX:
 `sudo brew install libmagic`
 
-## Calibre
-
-For ebook conversion.
-
-Installation: https://calibre-ebook.com/download
-Usage directions and options (lots): https://manual.calibre-ebook.com/generated/en/ebook-convert.html
-
 ## ImageMagick
 
 Used for steps with image manipulation.
@@ -64,7 +57,7 @@ Run redis in another terminal - `redis-server`
 
 Run sidekiq in another terminal - `bundle exec sidekiq`
 
-Check `localhost:3000/recipes/anyone` to see if it's up.
+Check `localhost:3000/anyone` to see if it's up.
 
 ### Further development
 
