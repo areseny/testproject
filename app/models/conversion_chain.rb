@@ -1,4 +1,4 @@
-require 'conversion_errors/conversion_errors'
+require 'conversion_errors/execution_errors'
 require 'yaml'
 
 # create_table "conversion_chains", force: :cascade do |t|
@@ -11,7 +11,7 @@ require 'yaml'
 # end
 
 class ConversionChain < ActiveRecord::Base
-  include ConversionErrors
+  include ExecutionErrors
 
   belongs_to :user
   belongs_to :recipe
@@ -30,7 +30,7 @@ class ConversionChain < ActiveRecord::Base
 
   def execute_conversion!
     raise("Chain not saved yet") if self.new_record?
-    raise ConversionErrors::NoFileSuppliedError.new("No input file received") unless input_file.present?
+    raise ExecutionErrors::NoFileSuppliedError.new("No input file received") unless input_file.present?
     self.update_attribute(:executed_at, Time.zone.now)
     ConversionWorker.perform_async(self.id)
   end

@@ -36,7 +36,7 @@ module Api
 
       def authorise_user!
         if conversion_step.conversion_chain.user != current_api_user
-          e = ConversionErrors::NotAuthorisedError.new("That file is not accessible to you.")
+          e = ExecutionErrors::NotAuthorisedError.new("That file is not accessible to you.")
           render_error(e)
         end
       end

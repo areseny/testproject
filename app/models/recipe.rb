@@ -1,4 +1,4 @@
-require 'conversion_errors/conversion_errors'
+require 'conversion_errors/execution_errors'
 require 'sidekiq/api'
 
 # create_table "recipes", force: :cascade do |t|
@@ -12,7 +12,7 @@ require 'sidekiq/api'
 # end
 
 class Recipe < ActiveRecord::Base
-  include ConversionErrors
+  include ExecutionErrors
 
   belongs_to :user
   has_many :recipe_steps, inverse_of: :recipe
@@ -30,7 +30,7 @@ class Recipe < ActiveRecord::Base
   scope :available_to_user, -> (user_id) { active.where("PUBLIC = ? OR USER_ID = ?", true, user_id) }
 
   def clone_and_execute(input_file)
-    raise ConversionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
+    raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
     new_chain = clone_to_conversion_chain(input_file)
     new_chain.save!
     new_chain.execute_conversion!
@@ -38,7 +38,7 @@ class Recipe < ActiveRecord::Base
   end
 
   def clone_to_conversion_chain(input_file)
-    raise ConversionErrors::NoFileSuppliedError.new unless input_file
+    raise ExecutionErrors::NoFileSuppliedError.new unless input_file
     new_chain = conversion_chains.new(user: user, input_file: input_file)
     recipe_steps.each do |recipe_step|
       new_chain.conversion_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)

@@ -1,9 +1,9 @@
-require 'conversion_errors/conversion_errors'
+require 'conversion_errors/execution_errors'
 
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::Serialization
-  include ConversionErrors
+  include ExecutionErrors
 
   def default_serializer_options
     # remove if you want the root element to serialise as well
@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
   def render_error(e)
     if e.is_a? ActiveRecord::RecordNotFound
       render_not_found_error(e)
-    elsif e.is_a? ConversionErrors::NotAuthorisedError
+    elsif e.is_a? ExecutionErrors::NotAuthorisedError
       render_unauthorised_error(e)
     else
       render_unprocessable_error(e)

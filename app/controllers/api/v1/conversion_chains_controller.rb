@@ -1,7 +1,7 @@
 module Api
   module V1
     class ConversionChainsController < ApplicationController
-      include ConversionErrors
+      include ExecutionErrors
 
       before_action :authenticate_api_user!, only: [:retry, :download_file]
       before_action :authorise_user!
@@ -35,7 +35,7 @@ module Api
 
       def authorise_user!
         if conversion_chain.user != current_api_user
-          e = ConversionErrors::NotAuthorisedError.new("That recipe is not accessible to you.")
+          e = ExecutionErrors::NotAuthorisedError.new("That recipe is not accessible to you.")
           render_error(e)
         end
       end
