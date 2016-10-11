@@ -17,35 +17,36 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git
-  revision: f54a51f1c7060417ba25627574d43afd40729dbe
+  revision: 71dd058d84f62d47065909a289dbcf51537f3670
   specs:
-    docx_to_html_pandoc (0.0.3)
+    docx_to_html_pandoc (0.0.4)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/epub_calibre.git
-  revision: c9f3e0d45287079a226537f313546dfd248af403
+  revision: 6ca6227a284e0728515e3f3803df0707b20c2582
   specs:
-    epub_calibre (0.0.3)
+    epub_calibre (0.0.4)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/rot_thirteen.git
-  revision: c154db5e9e35d0915bab785d7551f210c6b6db5e
+  revision: dbc429db73c2f2bad4b6e9d6ddeba96a2cb6e344
   specs:
-    rot_thirteen (0.0.3)
+    rot_thirteen (0.0.4)
+
+GIT
+  remote: git@gitlab.coko.foundation:INK/step.git
+  revision: c8b75acc729047cfe6ee8a04bbd0ebefa2a1518e
+  specs:
+    ink_step (0.0.6)
+      awesome_print
+      httparty
+      rubyzip
 
 GIT
   remote: git@gitlab.coko.foundation:INK/xsweet_pipeline.git
-  revision: 0aac8ae6b59aed2c115a8b64e8d631f46e8e3588
+  revision: e3c78514beb22ee58a2b9ae42cfb34634c0e48ea
   specs:
-    xsweet_pipeline (0.0.3)
-      rubyzip
-
-PATH
-  remote: ~/RubymineProjects/ink-step
-  specs:
-    ink_step (0.0.5)
-      awesome_print
-      httparty
+    xsweet_pipeline (0.0.4)
       rubyzip
 
 GEM

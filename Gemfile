@@ -30,8 +30,7 @@ gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 
 ################### basic steps #############################
 
-gem 'ink_step', path: '~/RubymineProjects/ink-step'
-# gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/step.git'
+gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/step.git'
 gem 'rot_thirteen', git: 'git@gitlab.coko.foundation:INK/rot_thirteen.git'
 gem 'epub_calibre', git: 'git@gitlab.coko.foundation:INK/epub_calibre.git'
 gem 'docx_to_html_pandoc', git: 'git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git'
