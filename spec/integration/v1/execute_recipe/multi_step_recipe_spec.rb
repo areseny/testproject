@@ -43,7 +43,7 @@ describe "User executes a recipe with multiple real steps" do
         expect(body_as_json['conversion_chain']['successful'])
         expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3
         body_as_json['conversion_chain']['conversion_steps'].map do |s|
-          expect(s['conversion_errors']).to eq ""
+          expect(s['execution_errors']).to eq ""
         end
         # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
       end
@@ -65,7 +65,7 @@ describe "User executes a recipe with multiple real steps" do
 
         expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3
         body_as_json['conversion_chain']['conversion_steps'].each do |result|
-          expect(result['conversion_errors']).to eq ""
+          expect(result['execution_errors']).to eq ""
         end
       end
     end
@@ -85,7 +85,7 @@ describe "User executes a recipe with multiple real steps" do
         expect(response.status).to eq(200)
         expect(body_as_json['conversion_chain']['successful']).to eq false
         expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3
-        expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['conversion_errors']}).to eq ["", "Oh noes! Error!", ""]
+        expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["", "Oh noes! Error!", ""]
         expect(body_as_json['conversion_chain']['conversion_steps'].last['executed_at']).to_not be_nil
       end
 

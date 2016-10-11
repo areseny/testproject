@@ -13,9 +13,6 @@ Rails.application.routes.draw do
       get 'anyone' => 'pages#anyone'
 
       resources :recipes, only: [:index, :show, :create, :update, :destroy] do
-        collection do
-
-        end
         member do
           post 'execute'
         end

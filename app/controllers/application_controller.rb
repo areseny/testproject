@@ -1,4 +1,4 @@
-require 'conversion_errors/execution_errors'
+require 'execution_errors'
 
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
@@ -16,9 +16,15 @@ class ApplicationController < ActionController::API
       render_not_found_error(e)
     elsif e.is_a? ExecutionErrors::NotAuthorisedError
       render_unauthorised_error(e)
+    elsif e.is_a? StepNotInstalledError
+      render_step_not_installed_error(e)
     else
       render_unprocessable_error(e)
     end
+  end
+
+  def render_step_not_installed_error(e)
+    render json: {errors: "#{e.message} #{e.missing_step_classes}"}, status: 422
   end
 
   def render_unauthorised_error(e)

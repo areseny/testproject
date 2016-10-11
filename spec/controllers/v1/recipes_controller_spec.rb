@@ -31,7 +31,7 @@ describe Api::V1::RecipesController, type: :controller do
     let(:recipe_step)       { create(:recipe_step, step_class_name: demo_step) }
     let(:recipe)            { create(:recipe, user: user, recipe_steps: [recipe_step]) }
 
-    let!(:execution_params) {
+    let(:execution_params) {
         {
             id: recipe.id,
             input_file: photo_file
@@ -41,10 +41,13 @@ describe Api::V1::RecipesController, type: :controller do
     context 'if a valid token is supplied' do
       context 'if a file is supplied' do
         context 'if the recipe is public' do
+          before do
+            recipe.update_attribute(:public, true)
+          end
+
           context 'if the recipe belongs to that user' do
             before do
               recipe.update_attribute(:user_id, user.id)
-              recipe.update_attribute(:public, true)
             end
 
             it 'should try to execute the conversion chain' do
@@ -60,7 +63,6 @@ describe Api::V1::RecipesController, type: :controller do
           context 'if the recipe belongs to a different user' do
             before do
               recipe.update_attribute(:user_id, other_user.id)
-              recipe.update_attribute(:public, true)
             end
 
             it 'should try to execute the conversion chain' do
@@ -71,16 +73,31 @@ describe Api::V1::RecipesController, type: :controller do
               expect(response.status).to eq 200
               expect(assigns(:new_chain)).to_not be_nil
             end
+          end
 
+          context 'if one of the steps does not exist' do
+            before do
+              recipe_step.update_attribute(:step_class_name, "NonexistentStep")
+            end
+
+            it 'should fail' do
+              request_with_auth(user.create_new_auth_token) do
+                perform_execute_request(execution_params)
+              end
+
+              expect(response.status).to eq 422
+              expect(assigns(:new_chain)).to be_nil
+              ap body_as_json
+            end
           end
         end
 
         context 'if the recipe is not public' do
-          context 'if the recipe belongs to that user' do
-            before do
-              recipe.update_attribute(:public, false)
-            end
+          before do
+            recipe.update_attribute(:public, false)
+          end
 
+          context 'if the recipe belongs to that user' do
             it 'should try to execute the conversion chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_execute_request(execution_params)
@@ -94,7 +111,6 @@ describe Api::V1::RecipesController, type: :controller do
           context 'if the recipe belongs to a different user' do
             before do
               recipe.update_attribute(:user_id, other_user.id)
-              recipe.update_attribute(:public, false)
             end
 
             it 'should fail' do
@@ -135,7 +151,6 @@ describe Api::V1::RecipesController, type: :controller do
         expect(response.status).to eq 401
       end
     end
-
   end
 
   describe "POST create" do

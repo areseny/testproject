@@ -57,7 +57,7 @@ describe "User executes a single recipe" do
                   expect(body_as_json['conversion_chain']['successful'])
                   expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
                   body_as_json['conversion_chain']['conversion_steps'].map do |s|
-                    expect(s['conversion_errors']).to eq ""
+                    expect(s['execution_errors']).to eq ""
                   end
                   # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
                 end
@@ -98,7 +98,7 @@ describe "User executes a single recipe" do
                   expect(response.status).to eq(200)
                   expect(body_as_json['conversion_chain']['successful']).to eq false
                   expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
-                  expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['conversion_errors']}).to eq ["Oh noes! Error!", "Oh noes! Error!"]
+                  expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["Oh noes! Error!", "Oh noes! Error!"]
                 end
               end
             end

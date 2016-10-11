@@ -6,7 +6,8 @@ module Api
       respond_to :json
 
       def execute
-        @new_chain = recipe.clone_and_execute(execution_params)
+        recipe.ensure_step_installation
+        @new_chain = recipe.clone_and_execute(input_file: execution_params, user: current_api_user)
         render json: @new_chain, status: 200
       rescue => e
         # puts e.message

@@ -1,4 +1,4 @@
-require 'conversion_errors/execution_errors'
+require 'execution_errors'
 require 'yaml'
 
 # create_table "conversion_chains", force: :cascade do |t|
@@ -23,9 +23,9 @@ class ConversionChain < ActiveRecord::Base
 
   validates_presence_of :user, :recipe
 
-  def retry_conversion!
+  def retry_conversion!(current_api_user:)
     # file = File.open(input_file.file.file) # LOL
-    recipe.clone_and_execute(input_file)
+    recipe.clone_and_execute(input_file: input_file, user: current_api_user)
   end
 
   def execute_conversion!
@@ -52,7 +52,7 @@ class ConversionChain < ActiveRecord::Base
   def map_results(runner, conversion_steps)
     runner.step_array.each_with_index do |runner_step, index|
       step_model = conversion_steps[index]
-      step_model.conversion_errors = [runner_step.errors].flatten
+      step_model.execution_errors = [runner_step.errors].flatten
       step_model.output_file = runner_step.output_files
       # if runner_step.output_files.respond_to(:map)
       #   step_model.output_file = runner_step.output_files.map(&:open)
@@ -71,8 +71,8 @@ class ConversionChain < ActiveRecord::Base
 
   def successful?
     conversion_steps.each do |step|
-      next if step.conversion_errors.nil?
-      return false if YAML.load(step.conversion_errors).present?
+      next if step.execution_errors.nil?
+      return false if YAML.load(step.execution_errors).present?
     end
     true
   end

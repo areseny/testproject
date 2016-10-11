@@ -1,4 +1,4 @@
-require 'conversion_errors/execution_errors'
+require 'execution_errors'
 require 'sidekiq/api'
 
 # create_table "recipes", force: :cascade do |t|
@@ -29,15 +29,15 @@ class Recipe < ActiveRecord::Base
 
   scope :available_to_user, -> (user_id) { active.where("PUBLIC = ? OR USER_ID = ?", true, user_id) }
 
-  def clone_and_execute(input_file)
+  def clone_and_execute(input_file:, user:)
     raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
-    new_chain = clone_to_conversion_chain(input_file)
+    new_chain = clone_to_conversion_chain(input_file: input_file, user: user)
     new_chain.save!
     new_chain.execute_conversion!
     new_chain
   end
 
-  def clone_to_conversion_chain(input_file)
+  def clone_to_conversion_chain(input_file:, user:)
     raise ExecutionErrors::NoFileSuppliedError.new unless input_file
     new_chain = conversion_chains.new(user: user, input_file: input_file)
     recipe_steps.each do |recipe_step|
@@ -53,6 +53,23 @@ class Recipe < ActiveRecord::Base
 
   def times_executed
     conversion_chains.count
+  end
+
+  def ensure_step_installation
+    missing_steps = []
+    recipe_steps.each do |step|
+      begin
+        step.step_class
+      rescue NameError
+        missing_steps << step.step_class_name
+      end
+    end
+
+    if missing_steps.any?
+      error = StepNotInstalledError.new
+      error.missing_step_classes = missing_steps
+      raise error
+    end
   end
 
   def execute_recipe_in_progress?
@@ -95,7 +112,7 @@ class Recipe < ActiveRecord::Base
     count = 0
     recipe_step_data.each do |step_class_name|
       count += 1
-      ste = recipe_steps.new(position: count, step_class_name: step_class_name)
+      recipe_steps.new(position: count, step_class_name: step_class_name)
     end
   end
 

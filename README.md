@@ -14,40 +14,13 @@ This project is an API, and therefore is using the `rails-api` gem.
 
 Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
-Copy the `config/database.yml.sample` file into `config/database.yml`
+Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.
 
 `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
 ### Step Third-party Binary Dependencies
 
-## FileMagic
-
-On Ubuntu:
-`sudo apt-get install libmagic-dev`
-
-On OSX:
-`sudo brew install libmagic`
-
-## ImageMagick
-
-Used for steps with image manipulation.
-
-Installation directions: http://www.imagemagick.org/script/binary-releases.php
-
-## Pandoc
-
-Used for document conversion from docx => html (as well as a lot of other things!)
-
-Set up directions here: http://pandoc.org/installing.html
-
-## Saxon
-
-Used for custom conversions using xsl.
-
-On your machine, set up the Saxon XSLT parser (needed for some steps)
-http://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE/9.7.0-4 (jar only)
-Installation directions for Ubuntu: https://gist.github.com/bauhouse/21afa826ff81409b97b0
-Installation directions for Linux and Windows: http://www.saxonica.com/saxon-c/index.xml#installing
+These are listed under the gem readme files for the appropriate step gems. 
 
 ### Run it
 
@@ -63,11 +36,17 @@ Check `localhost:3000/anyone` to see if it's up.
 
 ## Adding a new step
 
-To add a new step, add the step logic under its own file in `app/logic/steps`. Subclass `Conversion::Steps::ConversionStep` (for file conversion steps) or `Conversion::Steps::ValidationStep` for validation steps. 
+To write a new step, create a gem (you can host it under RubyGems). I've included code so that the step files get autoloaded when Rails is present.
+ 
+The example I'll use here is `RotThirteen`. 
 
-I've left a couple of sample conversion steps - `RotThirteen` is a basic one that involves serving back a different file than was supplied.
+You can install in a few ways:
 
-Add the class name into the array `StepClass.all_steps` method. Otherwise the system won't know it's there.
+Manually: `gem specific_install -l https://gitlab.coko.foundation/INK/rot_thirteen`. You'll have to update manually whenever there is an update.
+
+Via gemfile, you can edit the gemfile to include the line `gem 'rot_thirteen', git: 'git@gitlab.coko.foundation:INK/rot_thirteen.git` and run `bundle install`. However, with this method, when you pull the latest changes to INK, your gemfile will be removed.
+
+I'm working on a separate custom `StepGemfile` that gets installed as well, so that an instance's installed steps will be preserved. Stay tuned!
 
 ## Upgrading API version
 

@@ -4,7 +4,7 @@
 #   t.text     "notes"
 #   t.datetime "executed_at"
 #   t.string   "output_file"
-#   t.text     "conversion_errors"
+#   t.text     "execution_errors"
 #   t.datetime "created_at",        null: false
 #   t.datetime "updated_at",        null: false
 #   t.string   "step_class_name",   null: false
