@@ -20,7 +20,7 @@ module Api
         new_recipe.save!
         render json: new_recipe, include: ['recipe_steps'], root: false
       rescue => e
-        puts e.message
+        # ap e.message
         render_unprocessable_error(e)
       end
 
@@ -60,7 +60,6 @@ module Api
 
       def execution_params
         params.require(:input_file)
-        # params.require(files: [])
       end
 
       def recipe
