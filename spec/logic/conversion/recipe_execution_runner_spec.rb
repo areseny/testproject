@@ -14,7 +14,7 @@ describe Conversion::RecipeExecutionRunner do
 
       subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
-      it 'should hook the steps to each other' do
+      it 'hooks the steps to each other' do
         result = subject.build_chain
 
         expect(result).to be_a step1
@@ -23,11 +23,11 @@ describe Conversion::RecipeExecutionRunner do
     end
 
     context 'with 2 steps' do
-      let!(:steps)    { [step1, step2] }
+      let(:steps)       { [step1, step2] }
 
       subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
-      it 'should hook the steps to each other' do
+      it 'hooks the steps to each other' do
         result = subject.build_chain
 
         expect(result).to be_a step1
@@ -44,7 +44,7 @@ describe Conversion::RecipeExecutionRunner do
       context 'if there are no steps' do
         subject         { Conversion::RecipeExecutionRunner.new([]) }
 
-        it 'should return nil - no change was made' do
+        it 'returns nil - no change was made' do
           result = subject.run!(files: photo_file)
 
           expect(result).to eq nil
@@ -55,7 +55,7 @@ describe Conversion::RecipeExecutionRunner do
         let!(:steps)    { [InkStep::BasicStep] }
         subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
-        it 'should return a result' do
+        it 'returns a result' do
           result = subject.run!(files: photo_file)
 
           expect(result).to be_a InkStep::BasicStep
@@ -67,7 +67,7 @@ describe Conversion::RecipeExecutionRunner do
         let!(:steps)    { [InkStep::BasicStep, InkStep::BasicStep, InkStep::BasicStep] }
         subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
-        it 'should return a result' do
+        it 'returns a result' do
           result = subject.run!(files: photo_file)
 
           expect(result).to be_a InkStep::BasicStep
@@ -85,7 +85,7 @@ describe Conversion::RecipeExecutionRunner do
         expect(InkStep::BasicStep).to receive(:new).and_return boobytrapped_step
       end
 
-      it 'the step should not have an output file' do
+      it 'the step does not have an output file' do
         subject = Conversion::RecipeExecutionRunner.new(steps)
         result = subject.run!(files: text_file)
 
@@ -93,7 +93,7 @@ describe Conversion::RecipeExecutionRunner do
         expect(result.output_files).to eq nil
       end
 
-      it 'should log the error' do
+      it 'logs the error' do
         subject = Conversion::RecipeExecutionRunner.new(steps)
         result = subject.run!(files: text_file)
 

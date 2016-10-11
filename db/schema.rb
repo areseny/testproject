@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161011004613) do
+ActiveRecord::Schema.define(version: 20161011084644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20161011004613) do
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
     t.string   "step_class_name",     null: false
+    t.string   "version"
   end
 
   add_index "conversion_steps", ["position", "conversion_chain_id"], name: "index_conversion_steps_on_position_and_conversion_chain_id", unique: true, using: :btree
@@ -58,13 +59,6 @@ ActiveRecord::Schema.define(version: 20161011004613) do
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
     t.boolean  "public",      default: false, null: false
-  end
-
-  create_table "step_classes", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "name"
-    t.string   "#<ActiveRecord::ConnectionAdapters::PostgreSQL::TableDefinition"
   end
 
   create_table "users", force: :cascade do |t|

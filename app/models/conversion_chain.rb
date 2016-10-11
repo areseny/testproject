@@ -54,6 +54,7 @@ class ConversionChain < ActiveRecord::Base
       step_model = conversion_steps[index]
       step_model.execution_errors = [runner_step.errors].flatten
       step_model.output_file = runner_step.output_files
+      step_model.version = runner_step.version
       # if runner_step.output_files.respond_to(:map)
       #   step_model.output_file = runner_step.output_files.map(&:open)
       # elsif runner_step.output_files.respond_to(:open)

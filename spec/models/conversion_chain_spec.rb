@@ -22,7 +22,7 @@ RSpec.describe ConversionChain, type: :model do
       conversion_chain.update_attribute(:recipe_id, recipe_step.recipe.id)
     end
 
-    it 'should return the step classes' do
+    it 'returns the step classes' do
       expect(conversion_chain.step_classes).to eq [InkStep::BasicStep]
     end
 
@@ -30,7 +30,7 @@ RSpec.describe ConversionChain, type: :model do
 
   describe '#execute_conversion!' do
     context "if the chain hasn't been saved yet" do
-      it 'should fail' do
+      it 'fails' do
         new_chain = ConversionChain.new
         expect{new_chain.execute_conversion!}.to raise_error("Chain not saved yet")
         expect(new_chain.executed_at).to be_nil
@@ -39,12 +39,58 @@ RSpec.describe ConversionChain, type: :model do
 
     context "if the chain already exists" do
 
-      it 'should fail' do
+      it 'fails' do
         conversion_chain.execute_conversion!
 
         expect(conversion_chain.executed_at).to_not be_nil
       end
     end
+  end
 
+  describe '#map_results' do
+    subject { create(:conversion_chain) }
+
+    let(:some_file)           { File.new('spec/fixtures/files/plaintext.txt') }
+
+    let(:runner_step1)        { double(:conversion_object, errors:[], output_files: some_file, version: "1.2.7") }
+    let(:runner_step2)        { double(:conversion_object, errors:["oh noes!"], output_files: nil, version: "0.2.1") }
+    let(:runner)              { double(:recipe_execution_runner, step_array: [runner_step1, runner_step2]) }
+
+    let(:conversion_step1)    { create(:conversion_step, conversion_chain: subject, position: 1, output_file: "nothing") }
+    let(:conversion_step2)    { create(:conversion_step, conversion_chain: subject, position: 2, output_file: "nada") }
+
+    before do
+      subject.map_results(runner, [conversion_step1, conversion_step2])
+
+      conversion_step1.reload
+      conversion_step2.reload
+    end
+
+    it 'maps the version correctly' do
+      expect(conversion_step1.version).to eq "1.2.7"
+      expect(conversion_step2.version).to eq "0.2.1"
+    end
+
+    it 'maps the errors correctly' do
+      expect(conversion_step1.execution_errors).to eq "[]"
+      expect(conversion_step2.execution_errors).to eq "[\"oh noes!\"]"
+    end
+
+    it 'maps the output files correctly' do
+      expect(conversion_step1.output_file_name).to eq "plaintext.txt"
+      expect(conversion_step2.output_file_name).to eq nil
+    end
   end
 end
+
+# runner.step_array.each_with_index do |runner_step, index|
+#   step_model = conversion_steps[index]
+#   step_model.execution_errors = [runner_step.errors].flatten
+#   step_model.output_file = runner_step.output_files
+#   # if runner_step.output_files.respond_to(:map)
+#   #   step_model.output_file = runner_step.output_files.map(&:open)
+#   # elsif runner_step.output_files.respond_to(:open)
+#   #   step_model.output_file = runner_step.output_files.open
+#   # end
+#   step_model.save!
+# end
