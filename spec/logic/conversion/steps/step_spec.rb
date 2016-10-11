@@ -9,7 +9,7 @@ describe InkStep::BasicStep do
     specify do
       subject.required_parameters = []
 
-      expect{subject.perform_step(input_file, {})}.to_not raise_error
+      expect{subject.perform_step(files: input_file, options: {})}.to_not raise_error
     end
   end
 end

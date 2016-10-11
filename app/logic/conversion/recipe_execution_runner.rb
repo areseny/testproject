@@ -8,11 +8,11 @@ module Conversion
       @step_array = []
     end
 
-    def run!(files)
+    def run!(files:)
       return nil if steps.empty?
       begin
         chain = build_chain
-        chain.execute(files)
+        chain.execute(files: files)
       rescue => e
         ap e.message
         ap e.backtrace

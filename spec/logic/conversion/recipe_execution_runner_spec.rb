@@ -45,7 +45,7 @@ describe Conversion::RecipeExecutionRunner do
         subject         { Conversion::RecipeExecutionRunner.new([]) }
 
         it 'should return nil - no change was made' do
-          result = subject.run!(photo_file)
+          result = subject.run!(files: photo_file)
 
           expect(result).to eq nil
         end
@@ -56,7 +56,7 @@ describe Conversion::RecipeExecutionRunner do
         subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
         it 'should return a result' do
-          result = subject.run!(photo_file)
+          result = subject.run!(files: photo_file)
 
           expect(result).to be_a InkStep::BasicStep
           expect(result.output_files).to eq photo_file
@@ -68,7 +68,7 @@ describe Conversion::RecipeExecutionRunner do
         subject         { Conversion::RecipeExecutionRunner.new(steps) }
 
         it 'should return a result' do
-          result = subject.run!(photo_file)
+          result = subject.run!(files: photo_file)
 
           expect(result).to be_a InkStep::BasicStep
           expect(result.output_files).to eq photo_file
@@ -87,7 +87,7 @@ describe Conversion::RecipeExecutionRunner do
 
       it 'the step should not have an output file' do
         subject = Conversion::RecipeExecutionRunner.new(steps)
-        result = subject.run!(text_file)
+        result = subject.run!(files: text_file)
 
         expect(result).to be_a InkStep::BasicStep
         expect(result.output_files).to eq nil
@@ -95,7 +95,7 @@ describe Conversion::RecipeExecutionRunner do
 
       it 'should log the error' do
         subject = Conversion::RecipeExecutionRunner.new(steps)
-        result = subject.run!(text_file)
+        result = subject.run!(files: text_file)
 
         expect(result.errors).to eq ["OMG!"]
       end
