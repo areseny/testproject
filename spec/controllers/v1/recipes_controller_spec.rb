@@ -1,7 +1,7 @@
 require_relative 'version'
 
-describe Api::V1::RecipesController, type: :controller do
-  include Devise::TestHelpers
+RSpec.describe Api::V1::RecipesController do
+  include Devise::Test::ControllerHelpers
 
   let!(:user)           { create(:user) }
   let!(:other_user)     { create(:user) }
@@ -321,37 +321,35 @@ describe Api::V1::RecipesController, type: :controller do
     end
   end
 
-  [:patch, :put].each do |method|
-    describe "#{method.upcase} update" do
+  describe "PUT update" do
 
-      let!(:recipe)   { create(:recipe, user: user) }
+    let!(:recipe)   { create(:recipe, user: user) }
 
-      context 'if a valid token is supplied' do
+    context 'if a valid token is supplied' do
 
-        it "should assign" do
-          request_with_auth(user.create_new_auth_token) do
-            self.send("perform_#{method}_request", recipe_params.merge(id: recipe.id))
-          end
+      it "should assign" do
+        request_with_auth(user.create_new_auth_token) do
+          perform_put_request(recipe_params.merge(id: recipe.id))
+        end
 
-          expect(response.status).to eq 200
-          recipe = assigns[:recipe]
-          expect(recipe).to be_a Recipe
-          attributes.each do |facet|
-            expect(recipe.send(facet)).to eq self.send(facet)
-          end
+        expect(response.status).to eq 200
+        recipe = assigns[:recipe]
+        expect(recipe).to be_a Recipe
+        attributes.each do |facet|
+          expect(recipe.send(facet)).to eq self.send(facet)
         end
       end
+    end
 
-      context 'if no valid token is supplied' do
+    context 'if no valid token is supplied' do
 
-        it "should not assign anything" do
-          request_with_auth do
-            self.send("perform_#{method}_request", recipe_params.merge(id: recipe.id))
-          end
-
-          expect(response.status).to eq 401
-          expect(assigns[:new_recipe]).to be_nil
+      it "should not assign anything" do
+        request_with_auth do
+          perform_put_request(recipe_params.merge(id: recipe.id))
         end
+
+        expect(response.status).to eq 401
+        expect(assigns[:new_recipe]).to be_nil
       end
     end
   end
@@ -538,10 +536,6 @@ describe Api::V1::RecipesController, type: :controller do
 
   def perform_put_request(data)
     put_update_request(version, data)
-  end
-
-  def perform_patch_request(data = {})
-    patch_update_request(version, data)
   end
 
   def perform_index_request(data = {})

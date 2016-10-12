@@ -40,10 +40,10 @@ describe "User creates recipe" do
         end
 
         it 'should return a Recipe object' do
-          expect(body_as_json['name']).to eq name
-          expect(body_as_json['description']).to eq description
-          expect(body_as_json['active']).to be_truthy
-          expect(body_as_json['public']).to be_truthy
+          expect(body_as_json['recipe']['name']).to eq name
+          expect(body_as_json['recipe']['description']).to eq description
+          expect(body_as_json['recipe']['active']).to be_truthy
+          expect(body_as_json['recipe']['public']).to be_truthy
         end
 
         it 'should create a new recipe with the parameters' do

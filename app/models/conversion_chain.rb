@@ -10,7 +10,7 @@ require 'yaml'
 #   t.datetime "updated_at",        null: false
 # end
 
-class ConversionChain < ActiveRecord::Base
+class ConversionChain < ApplicationRecord
   include ExecutionErrors
 
   belongs_to :user

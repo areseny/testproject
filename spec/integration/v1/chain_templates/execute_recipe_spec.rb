@@ -50,7 +50,7 @@ describe "User executes a single recipe" do
               let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
 
               context 'and execution is successful' do
-                it 'should return the objects' do
+                it 'returns the objects' do
                   perform_execute_request(auth_headers, execution_params)
 
                   expect(response.status).to eq(200)
@@ -62,7 +62,7 @@ describe "User executes a single recipe" do
                   # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
                 end
 
-                it 'should return a ConversionChain object' do
+                it 'returns a ConversionChain object' do
                   perform_execute_request(auth_headers, execution_params)
 
                   conversion_chain = recipe.reload.conversion_chains.first
@@ -75,7 +75,7 @@ describe "User executes a single recipe" do
                   expect(body_as_json['conversion_chain']['successful']).to eq true
                 end
 
-                it 'should also return the steps' do
+                it 'also returns the steps' do
                   perform_execute_request(auth_headers, execution_params)
 
                   expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
@@ -92,8 +92,9 @@ describe "User executes a single recipe" do
                   allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
                 end
 
-                it 'should return the errors' do
+                it 'returns the errors' do
                   perform_execute_request(auth_headers, execution_params)
+
 
                   expect(response.status).to eq(200)
                   expect(body_as_json['conversion_chain']['successful']).to eq false
@@ -110,7 +111,7 @@ describe "User executes a single recipe" do
               execution_params.delete(:input_file)
             end
 
-            it 'should return an error' do
+            it 'returns an error' do
               perform_execute_request(auth_headers, execution_params)
 
               expect(response.status).to eq(422)
@@ -151,11 +152,11 @@ describe "User executes a single recipe" do
         perform_execute_request({}, execution_params)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end
@@ -166,11 +167,11 @@ describe "User executes a single recipe" do
         perform_execute_request({}, execution_params)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end

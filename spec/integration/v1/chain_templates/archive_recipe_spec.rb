@@ -30,9 +30,10 @@ describe "User archives a single recipe" do
           end
 
           it 'should return a Recipe object' do
-            expect(body_as_json['name']).to eq recipe.name
-            expect(body_as_json['description']).to eq recipe.description
-            expect(body_as_json['active']).to eq recipe.active
+            ap body_as_json
+            expect(body_as_json['recipe']['name']).to eq recipe.name
+            expect(body_as_json['recipe']['description']).to eq recipe.description
+            expect(body_as_json['recipe']['active']).to eq recipe.active
           end
         end
 

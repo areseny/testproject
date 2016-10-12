@@ -32,11 +32,17 @@ describe "User executes a single recipe" do
       let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: conversion_class) }
 
       context 'and execution is successful' do
-        it 'should return the objects' do
-          perform_execute_request(auth_headers, execution_params)
 
+        before do
+          perform_execute_request(auth_headers, execution_params)
+        end
+
+        it 'returns the objects' do
           expect(response.status).to eq(200)
           expect(body_as_json['conversion_chain']['successful']).to_not be_nil
+        end
+
+        it 'includes the associated steps' do
           expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 1
           body_as_json['conversion_chain']['conversion_steps'].map do |s|
             expect(s['execution_errors']).to eq ""

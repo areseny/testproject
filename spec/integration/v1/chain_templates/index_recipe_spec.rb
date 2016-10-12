@@ -34,10 +34,12 @@ describe "User lists all their recipes" do
         it 'should return a list of Recipe objects' do
           expect(body_as_json.count).to eq 1
 
-          expect(body_as_json[0]['name']).to eq recipe.name
-          expect(body_as_json[0]['description']).to eq recipe.description
-          expect(body_as_json[0]['user_id']).to eq recipe.user.id
-          expect(body_as_json[0]['active']).to eq recipe.active
+          ap body_as_json
+          expect(body_as_json['recipes'][0]['name']).to eq recipe.name
+          expect(body_as_json['recipes'][0]['description']).to eq recipe.description
+          expect(body_as_json['recipes'][0]['user_id']).to eq recipe.user.id
+          expect(body_as_json['recipes'][0]['active']).to eq recipe.active
+          expect(body_as_json['recipes'][0]['public']).to eq recipe.public
         end
       end
 
@@ -53,7 +55,7 @@ describe "User lists all their recipes" do
         end
 
         it 'responds with an empty set' do
-          expect(body_as_json.to_a).to eq []
+          expect(body_as_json.to_a).to eq [['recipes', []]]
         end
       end
     end

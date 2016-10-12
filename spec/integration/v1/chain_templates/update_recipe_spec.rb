@@ -48,10 +48,10 @@ describe "User updates recipe" do
           end
 
           it 'should return the updated Recipe object' do
-            expect(body_as_json['name']).to eq name
-            expect(body_as_json['description']).to eq description
-            expect(body_as_json['active']).to eq active
-            expect(body_as_json['public']).to eq public
+            expect(body_as_json['recipe']['name']).to eq name
+            expect(body_as_json['recipe']['description']).to eq description
+            expect(body_as_json['recipe']['active']).to eq active
+            expect(body_as_json['recipe']['public']).to eq public
           end
 
           it 'should modify the Recipe object' do
@@ -94,10 +94,10 @@ describe "User updates recipe" do
           end
 
           it 'should return the updated Recipe object (with only some changed fields)' do
-            expect(body_as_json['name']).to eq name
-            expect(body_as_json['description']).to_not eq description
-            expect(body_as_json['active']).to_not eq active
-            expect(body_as_json['public']).to_not eq public
+            expect(body_as_json['recipe']['name']).to eq name
+            expect(body_as_json['recipe']['description']).to_not eq description
+            expect(body_as_json['recipe']['active']).to_not eq active
+            expect(body_as_json['recipe']['public']).to_not eq public
           end
 
           it 'should modify the Recipe object' do

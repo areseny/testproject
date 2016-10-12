@@ -1,7 +1,8 @@
+require 'rails_helper'
 require_relative 'version'
 
 describe Api::V1::ConversionChainsController, type: :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
   let!(:demo_step)        { "RotThirteenStep" }

@@ -11,7 +11,7 @@ require 'sidekiq/api'
 #   t.datetime "updated_at",                 null: false
 # end
 
-class Recipe < ActiveRecord::Base
+class Recipe < ApplicationRecord
   include ExecutionErrors
 
   belongs_to :user

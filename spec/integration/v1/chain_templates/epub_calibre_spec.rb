@@ -43,7 +43,7 @@ describe "User executes a single-step epub calibre recipe" do
       # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
     end
 
-    it 'should have an expected output file' do
+    it 'has an expected output file' do
       wait_for_async
       result = ConversionChain.last.output_file
       expect(File.extname(result.path)).to eq '.epub'

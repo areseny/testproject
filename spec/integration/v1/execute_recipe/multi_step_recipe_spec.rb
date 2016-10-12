@@ -63,6 +63,7 @@ describe "User executes a recipe with multiple real steps" do
       it 'should also return the steps' do
         perform_execute_request(auth_headers, execution_params)
 
+        ap body_as_json
         expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3
         body_as_json['conversion_chain']['conversion_steps'].each do |result|
           expect(result['execution_errors']).to eq ""

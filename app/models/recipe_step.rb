@@ -6,7 +6,7 @@
 #   t.string  "step_class_name",    null: false
 # end
 
-class RecipeStep < ActiveRecord::Base
+class RecipeStep < ApplicationRecord
   include ObjectMethods
 
   belongs_to :recipe

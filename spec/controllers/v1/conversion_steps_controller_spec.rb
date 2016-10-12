@@ -1,7 +1,7 @@
 require_relative 'version'
 
 describe Api::V1::ConversionStepsController, type: :controller do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   let!(:user)           { create(:user, password: "password", password_confirmation: "password") }
 

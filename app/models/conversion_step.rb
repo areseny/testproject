@@ -10,7 +10,7 @@
 #   t.string   "step_class_name",   null: false
 # end
 
-class ConversionStep < ActiveRecord::Base
+class ConversionStep < ApplicationRecord
   belongs_to :conversion_chain, inverse_of: :conversion_steps
 
   has_many :files, as: :file_handler

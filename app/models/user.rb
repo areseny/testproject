@@ -23,7 +23,10 @@
 #   t.datetime "updated_at"
 # end
 
-class User < ActiveRecord::Base
+# needed as Devise uses this class before Rails has a chance to autoload it
+require 'rails/generators/rails/app/templates/app/models/application_record'
+
+class User < ApplicationRecord
   # Include default devise modules.
   devise :database_authenticatable, :registerable,
           :recoverable, :rememberable, :trackable, :validatable,

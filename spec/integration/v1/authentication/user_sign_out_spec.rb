@@ -2,7 +2,6 @@ require 'rails_helper'
 require_relative '../version'
 
 describe "User sign out" do
-  # include Devise::TestHelpers
 
   # URL: /api/auth/sign_out
   # Method: DELETE

@@ -9,27 +9,23 @@ def request_with_auth(auth_headers = {})
 end
 
 def post_create_request(version, data = {}.to_json)
-  post :create, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  post :create, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 def put_update_request(version, data)
-  put :update, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
-end
-
-def patch_update_request(version, data)
-  patch :update, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  put :update, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 def get_index_request(version, data = {}.to_json)
-  get :index, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  get :index, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 def get_show_request(version, data = {}.to_json)
-  get :show, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  get :show, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 def delete_destroy_request(version, data = {}.to_json)
-  delete :destroy, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  delete :destroy, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 #### specific to certain controllers
@@ -37,14 +33,14 @@ end
 # recipe_controller requests
 
 def execute_recipe(version, data = {}.to_json)
-  post :execute, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  post :execute, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 def retry_conversion(version, data = {}.to_json)
-  get :retry, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  get :retry, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
 def download_file(version, data = {}.to_json)
-  get :download_file, data, {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+  get :download_file, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 

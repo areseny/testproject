@@ -30,11 +30,18 @@ describe "User sign up" do
     end
 
     context 'is missing a parameter' do
-      it 'should raise an error' do
+      it 'raises an error' do
         perform_sign_up_request(valid_params.except("password"))
 
-        expect(response.status).to eq(403)
+        expect(response.status).to eq(422)
       end
+
+      it 'does not sign up the user' do
+        expect{
+          perform_sign_up_request(valid_params.except("password"))
+        }.to_not change{User.count}
+      end
+
     end
   end
 
