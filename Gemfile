@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.5.1'
+gem 'rails', '4.2.7'
 gem 'rails-api'
 
 gem 'active_model_serializers'
@@ -36,17 +36,6 @@ gem 'epub_calibre', git: 'git@gitlab.coko.foundation:INK/epub_calibre.git'
 gem 'docx_to_html_pandoc', git: 'git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git'
 gem 'xsweet_pipeline', git: 'git@gitlab.coko.foundation:INK/xsweet_pipeline.git'
 
-################### conversion utilities ########################
-
-# image manipulation
-gem 'mini_magick' # requires imagemagick to be installed - http://www.imagemagick.org/script/binary-releases.php
-
-# js
-gem 'therubyracer'
-
-# file info
-gem 'ruby-filemagic'
-
 ################### javascript ###############
 
 # Use Uglifier as compressor for JavaScript assets
@@ -54,7 +43,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
