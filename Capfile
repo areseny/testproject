@@ -4,7 +4,8 @@ require 'capistrano/setup'
 # Include default deployment tasks
 require 'capistrano/deploy'
 require 'capistrano/bundler'
-require 'capistrano/rails'
+# capistrano/rails includes assets, so I switched it off and added the above manually
+# require 'capistrano/rails'
 
 require 'sshkit/sudo'
 

@@ -29,7 +29,7 @@ module Ink
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-
+    # config.assets.enabled = false
     # added on top of the rails 5.0 upgrade utility
 
     # from https://robots.thoughtbot.com/catching-json-parse-errors-with-custom-middleware
