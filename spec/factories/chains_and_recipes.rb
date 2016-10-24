@@ -13,7 +13,7 @@ FactoryGirl.define do
   factory :conversion_chain do
     recipe
     user
-    input_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
+    input_file { File.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
   end
 
   factory :conversion_step do
@@ -21,8 +21,17 @@ FactoryGirl.define do
     position 1
     step_class_name "InkStep::BasicStep"
     notes "yay! done!"
-    # output_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
     output_file { File.new('spec/fixtures/files/test_file.xml', 'r') }
+    factory :executed_conversion_step_success do
+      executed_at 2.minutes.ago
+      output_file { File.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
+    end
+    factory :executed_conversion_step_fail do
+      executed_at 2.minutes.ago
+      output_file nil
+      execution_errors ["Very Serious Error"].to_yaml
+    end
+    version "0.1"
   end
 
   factory :recipe_step do

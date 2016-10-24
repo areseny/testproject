@@ -42,9 +42,22 @@ describe "User finds a single recipe" do
             it 'should also return the steps' do
               perform_show_request(auth_headers, recipe.id)
 
-              ap body_as_json
-
               expect(body_as_json['recipe']['recipe_steps'].count).to eq 2
+            end
+          end
+
+          context 'and it has conversion chains' do
+            let!(:step1)                { create(:recipe_step, recipe: recipe, position: 1) }
+            let!(:conversion_chain)     { create(:conversion_chain, recipe: recipe, executed_at: 2.minutes.ago) }
+            let!(:conversion_step)      { create(:executed_conversion_step_success, conversion_chain: conversion_chain) }
+
+            before { recipe.reload }
+
+            it 'should also return the chain information' do
+              perform_show_request(auth_headers, recipe.id)
+
+              expect(body_as_json['recipe']['conversion_chains'].count).to eq 1
+              expect(body_as_json['recipe']['conversion_chains'][0]['conversion_steps'].count).to eq 1
             end
           end
         end

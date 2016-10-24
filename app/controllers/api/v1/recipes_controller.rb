@@ -29,9 +29,12 @@ module Api
       end
 
       def show
-        render json: recipe, include: ['recipe_steps'], root: false
+        render json: recipe, include: ['recipe_steps', 'conversion_chains'], root: false
       rescue => e
-        render_not_found_error(e)
+        # ap e.message
+        # ap e.backtrace
+        render_error(e)
+        # render_not_found_error(e)
       end
 
       def update

@@ -16,7 +16,7 @@ class Recipe < ApplicationRecord
 
   belongs_to :user
   has_many :recipe_steps, inverse_of: :recipe
-  has_many :conversion_chains
+  has_many :conversion_chains, inverse_of: :recipe
 
   validates_presence_of :name, :user
   validates_inclusion_of :active, :in => [true, false]
@@ -74,7 +74,6 @@ class Recipe < ApplicationRecord
 
   def execute_recipe_in_progress?
     Sidekiq::Workers.new.each do |process_id, thread_id, work|
-      puts ""
       return true if work['payload']['args'].include?(self.id)
       # process_id is a unique identifier per Sidekiq process
       # thread_id is a unique identifier per thread

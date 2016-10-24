@@ -4,7 +4,7 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a single-step epub calibre recipe" do
+describe "User executes a ROT13 recipe" do
 
   # URL: /api/recipes/:id/execute
   # Method: GET
@@ -14,39 +14,65 @@ describe "User executes a single-step epub calibre recipe" do
 
   let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
   let!(:auth_headers)     { user.create_new_auth_token }
-  let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
+  let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plain') }
 
   let!(:recipe)           { create(:recipe, user: user) }
 
-  let!(:execution_params) {
-    {
-        input_file: html_file,
-        id: recipe.id
-    }
-  }
 
-    let!(:conversion_class)  { "EpubCalibreStep" }
-    let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: conversion_class) }
+  let!(:conversion_class)  { "RotThirteenStep" }
+  let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: conversion_class) }
 
   context 'if the conversion is successful' do
+    let!(:execution_params) {
+      {
+          input_file: text_file,
+          id: recipe.id
+      }
+    }
+
     before do
       perform_execute_request(auth_headers, execution_params)
     end
 
-    specify do
+    it 'should be successful' do
       expect(response.status).to eq(200)
       expect(body_as_json['conversion_chain']).to_not be_nil
       expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 1
       body_as_json['conversion_chain']['conversion_steps'].map do |s|
-        expect(s['execution_errors']).to eq ""
+        expect(s['execution_errors']).to eq "[]"
       end
       # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
     end
 
-    it 'has an expected output file' do
+    it 'should have an expected output file' do
       wait_for_async
       result = ConversionChain.last.output_file
-      expect(File.extname(result.path)).to eq '.epub'
+      expect(result.read).to eq "Guvf vf fbzr grkg."
+    end
+  end
+
+  context 'if the execution fails' do
+    let!(:photo_file)         { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
+    let!(:boobytrapped_step)  { RotThirteenStep.new }
+
+    let!(:execution_params) {
+      {
+          input_file: photo_file,
+          id: recipe.id
+      }
+    }
+
+    before do
+      expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }
+      expect(RotThirteenStep).to receive(:new).and_return(boobytrapped_step)
+    end
+
+    it 'fails nicely' do
+      perform_execute_request(auth_headers, execution_params)
+
+      wait_for_async
+      result = ConversionChain.last.output_file
+      expect(result.file).to be_nil
     end
   end
 
