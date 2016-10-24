@@ -40,7 +40,7 @@ module Ink
     config.middleware.use ::CatchJsonParseErrors
     config.middleware.use Rack::Cors do
       allow do
-        origins '*'
+        origins /\Alocalhost(:\d+)?\z/, /\A(.*)\.coko\.foundation(:\d+)?\z/
         resource '*',
                  :headers => :any,
                  :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
