@@ -18,6 +18,10 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
+  # for use with ink-api.coko.foundation
+  Rails.application.routes.default_url_options[:host] = 'ink-api.coko.foundation'
+
+
   # config.assets.enabled = false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
