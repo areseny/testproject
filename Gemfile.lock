@@ -44,9 +44,9 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/xsweet_pipeline.git
-  revision: ec1ce3a6187ae6da6f21d401c2cdad30e82a9b12
+  revision: 4814bfbe61a46f6f98b6c1e895c7e3a5ba15ae9a
   specs:
-    xsweet_pipeline (0.0.6)
+    xsweet_pipeline (0.0.7)
       rubyzip
 
 GEM
