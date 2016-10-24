@@ -68,7 +68,6 @@ describe "User executes a single recipe" do
                   conversion_chain = recipe.reload.conversion_chains.first
 
                   expect(body_as_json['conversion_chain']['recipe_id']).to eq conversion_chain.recipe_id
-                  # expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.strftime("%d %B, %Y %l:%M %P %Z")
                   expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
                   expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
                   expect(body_as_json['conversion_chain']['executed_at_for_humans']).to_not be_nil
@@ -79,6 +78,7 @@ describe "User executes a single recipe" do
                   perform_execute_request(auth_headers, execution_params)
 
                   expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 2
+                  expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['version']}).to eq ["0.0.4", "0.0.4"]
                 end
               end
 

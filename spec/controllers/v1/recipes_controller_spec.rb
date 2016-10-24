@@ -87,7 +87,6 @@ RSpec.describe Api::V1::RecipesController do
 
               expect(response.status).to eq 422
               expect(assigns(:new_chain)).to be_nil
-              ap body_as_json
             end
           end
         end
