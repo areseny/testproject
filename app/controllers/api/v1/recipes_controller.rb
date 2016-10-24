@@ -18,23 +18,22 @@ module Api
       def create
         new_recipe.generate_recipe_steps(recipe_step_params)
         new_recipe.save!
-        render json: new_recipe, include: ['recipe_steps'], root: false
+        render json: new_recipe
       rescue => e
         # ap e.message
         render_unprocessable_error(e)
       end
 
       def index
-        render json: recipes, include: ['recipe_steps', 'conversion_chains'], root: false
+        render json: recipes
       end
 
       def show
-        render json: recipe, include: ['recipe_steps', 'conversion_chains'], root: false
+        render json: recipe
       rescue => e
         # ap e.message
         # ap e.backtrace
         render_error(e)
-        # render_not_found_error(e)
       end
 
       def update

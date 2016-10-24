@@ -8,7 +8,7 @@ class ConversionChainSerializer < ActiveModel::Serializer
   attributes :id, :recipe_id, :successful, :executed_at, :executed_at_for_humans, :input_file_name, :input_file_path, :output_file_path, :output_file_name, :finished_at, :conversion_steps
 
   def conversion_steps
-    object.conversion_steps.sort_by{ |step| step.position }
+    object.conversion_steps.sort_by{ |step| step.position }.map{|step| ActiveModelSerializers::SerializableResource.new(step, adapter: :attribute).as_json}
   end
 
   def executed_at
