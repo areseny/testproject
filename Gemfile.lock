@@ -17,9 +17,9 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git
-  revision: 71dd058d84f62d47065909a289dbcf51537f3670
+  revision: 9402bee555c38089add22553cbc08ea46aa143e6
   specs:
-    docx_to_html_pandoc (0.0.4)
+    docx_to_html_pandoc (0.0.5)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/epub_calibre.git
