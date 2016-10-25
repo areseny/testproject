@@ -10,8 +10,8 @@ module Api
         @new_chain = recipe.clone_and_execute(input_file: execution_params, user: current_api_user)
         render json: @new_chain, status: 200
       rescue => e
-        # puts e.message
-        # puts e.backtrace
+        # ap e.message
+        # ap e.backtrace
         render_error(e)
       end
 

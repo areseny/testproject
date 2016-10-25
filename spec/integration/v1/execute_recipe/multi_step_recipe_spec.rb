@@ -7,17 +7,17 @@ Sidekiq::Testing.inline!
 describe "User executes a recipe with multiple real steps" do
 
   # URL: /api/recipes/:id/execute
-  # Method: GET
+  # Method: POST
   # Execute a specific recipe belonging to the current user
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 
     let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
-    let!(:html_file)         { fixture_file_upload('files/test.html', 'text/html') }
-    let!(:docx_file)         { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
+    let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
+    let!(:docx_file)        { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
     let!(:recipe)           { create(:recipe, user: user) }
 
@@ -45,7 +45,6 @@ describe "User executes a recipe with multiple real steps" do
         body_as_json['conversion_chain']['conversion_steps'].map do |s|
           expect(s['execution_errors']).to eq ""
         end
-        # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
       end
 
       it 'returns a ConversionChain object' do
