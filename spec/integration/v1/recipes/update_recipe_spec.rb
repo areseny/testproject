@@ -47,21 +47,21 @@ describe "User updates recipe" do
             expect(response.status).to eq(200)
           end
 
-          it 'should return the updated Recipe object' do
+          it 'returns the updated Recipe object' do
             expect(body_as_json['recipe']['name']).to eq name
             expect(body_as_json['recipe']['description']).to eq description
             expect(body_as_json['recipe']['active']).to eq active
             expect(body_as_json['recipe']['public']).to eq public
           end
 
-          it 'should modify the Recipe object' do
+          it 'modifies the Recipe object' do
             updated_recipe = recipe.reload
             recipe_attributes.each do |attribute|
               expect(updated_recipe.send(attribute)).to eq self.send(attribute)
             end
           end
 
-          it 'should update the recipe with the parameters' do
+          it 'updates the recipe with the parameters' do
             expect(user.reload.recipes.count).to eq 1
 
             recipe = user.recipes.first
@@ -93,14 +93,14 @@ describe "User updates recipe" do
             expect(response.status).to eq(200)
           end
 
-          it 'should return the updated Recipe object (with only some changed fields)' do
+          it 'returns the updated Recipe object (with only some changed fields)' do
             expect(body_as_json['recipe']['name']).to eq name
             expect(body_as_json['recipe']['description']).to_not eq description
             expect(body_as_json['recipe']['active']).to_not eq active
             expect(body_as_json['recipe']['public']).to_not eq public
           end
 
-          it 'should modify the Recipe object' do
+          it 'modifies the Recipe object' do
             recipe.reload
             recipe_attributes.delete(:name)
             recipe_attributes.each do |attribute|
@@ -109,7 +109,7 @@ describe "User updates recipe" do
             expect(recipe.name).to eq original_recipe.name
           end
 
-          it 'should update the recipe with the parameters' do
+          it 'updates the recipe with the parameters' do
             expect(user.reload.recipes.count).to eq 1
 
             recipe = user.recipes.first
@@ -134,7 +134,7 @@ describe "User updates recipe" do
           expect(response.status).to eq(404)
         end
 
-        it 'should not modify the recipe' do
+        it 'does not modify the recipe' do
           original_recipe = recipe
           updated_recipe = recipe.reload
 
@@ -151,11 +151,11 @@ describe "User updates recipe" do
         perform_update_request({}, recipe_params)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end
@@ -166,11 +166,11 @@ describe "User updates recipe" do
         perform_update_request({}, recipe_params)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end

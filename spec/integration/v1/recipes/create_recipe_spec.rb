@@ -39,14 +39,14 @@ describe "User creates recipe" do
           expect(response.status).to eq(200)
         end
 
-        it 'should return a Recipe object' do
+        it 'returns a Recipe object' do
           expect(body_as_json['recipe']['name']).to eq name
           expect(body_as_json['recipe']['description']).to eq description
           expect(body_as_json['recipe']['active']).to be_truthy
           expect(body_as_json['recipe']['public']).to be_truthy
         end
 
-        it 'should create a new recipe with the parameters' do
+        it 'creates a new recipe with the parameters' do
           expect(user.reload.recipes.count).to eq 1
 
           recipe = user.recipes.first
@@ -71,7 +71,7 @@ describe "User creates recipe" do
               recipe_params[:steps_with_positions] = step_params
             end
 
-            it "should create the recipe with recipe steps" do
+            it "creates the recipe with recipe steps" do
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
@@ -83,35 +83,35 @@ describe "User creates recipe" do
 
           context 'and they are incorrect' do
 
-            it "should not create the recipe for nonexistent step classes" do
+            it "does not create the recipe for nonexistent step classes" do
               recipe_params[:steps_with_positions] = [{position: 1, step_class_name: "rubbish"}, {position: 1, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params.to_json)
 
               expect(response.status).to eq 422
             end
 
-            it "should not create the recipe with duplicate numbers" do
+            it "does not create the recipe with duplicate numbers" do
               recipe_params[:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
-            it "should not create the recipe with incorrect numbers" do
+            it "does not create the recipe with incorrect numbers" do
               recipe_params[:steps_with_positions] = [{position: 0, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
-            it "should not create the recipe with skipped steps" do
+            it "does not create the recipe with skipped steps" do
               recipe_params[:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 6, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
-            it "should create the recipe with numbers out of order" do
+            it "does create the recipe with numbers out of order" do
               recipe_params[:steps_with_positions] = [{position: 2, step_class_name: rot13 }, {position: 1, step_class_name: generic_step}]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
@@ -129,7 +129,7 @@ describe "User creates recipe" do
               recipe_params[:steps] = ["InkStep::BasicStep", "RotThirteenStep"]
             end
 
-            it "should create the recipe with recipe steps" do
+            it "creates the recipe with recipe steps" do
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
@@ -141,7 +141,7 @@ describe "User creates recipe" do
 
           context 'and they are not real' do
 
-            it "should create the recipe for nonexistent step classes anyway" do
+            it "creates the recipe for nonexistent step classes anyway" do
               recipe_params[:steps] = ["NonexistentClass", "RotThirteenStep"]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
@@ -159,11 +159,11 @@ describe "User creates recipe" do
         perform_create_request({}, recipe_params)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end
@@ -174,11 +174,11 @@ describe "User creates recipe" do
         perform_create_request({}, recipe_params)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end

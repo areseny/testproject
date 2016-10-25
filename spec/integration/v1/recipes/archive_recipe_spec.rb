@@ -29,7 +29,7 @@ describe "User archives a single recipe" do
             expect(response.status).to eq(200)
           end
 
-          it 'should return a Recipe object' do
+          it 'returns a Recipe object' do
             expect(body_as_json['recipe']['name']).to eq recipe.name
             expect(body_as_json['recipe']['description']).to eq recipe.description
             expect(body_as_json['recipe']['active']).to eq recipe.active
@@ -68,11 +68,11 @@ describe "User archives a single recipe" do
         perform_archive_request({}, recipe.id)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end
@@ -83,11 +83,11 @@ describe "User archives a single recipe" do
         perform_archive_request({}, recipe.id)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end

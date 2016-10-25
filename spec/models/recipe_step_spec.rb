@@ -11,23 +11,23 @@ RSpec.describe RecipeStep, type: :model do
     expects_to_be_invalid_without :recipe_step, :recipe, :position, :step_class_name
 
     describe 'position' do
-      it 'should be an integer' do
+      it 'is an integer' do
         expect(build(:recipe_step, position: 2.4)).to_not be_valid
       end
 
-      it 'should be positive' do
+      it 'is positive' do
         expect(build(:recipe_step, position: -2)).to_not be_valid
       end
 
-      it 'should be greater than 0' do
+      it 'is greater than 0' do
         expect(build(:recipe_step, position: 0)).to_not be_valid
       end
 
-      it 'should be greater than 0' do
+      it 'is greater than 0' do
         expect(build(:recipe_step, position: 1)).to be_valid
       end
 
-      it 'should be unique to that recipe / position combination' do
+      it 'is unique to that recipe / position combination' do
         recipe = create(:recipe)
         create(:recipe_step, recipe: recipe, position: 1)
         expect(build(:recipe_step, recipe: recipe, position: 1)).to_not be_valid
