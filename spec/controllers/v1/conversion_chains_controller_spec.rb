@@ -61,7 +61,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
               recipe_step.destroy
             end
 
-            it 'should try to execute the conversion chain' do
+            it 'tries to execute the conversion chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_retry_request(params)
               end
@@ -71,7 +71,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
           end
 
           context 'if the recipe has steps' do
-            it 'should try to execute the conversion chain' do
+            it 'tries to execute the conversion chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_retry_request(params)
               end
@@ -87,7 +87,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
 
     context 'if no valid token is supplied' do
 
-      it "should not assign anything" do
+      it "does not assign anything" do
         request_with_auth do
           perform_retry_request(params)
         end

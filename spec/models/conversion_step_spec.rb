@@ -11,23 +11,23 @@ RSpec.describe ConversionStep, type: :model do
     expects_to_be_invalid_without :conversion_step, :conversion_chain, :position, :step_class_name
 
     describe 'position' do
-      it 'should be an integer' do
+      it 'is an integer' do
         expect(build(:conversion_step, position: 2.4)).to_not be_valid
       end
 
-      it 'should be positive' do
+      it 'is positive' do
         expect(build(:conversion_step, position: -2)).to_not be_valid
       end
 
-      it 'should be greater than 0' do
+      it 'is greater than 0' do
         expect(build(:conversion_step, position: 0)).to_not be_valid
       end
 
-      it 'should be greater than 0' do
+      it 'is greater than 0' do
         expect(build(:conversion_step, position: 1)).to be_valid
       end
 
-      it 'should be unique to that recipe / position combination' do
+      it 'is unique to that recipe / position combination' do
         recipe = create(:conversion_chain)
         create(:conversion_step, conversion_chain: recipe, position: 1)
         expect(build(:conversion_step, conversion_chain: recipe, position: 1)).to_not be_valid

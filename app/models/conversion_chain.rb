@@ -91,6 +91,7 @@ class ConversionChain < ApplicationRecord
   end
 
   def output_file_path
+    raise "No conversion steps" if last_step.nil?
     Rails.application.routes.url_helpers.download_api_conversion_step_url(last_step)
   end
 

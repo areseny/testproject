@@ -48,6 +48,11 @@ describe "User executes a single recipe" do
               let!(:rot13)      { "RotThirteenStep" }
               let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot13) }
               let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
+              let(:gem_version) { "0.0.4" }
+
+              before do
+                allow_any_instance_of(RotThirteenStep).to receive(:version).and_return(gem_version)
+              end
 
               context 'and execution is successful' do
                 it 'returns the objects' do

@@ -28,7 +28,7 @@ describe "User sign in" do
         expect(response.status).to eq(200)
       end
 
-      it 'should return a valid token' do
+      it 'returns a valid token' do
         perform_sign_in_request(valid_params)
 
         expect(response.header['access-token']).to_not be_nil
@@ -38,7 +38,7 @@ describe "User sign in" do
     end
 
     context 'is missing parameters' do
-      it 'should raise an error' do
+      it 'raises an error' do
         perform_sign_in_request({})
 
         expect(response.status).to eq(401)
@@ -46,7 +46,7 @@ describe "User sign in" do
     end
 
     context 'references a nonexistent user' do
-      it 'should raise an error' do
+      it 'raises an error' do
         perform_sign_in_request(valid_params.merge(email: "nonsensical_rubbish@example.com"))
 
         expect(response.status).to eq(401)
@@ -54,7 +54,7 @@ describe "User sign in" do
     end
 
     context 'is provided an incorrect password' do
-      it 'should raise an error' do
+      it 'raises an error' do
         perform_sign_in_request(valid_params.merge(password: "nonsense"))
 
         expect(response.status).to eq(401)

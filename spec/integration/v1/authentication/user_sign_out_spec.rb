@@ -25,7 +25,7 @@ describe "User sign out" do
         expect(response.status).to eq(200)
       end
 
-      it 'should return a successful message' do
+      it 'returns a successful message' do
         expect(body_as_json['success']).to eq true
       end
     end
@@ -35,11 +35,11 @@ describe "User sign out" do
         perform_sign_out_request(auth_headers.except('uid'))
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(404)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /was not found or was not logged in/)
       end
     end
@@ -49,13 +49,13 @@ describe "User sign out" do
         perform_sign_out_request(auth_headers)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         perform_sign_out_request(auth_headers)
 
         expect(response.status).to eq(404)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         perform_sign_out_request(auth_headers)
 
         expect_to_contain_string(body_as_json['errors'], /was not found or was not logged in/)
@@ -67,11 +67,11 @@ describe "User sign out" do
         perform_sign_out_request(auth_headers.except('access-token'))
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(404)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /was not found or was not logged in/)
       end
     end
@@ -82,11 +82,11 @@ describe "User sign out" do
         perform_sign_out_request(auth_headers)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(404)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /was not found or was not logged in/)
       end
     end

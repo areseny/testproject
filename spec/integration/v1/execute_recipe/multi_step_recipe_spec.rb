@@ -36,7 +36,7 @@ describe "User executes a recipe with multiple real steps" do
     let!(:step3)      { create(:recipe_step, recipe: recipe, position: 3, step_class_name: epub) }
 
     context 'and execution is successful' do
-      it 'should return the objects' do
+      it 'returns the objects' do
         perform_execute_request(auth_headers, execution_params)
 
         expect(response.status).to eq(200)
@@ -48,7 +48,7 @@ describe "User executes a recipe with multiple real steps" do
         # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
       end
 
-      it 'should return a ConversionChain object' do
+      it 'returns a ConversionChain object' do
         perform_execute_request(auth_headers, execution_params)
 
         conversion_chain = recipe.reload.conversion_chains.first
@@ -60,7 +60,7 @@ describe "User executes a recipe with multiple real steps" do
         expect(body_as_json['conversion_chain']['successful']).to eq true
       end
 
-      it 'should also return the steps' do
+      it 'also returns the steps' do
         perform_execute_request(auth_headers, execution_params)
 
         expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3

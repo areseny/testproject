@@ -27,7 +27,7 @@ describe "User finds a single recipe" do
             expect(response.status).to eq(200)
           end
 
-          it 'should return a Recipe object' do
+          it 'returns a Recipe object' do
             perform_show_request(auth_headers, recipe.id)
 
             expect(body_as_json['recipe']['name']).to eq recipe.name
@@ -39,7 +39,7 @@ describe "User finds a single recipe" do
             let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1) }
             let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2) }
 
-            it 'should also return the steps' do
+            it 'also returns the steps' do
               perform_show_request(auth_headers, recipe.id)
 
               expect(body_as_json['recipe']['recipe_steps'].count).to eq 2
@@ -53,8 +53,10 @@ describe "User finds a single recipe" do
 
             before { recipe.reload }
 
-            it 'should also return the chain information' do
+            it 'also returns the chain information' do
               perform_show_request(auth_headers, recipe.id)
+
+              #  need to tweak serialisers!!!
 
               expect(body_as_json['recipe']['conversion_chains'].count).to eq 1
               expect(body_as_json['recipe']['conversion_chains'][0]['conversion_steps'].count).to eq 1
@@ -95,11 +97,11 @@ describe "User finds a single recipe" do
         perform_show_request({}, recipe.id)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end
@@ -110,11 +112,11 @@ describe "User finds a single recipe" do
         perform_show_request({}, recipe.id)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect(response.status).to eq(401)
       end
 
-      it 'should provide a message' do
+      it 'provides a message' do
         expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end

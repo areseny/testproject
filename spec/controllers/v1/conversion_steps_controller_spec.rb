@@ -21,7 +21,7 @@ describe Api::V1::ConversionStepsController, type: :controller do
     context 'if a valid token is supplied' do
 
       context 'and the file belongs to that user' do
-        it 'should serve the file successfully' do
+        it 'serves the file successfully' do
           request_with_auth(user.create_new_auth_token) do
             perform_download_request(download_params)
           end
@@ -37,7 +37,7 @@ describe Api::V1::ConversionStepsController, type: :controller do
           conversion_step.conversion_chain.update_attribute(:user_id, other_user.id)
         end
 
-        it 'should try to download the file' do
+        it 'tries to download the file' do
           request_with_auth(user.create_new_auth_token) do
             perform_download_request(download_params)
           end
@@ -50,7 +50,7 @@ describe Api::V1::ConversionStepsController, type: :controller do
 
     context 'if no valid token is supplied' do
 
-      it "should not assign anything" do
+      it "does not assign anything" do
         request_with_auth do
           perform_download_request(download_params)
         end
