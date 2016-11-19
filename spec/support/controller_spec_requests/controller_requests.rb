@@ -36,7 +36,7 @@ def execute_recipe(version, data = {}.to_json)
   post :execute, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
-def retry_conversion(version, data = {}.to_json)
+def retry_execution(version, data = {}.to_json)
   get :retry, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 

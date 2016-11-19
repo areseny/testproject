@@ -99,7 +99,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
   end
 
   def perform_retry_request(data = {})
-    retry_conversion(version, data)
+    retry_execution(version, data)
   end
 
   def perform_download_request(data = {})
