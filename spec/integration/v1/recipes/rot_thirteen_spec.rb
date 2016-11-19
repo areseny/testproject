@@ -36,17 +36,17 @@ describe "User executes a ROT13 recipe" do
 
     it 'is successful' do
       expect(response.status).to eq(200)
-      expect(body_as_json['conversion_chain']).to_not be_nil
-      expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 1
-      body_as_json['conversion_chain']['conversion_steps'].map do |s|
+      expect(body_as_json['process_chain']).to_not be_nil
+      expect(body_as_json['process_chain']['conversion_steps'].count).to eq 1
+      body_as_json['process_chain']['conversion_steps'].map do |s|
         expect(s['execution_errors']).to eq ""
       end
-      # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
+      # expect(body_as_json['process_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
     end
 
     it 'has an expected output file' do
       wait_for_async
-      result = ConversionChain.last.output_file
+      result = ProcessChain.last.output_file
       expect(result.read).to eq "Guvf vf fbzr grkg."
     end
   end
@@ -71,7 +71,7 @@ describe "User executes a ROT13 recipe" do
       perform_execute_request(auth_headers, execution_params)
 
       wait_for_async
-      result = ConversionChain.last.output_file
+      result = ProcessChain.last.output_file
       expect(result.file).to be_nil
     end
   end

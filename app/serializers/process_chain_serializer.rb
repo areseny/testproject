@@ -1,6 +1,6 @@
 require 'action_view'
 
-class ConversionChainSerializer < ActiveModel::Serializer
+class ProcessChainSerializer < ActiveModel::Serializer
   include ActionView::Helpers::DateHelper
 
   # has_many :conversion_steps

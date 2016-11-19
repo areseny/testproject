@@ -10,14 +10,14 @@ FactoryGirl.define do
     end
   end
 
-  factory :conversion_chain do
+  factory :process_chain do
     recipe
     user
     input_file { File.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
   end
 
   factory :conversion_step do
-    conversion_chain
+    process_chain
     position 1
     step_class_name "InkStep::BasicStep"
     notes "yay! done!"

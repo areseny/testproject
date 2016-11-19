@@ -40,30 +40,30 @@ describe "User executes a recipe with multiple real steps" do
         perform_execute_request(auth_headers, execution_params)
 
         expect(response.status).to eq(200)
-        expect(body_as_json['conversion_chain']['successful'])
-        expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3
-        body_as_json['conversion_chain']['conversion_steps'].map do |s|
+        expect(body_as_json['process_chain']['successful'])
+        expect(body_as_json['process_chain']['conversion_steps'].count).to eq 3
+        body_as_json['process_chain']['conversion_steps'].map do |s|
           expect(s['execution_errors']).to eq ""
         end
       end
 
-      it 'returns a ConversionChain object' do
+      it 'returns a ProcessChain object' do
         perform_execute_request(auth_headers, execution_params)
 
-        conversion_chain = recipe.reload.conversion_chains.first
+        process_chain = recipe.reload.process_chains.first
 
-        expect(body_as_json['conversion_chain']['recipe_id']).to eq conversion_chain.recipe_id
-        expect(body_as_json['conversion_chain']['executed_at']).to eq conversion_chain.executed_at.iso8601
-        expect(body_as_json['conversion_chain']['input_file_name']).to eq conversion_chain.input_file_name
-        expect(body_as_json['conversion_chain']['executed_at_for_humans']).to_not be_nil
-        expect(body_as_json['conversion_chain']['successful']).to eq true
+        expect(body_as_json['process_chain']['recipe_id']).to eq process_chain.recipe_id
+        expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
+        expect(body_as_json['process_chain']['input_file_name']).to eq process_chain.input_file_name
+        expect(body_as_json['process_chain']['executed_at_for_humans']).to_not be_nil
+        expect(body_as_json['process_chain']['successful']).to eq true
       end
 
       it 'also returns the steps' do
         perform_execute_request(auth_headers, execution_params)
 
-        expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3
-        body_as_json['conversion_chain']['conversion_steps'].each do |result|
+        expect(body_as_json['process_chain']['conversion_steps'].count).to eq 3
+        body_as_json['process_chain']['conversion_steps'].each do |result|
           expect(result['execution_errors']).to eq ""
         end
       end
@@ -82,10 +82,10 @@ describe "User executes a recipe with multiple real steps" do
         perform_execute_request(auth_headers, execution_params)
 
         expect(response.status).to eq(200)
-        expect(body_as_json['conversion_chain']['successful']).to eq false
-        expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 3
-        expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["", "Oh noes! Error!", ""]
-        expect(body_as_json['conversion_chain']['conversion_steps'].last['executed_at']).to_not be_nil
+        expect(body_as_json['process_chain']['successful']).to eq false
+        expect(body_as_json['process_chain']['conversion_steps'].count).to eq 3
+        expect(body_as_json['process_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["", "Oh noes! Error!", ""]
+        expect(body_as_json['process_chain']['conversion_steps'].last['executed_at']).to_not be_nil
       end
 
       it 'does not execute the later steps' do

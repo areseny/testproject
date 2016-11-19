@@ -1,7 +1,7 @@
 require 'rails_helper'
 require_relative 'version'
 
-describe Api::V1::ConversionChainsController, type: :controller do
+describe Api::V1::ProcessChainsController, type: :controller do
   include Devise::Test::ControllerHelpers
 
   let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
@@ -9,25 +9,25 @@ describe Api::V1::ConversionChainsController, type: :controller do
   let!(:text_file)        { File.new('spec/fixtures/files/plaintext.txt', 'r') }
   let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step) }
   let!(:conversion_step)  { create(:conversion_step) }
-  let!(:conversion_chain) { conversion_step.conversion_chain }
+  let!(:process_chain)    { conversion_step.process_chain }
 
   let!(:params) {
     {
-        id: conversion_chain.id
+        id: process_chain.id
     }
   }
 
   before do
-    recipe_step.update_attribute(:recipe_id, conversion_chain.recipe.id)
-    conversion_chain.update_attribute(:user_id, user.id)
-    conversion_chain.recipe.update_attribute(:user_id, user.id)
+    recipe_step.update_attribute(:recipe_id, process_chain.recipe.id)
+    process_chain.update_attribute(:user_id, user.id)
+    process_chain.recipe.update_attribute(:user_id, user.id)
   end
 
   describe "GET download" do
     context 'when there is an output file' do
       before do
         FileUploader.enable_processing = true
-        @uploader = FileUploader.new(conversion_chain, :input_file)
+        @uploader = FileUploader.new(process_chain, :input_file)
 
         File.open('spec/fixtures/files/plaintext.txt') do |f|
           @uploader.store!(f)
@@ -49,7 +49,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
         context 'if a file is supplied' do
           before do
             FileUploader.enable_processing = true
-            @uploader = FileUploader.new(conversion_chain, :input_file)
+            @uploader = FileUploader.new(process_chain, :input_file)
 
             File.open('spec/fixtures/files/plaintext.txt') do |f|
               @uploader.store!(f)
@@ -77,7 +77,7 @@ describe Api::V1::ConversionChainsController, type: :controller do
               end
 
               expect(response.status).to eq 200
-              expect(assigns(:new_chain)).to_not eq conversion_chain
+              expect(assigns(:new_chain)).to_not eq process_chain
               expect(assigns(:new_chain).executed_at).to_not be_nil
             end
           end

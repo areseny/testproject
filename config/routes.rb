@@ -19,7 +19,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :conversion_chains, only: [:execute, :download_file] do
+      resources :process_chains, only: [:execute, :download_file] do
         member do
           post 'execute'
           get 'retry'

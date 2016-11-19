@@ -433,8 +433,8 @@ RSpec.describe Api::V1::RecipesController do
 
           context 'and it has conversion chains' do
             let!(:step1)                  { create(:recipe_step, recipe: recipe, position: 1) }
-            let!(:conversion_chain)       { create(:conversion_chain, recipe: recipe, executed_at: 2.minutes.ago) }
-            let!(:conversion_step)        { create(:executed_conversion_step_success, conversion_chain: conversion_chain) }
+            let!(:process_chain)       { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
+            let!(:conversion_step)        { create(:executed_conversion_step_success, process_chain: process_chain) }
 
             before { recipe.reload }
 

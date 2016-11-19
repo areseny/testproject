@@ -14,8 +14,8 @@ describe Api::V1::ConversionStepsController, type: :controller do
     }
 
     before do
-      conversion_step.conversion_chain.update_attribute(:user_id, user.id)
-      conversion_step.conversion_chain.recipe.update_attribute(:user_id, user.id)
+      conversion_step.process_chain.update_attribute(:user_id, user.id)
+      conversion_step.process_chain.recipe.update_attribute(:user_id, user.id)
     end
 
     context 'if a valid token is supplied' do
@@ -34,7 +34,7 @@ describe Api::V1::ConversionStepsController, type: :controller do
       context 'and the file belongs to a different user' do
         before do
           other_user = create(:user)
-          conversion_step.conversion_chain.update_attribute(:user_id, other_user.id)
+          conversion_step.process_chain.update_attribute(:user_id, other_user.id)
         end
 
         it 'tries to download the file' do

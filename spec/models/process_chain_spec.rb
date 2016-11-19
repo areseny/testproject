@@ -1,29 +1,29 @@
 require 'rails_helper'
 
-RSpec.describe ConversionChain, type: :model do
+RSpec.describe ProcessChain, type: :model do
 
   let!(:demo_step)        { "InkStep::BasicStep" }
   let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step) }
   let!(:conversion_step)  { create(:conversion_step, step_class_name: demo_step) }
-  let!(:conversion_chain) { conversion_step.conversion_chain }
+  let!(:process_chain) { conversion_step.process_chain }
 
   describe 'model validations' do
 
     it 'has a valid factory' do
-      expect(build(:conversion_chain)).to be_valid
+      expect(build(:process_chain)).to be_valid
     end
 
-    expects_to_be_invalid_without :conversion_chain, :user, :recipe
+    expects_to_be_invalid_without :process_chain, :user, :recipe
   end
 
   describe '#step_classes' do
 
     before do
-      conversion_chain.update_attribute(:recipe_id, recipe_step.recipe.id)
+      process_chain.update_attribute(:recipe_id, recipe_step.recipe.id)
     end
 
     it 'returns the step classes' do
-      expect(conversion_chain.step_classes).to eq [InkStep::BasicStep]
+      expect(process_chain.step_classes).to eq [InkStep::BasicStep]
     end
 
   end
@@ -31,7 +31,7 @@ RSpec.describe ConversionChain, type: :model do
   describe '#execute_conversion!' do
     context "if the chain hasn't been saved yet" do
       it 'fails' do
-        new_chain = ConversionChain.new
+        new_chain = ProcessChain.new
         expect{new_chain.execute_conversion!}.to raise_error("Chain not saved yet")
         expect(new_chain.executed_at).to be_nil
       end
@@ -40,15 +40,15 @@ RSpec.describe ConversionChain, type: :model do
     context "if the chain already exists" do
 
       it 'fails' do
-        conversion_chain.execute_conversion!
+        process_chain.execute_conversion!
 
-        expect(conversion_chain.executed_at).to_not be_nil
+        expect(process_chain.executed_at).to_not be_nil
       end
     end
   end
 
   describe '#map_results' do
-    subject { create(:conversion_chain) }
+    subject { create(:process_chain) }
 
     let(:some_file)           { File.new('spec/fixtures/files/plaintext.txt') }
 
@@ -56,8 +56,8 @@ RSpec.describe ConversionChain, type: :model do
     let(:runner_step2)        { double(:conversion_object, errors:["oh noes!"], output_files: nil, version: "0.2.1") }
     let(:runner)              { double(:recipe_execution_runner, step_array: [runner_step1, runner_step2]) }
 
-    let(:conversion_step1)    { create(:conversion_step, conversion_chain: subject, position: 1, output_file: "nothing") }
-    let(:conversion_step2)    { create(:conversion_step, conversion_chain: subject, position: 2, output_file: "nada") }
+    let(:conversion_step1)    { create(:conversion_step, process_chain: subject, position: 1, output_file: "nothing") }
+    let(:conversion_step2)    { create(:conversion_step, process_chain: subject, position: 2, output_file: "nada") }
 
     before do
       subject.map_results(runner, [conversion_step1, conversion_step2])

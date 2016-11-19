@@ -1,5 +1,5 @@
 # create_table "conversion_steps", force: :cascade do |t|
-#   t.integer  "conversion_chain_id", null: false
+#   t.integer  "process_chain_id", null: false
 #   t.integer  "position",          null: false
 #   t.text     "notes"
 #   t.datetime "executed_at"
@@ -11,15 +11,15 @@
 # end
 
 class ConversionStep < ApplicationRecord
-  belongs_to :conversion_chain, inverse_of: :conversion_steps
+  belongs_to :process_chain, inverse_of: :conversion_steps
 
   has_many :files, as: :file_handler
 
   mount_uploader :output_file
 
-  validates_presence_of :conversion_chain, :position, :step_class_name
+  validates_presence_of :process_chain, :position, :step_class_name
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
-  validates_uniqueness_of :position, { scope: :conversion_chain, message: "Only one step can be in this position for this chain" }
+  validates_uniqueness_of :position, { scope: :process_chain, message: "Only one step can be in this position for this chain" }
 
   def step_class
     class_from_string(step_class_name)

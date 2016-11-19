@@ -1,7 +1,7 @@
 require 'execution_errors'
 require 'yaml'
 
-# create_table "conversion_chains", force: :cascade do |t|
+# create_table "process_chains", force: :cascade do |t|
 #   t.integer  "user_id",           null: false
 #   t.datetime "executed_at"
 #   t.string   "input_file"
@@ -10,12 +10,12 @@ require 'yaml'
 #   t.datetime "updated_at",        null: false
 # end
 
-class ConversionChain < ApplicationRecord
+class ProcessChain < ApplicationRecord
   include ExecutionErrors
 
   belongs_to :user
   belongs_to :recipe
-  has_many :conversion_steps, inverse_of: :conversion_chain
+  has_many :conversion_steps, inverse_of: :process_chain
 
   mount_uploader :input_file
   # mount_uploaders :files, FileUploader
@@ -83,7 +83,7 @@ class ConversionChain < ApplicationRecord
   end
 
   def input_file_path
-    Rails.application.routes.url_helpers.download_api_conversion_chain_url(self)
+    Rails.application.routes.url_helpers.download_api_process_chain_url(self)
   end
 
   def output_file_name

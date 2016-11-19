@@ -8,7 +8,7 @@ RSpec.describe ConversionStep, type: :model do
       expect(build(:conversion_step)).to be_valid
     end
 
-    expects_to_be_invalid_without :conversion_step, :conversion_chain, :position, :step_class_name
+    expects_to_be_invalid_without :conversion_step, :process_chain, :position, :step_class_name
 
     describe 'position' do
       it 'is an integer' do
@@ -28,9 +28,9 @@ RSpec.describe ConversionStep, type: :model do
       end
 
       it 'is unique to that recipe / position combination' do
-        recipe = create(:conversion_chain)
-        create(:conversion_step, conversion_chain: recipe, position: 1)
-        expect(build(:conversion_step, conversion_chain: recipe, position: 1)).to_not be_valid
+        recipe = create(:process_chain)
+        create(:conversion_step, process_chain: recipe, position: 1)
+        expect(build(:conversion_step, process_chain: recipe, position: 1)).to_not be_valid
       end
 
     end

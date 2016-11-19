@@ -39,15 +39,15 @@ describe "User executes a single recipe" do
 
         it 'returns the objects' do
           expect(response.status).to eq(200)
-          expect(body_as_json['conversion_chain']['successful']).to_not be_nil
+          expect(body_as_json['process_chain']['successful']).to_not be_nil
         end
 
         it 'includes the associated steps' do
-          expect(body_as_json['conversion_chain']['conversion_steps'].count).to eq 1
-          body_as_json['conversion_chain']['conversion_steps'].map do |s|
+          expect(body_as_json['process_chain']['conversion_steps'].count).to eq 1
+          body_as_json['process_chain']['conversion_steps'].map do |s|
             expect(s['execution_errors']).to eq ""
           end
-          # expect(body_as_json['conversion_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
+          # expect(body_as_json['process_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
         end
 
       end

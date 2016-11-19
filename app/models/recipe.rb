@@ -16,7 +16,7 @@ class Recipe < ApplicationRecord
 
   belongs_to :user
   has_many :recipe_steps, inverse_of: :recipe
-  has_many :conversion_chains, inverse_of: :recipe
+  has_many :process_chains, inverse_of: :recipe
 
   validates_presence_of :name, :user
   validates_inclusion_of :active, :in => [true, false]
@@ -39,7 +39,7 @@ class Recipe < ApplicationRecord
 
   def clone_to_conversion_chain(input_file:, user:)
     raise ExecutionErrors::NoFileSuppliedError.new unless input_file
-    new_chain = conversion_chains.new(user: user, input_file: input_file)
+    new_chain = process_chains.new(user: user, input_file: input_file)
     recipe_steps.each do |recipe_step|
       new_chain.conversion_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)
     end
@@ -52,7 +52,7 @@ class Recipe < ApplicationRecord
   end
 
   def times_executed
-    conversion_chains.count
+    process_chains.count
   end
 
   def ensure_step_installation

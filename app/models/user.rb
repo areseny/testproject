@@ -34,6 +34,6 @@ class User < ApplicationRecord
   include DeviseTokenAuth::Concerns::User
 
   has_many :recipes, inverse_of: :user
-  has_many :conversion_chains, inverse_of: :user
+  has_many :process_chains, inverse_of: :user
 
 end
