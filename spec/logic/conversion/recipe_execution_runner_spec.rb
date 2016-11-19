@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Conversion::RecipeExecutionRunner do
+describe Execution::RecipeExecutionRunner do
 
   let!(:text_file)         { File.new('spec/fixtures/files/plaintext.txt', 'r') }
   let!(:photo_file)        { File.new('spec/fixtures/files/kitty.jpeg', 'r') }
@@ -12,7 +12,7 @@ describe Conversion::RecipeExecutionRunner do
     context 'with 1 step' do
       let!(:steps)    { [step1] }
 
-      subject         { Conversion::RecipeExecutionRunner.new(steps) }
+      subject         { Execution::RecipeExecutionRunner.new(steps) }
 
       it 'hooks the steps to each other' do
         result = subject.build_chain
@@ -25,7 +25,7 @@ describe Conversion::RecipeExecutionRunner do
     context 'with 2 steps' do
       let(:steps)       { [step1, step2] }
 
-      subject         { Conversion::RecipeExecutionRunner.new(steps) }
+      subject         { Execution::RecipeExecutionRunner.new(steps) }
 
       it 'hooks the steps to each other' do
         result = subject.build_chain
@@ -42,7 +42,7 @@ describe Conversion::RecipeExecutionRunner do
     context 'for a successful execution' do
 
       context 'if there are no steps' do
-        subject         { Conversion::RecipeExecutionRunner.new([]) }
+        subject         { Execution::RecipeExecutionRunner.new([]) }
 
         it 'returns nil - no change was made' do
           result = subject.run!(files: photo_file)
@@ -53,7 +53,7 @@ describe Conversion::RecipeExecutionRunner do
 
       context 'if there is 1 step' do
         let!(:steps)    { [InkStep::BasicStep] }
-        subject         { Conversion::RecipeExecutionRunner.new(steps) }
+        subject         { Execution::RecipeExecutionRunner.new(steps) }
 
         it 'returns a result' do
           result = subject.run!(files: photo_file)
@@ -65,7 +65,7 @@ describe Conversion::RecipeExecutionRunner do
 
       context 'if there are 3 steps' do
         let!(:steps)    { [InkStep::BasicStep, InkStep::BasicStep, InkStep::BasicStep] }
-        subject         { Conversion::RecipeExecutionRunner.new(steps) }
+        subject         { Execution::RecipeExecutionRunner.new(steps) }
 
         it 'returns a result' do
           result = subject.run!(files: photo_file)
@@ -86,7 +86,7 @@ describe Conversion::RecipeExecutionRunner do
       end
 
       it 'the step does not have an output file' do
-        subject = Conversion::RecipeExecutionRunner.new(steps)
+        subject = Execution::RecipeExecutionRunner.new(steps)
         result = subject.run!(files: text_file)
 
         expect(result).to be_a InkStep::BasicStep
@@ -94,7 +94,7 @@ describe Conversion::RecipeExecutionRunner do
       end
 
       it 'logs the error' do
-        subject = Conversion::RecipeExecutionRunner.new(steps)
+        subject = Execution::RecipeExecutionRunner.new(steps)
         result = subject.run!(files: text_file)
 
         expect(result.errors).to eq ["OMG!"]
