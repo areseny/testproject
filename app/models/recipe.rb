@@ -31,13 +31,13 @@ class Recipe < ApplicationRecord
 
   def clone_and_execute(input_file:, user:)
     raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
-    new_chain = clone_to_conversion_chain(input_file: input_file, user: user)
+    new_chain = clone_to_process_chain(input_file: input_file, user: user)
     new_chain.save!
-    new_chain.execute_conversion!
+    new_chain.execute_process!
     new_chain
   end
 
-  def clone_to_conversion_chain(input_file:, user:)
+  def clone_to_process_chain(input_file:, user:)
     raise ExecutionErrors::NoFileSuppliedError.new unless input_file
     new_chain = process_chains.new(user: user, input_file: input_file)
     recipe_steps.each do |recipe_step|

@@ -28,11 +28,11 @@ RSpec.describe ProcessChain, type: :model do
 
   end
 
-  describe '#execute_conversion!' do
+  describe '#execute_process!' do
     context "if the chain hasn't been saved yet" do
       it 'fails' do
         new_chain = ProcessChain.new
-        expect{new_chain.execute_conversion!}.to raise_error("Chain not saved yet")
+        expect{new_chain.execute_process!}.to raise_error("Chain not saved yet")
         expect(new_chain.executed_at).to be_nil
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe ProcessChain, type: :model do
     context "if the chain already exists" do
 
       it 'fails' do
-        process_chain.execute_conversion!
+        process_chain.execute_process!
 
         expect(process_chain.executed_at).to_not be_nil
       end

@@ -27,14 +27,14 @@ RSpec.describe Recipe, type: :model do
     end
   end
 
-  describe '#clone_to_conversion_chain' do
+  describe '#clone_to_process_chain' do
 
     context 'if the recipe is public and belongs to another user' do
       let(:other_users_public_recipe) { create(:recipe, public: true, user: other_user) }
       let(:some_file)     { double(:file) }
 
       it 'clones to belong to the current user' do
-        chain = other_users_public_recipe.clone_to_conversion_chain(input_file: some_file, user: user)
+        chain = other_users_public_recipe.clone_to_process_chain(input_file: some_file, user: user)
         expect(chain.user).to eq user
       end
     end
@@ -43,14 +43,14 @@ RSpec.describe Recipe, type: :model do
       let(:my_recipe)     { create(:recipe, public: false, user: user) }
 
       it 'fails' do
-        expect{my_recipe.clone_to_conversion_chain(input_file: nil, user: user)}.to raise_error(ExecutionErrors::NoFileSuppliedError)
+        expect{my_recipe.clone_to_process_chain(input_file: nil, user: user)}.to raise_error(ExecutionErrors::NoFileSuppliedError)
       end
     end
 
   end
 end
 
-def clone_to_conversion_chain(input_file)
+def clone_to_process_chain(input_file)
   raise ExecutionErrors::NoFileSuppliedError.new unless input_file
   new_chain = process_chain.new(user: user, input_file: input_file)
   recipe_steps.each do |recipe_step|

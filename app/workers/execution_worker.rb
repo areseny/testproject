@@ -1,4 +1,4 @@
-class ConversionWorker
+class ExecutionWorker
   include Sidekiq::Worker
 
   sidekiq_options retry: false
