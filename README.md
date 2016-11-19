@@ -1,6 +1,6 @@
 ### INK
 
-Ink is an API. It provides an extensible step-based framework for file conversions.
+Ink is an API. It provides an extensible step-based framework for file conversions as a first use case, but is intended to be a more generalised framework for all kinds of steps needed when preparing materials for publication.
 
 ## Ruby version
 

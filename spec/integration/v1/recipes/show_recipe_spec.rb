@@ -46,10 +46,10 @@ describe "User finds a single recipe" do
             end
           end
 
-          context 'and it has conversion chains' do
-            let!(:step1)                { create(:recipe_step, recipe: recipe, position: 1) }
-            let!(:process_chain)        { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
-            let!(:conversion_step)      { create(:executed_conversion_step_success, process_chain: process_chain) }
+          context 'and it has process chains' do
+            let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1) }
+            let!(:process_chain)     { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
+            let!(:process_step)      { create(:executed_process_step_success, process_chain: process_chain) }
 
             before { recipe.reload }
 
@@ -59,7 +59,7 @@ describe "User finds a single recipe" do
               #  need to tweak serialisers!!!
 
               expect(body_as_json['recipe']['process_chains'].count).to eq 1
-              expect(body_as_json['recipe']['process_chains'][0]['conversion_steps'].count).to eq 1
+              expect(body_as_json['recipe']['process_chains'][0]['process_steps'].count).to eq 1
             end
           end
         end

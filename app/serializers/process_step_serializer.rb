@@ -1,6 +1,6 @@
 require "yaml"
 
-class ConversionStepSerializer < ActiveModel::Serializer
+class ProcessStepSerializer < ActiveModel::Serializer
   attributes :id, :position, :process_chain_id, :step_class_name, :notes, :executed_at, :execution_errors, :output_file_path, :output_file_name, :version
 
   def successful

@@ -41,18 +41,18 @@ describe "User lists all their recipes" do
           expect(body_as_json['recipes'][0]['public']).to eq recipe.public
         end
 
-        context 'and there are some steps and conversion chains' do
-          let!(:step1)                { create(:recipe_step, recipe: recipe, position: 1, step_class_name: "RotThirteenStep") }
-          let!(:step2)                { create(:recipe_step, recipe: recipe, position: 2, step_class_name: "EpubToCalibreStep") }
+        context 'and there are some steps and process chains' do
+          let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: "RotThirteenStep") }
+          let!(:step2)             { create(:recipe_step, recipe: recipe, position: 2, step_class_name: "EpubToCalibreStep") }
           let!(:process_chain1)    { create(:process_chain, recipe: recipe, executed_at: 5.minutes.ago) }
-          let!(:conversion_step1a)    { create(:executed_conversion_step_success, process_chain: process_chain1, position: 1, step_class_name: "RotThirteenStep") }
-          let!(:conversion_step1b)    { create(:executed_conversion_step_success, process_chain: process_chain1, position: 2, step_class_name: "EpubToCalibreStep") }
+          let!(:process_step1a)    { create(:executed_process_step_success, process_chain: process_chain1, position: 1, step_class_name: "RotThirteenStep") }
+          let!(:process_step1b)    { create(:executed_process_step_success, process_chain: process_chain1, position: 2, step_class_name: "EpubToCalibreStep") }
           let!(:process_chain2)    { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
-          let!(:conversion_step2a)    { create(:executed_conversion_step_success, process_chain: process_chain2, position: 1, step_class_name: "RotThirteenStep") }
-          let!(:conversion_step2b)    { create(:executed_conversion_step_success, process_chain: process_chain2, position: 2, step_class_name: "EpubToCalibreStep") }
+          let!(:process_step2a)    { create(:executed_process_step_success, process_chain: process_chain2, position: 1, step_class_name: "RotThirteenStep") }
+          let!(:process_step2b)    { create(:executed_process_step_success, process_chain: process_chain2, position: 2, step_class_name: "EpubToCalibreStep") }
 
           before do
-            [recipe, process_chain1, process_chain2, conversion_step1a, conversion_step1b, conversion_step2a, conversion_step2b].each do |thing|
+            [recipe, process_chain1, process_chain2, process_step1a, process_step1b, process_step2a, process_step2b].each do |thing|
               thing.reload
             end
           end
@@ -61,25 +61,25 @@ describe "User lists all their recipes" do
             perform_index_request(auth_headers)
 
             expect(body_as_json['recipes'][0]['process_chains'].count).to eq 2
-            expect(body_as_json['recipes'][0]['process_chains'][0]['conversion_steps'].count).to eq 2
+            expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'].count).to eq 2
             expect(body_as_json['recipes'][0]['process_chains'][0]['id']).to eq process_chain2.id
-            expect(body_as_json['recipes'][0]['process_chains'][1]['conversion_steps'].count).to eq 2
+            expect(body_as_json['recipes'][0]['process_chains'][1]['process_steps'].count).to eq 2
             expect(body_as_json['recipes'][0]['process_chains'][1]['id']).to eq process_chain1.id
           end
 
           it 'gets the information correct' do
             perform_index_request(auth_headers)
 
-            expect(body_as_json['recipes'][0]['process_chains'][0]['conversion_steps'][0]['position']).to eq 1
-            expect(body_as_json['recipes'][0]['process_chains'][0]['conversion_steps'][0]['step_class_name']).to eq conversion_step1a.step_class_name
-            expect(body_as_json['recipes'][0]['process_chains'][0]['conversion_steps'][1]['position']).to eq 2
-            expect(body_as_json['recipes'][0]['process_chains'][0]['conversion_steps'][1]['step_class_name']).to eq conversion_step1b.step_class_name
+            expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'][0]['position']).to eq 1
+            expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'][0]['step_class_name']).to eq process_step1a.step_class_name
+            expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'][1]['position']).to eq 2
+            expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'][1]['step_class_name']).to eq process_step1b.step_class_name
 
 
-            expect(body_as_json['recipes'][0]['process_chains'][1]['conversion_steps'][0]['position']).to eq 1
-            expect(body_as_json['recipes'][0]['process_chains'][1]['conversion_steps'][0]['step_class_name']).to eq conversion_step2a.step_class_name
-            expect(body_as_json['recipes'][0]['process_chains'][1]['conversion_steps'][1]['position']).to eq 2
-            expect(body_as_json['recipes'][0]['process_chains'][1]['conversion_steps'][1]['step_class_name']).to eq conversion_step2b.step_class_name
+            expect(body_as_json['recipes'][0]['process_chains'][1]['process_steps'][0]['position']).to eq 1
+            expect(body_as_json['recipes'][0]['process_chains'][1]['process_steps'][0]['step_class_name']).to eq process_step2a.step_class_name
+            expect(body_as_json['recipes'][0]['process_chains'][1]['process_steps'][1]['position']).to eq 2
+            expect(body_as_json['recipes'][0]['process_chains'][1]['process_steps'][1]['step_class_name']).to eq process_step2b.step_class_name
           end
         end
       end

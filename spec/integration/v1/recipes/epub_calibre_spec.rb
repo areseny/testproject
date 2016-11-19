@@ -25,10 +25,10 @@ describe "User executes a single-step epub calibre recipe" do
     }
   }
 
-    let!(:conversion_class)  { "EpubCalibreStep" }
-    let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: conversion_class) }
+    let!(:step_class)  { "EpubCalibreStep" }
+    let!(:step1)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
 
-  context 'if the conversion is successful' do
+  context 'if the execution is successful' do
     before do
       perform_execute_request(auth_headers, execution_params)
     end
@@ -36,11 +36,11 @@ describe "User executes a single-step epub calibre recipe" do
     specify do
       expect(response.status).to eq(200)
       expect(body_as_json['process_chain']).to_not be_nil
-      expect(body_as_json['process_chain']['conversion_steps'].count).to eq 1
-      body_as_json['process_chain']['conversion_steps'].map do |s|
+      expect(body_as_json['process_chain']['process_steps'].count).to eq 1
+      body_as_json['process_chain']['process_steps'].map do |s|
         expect(s['execution_errors']).to eq ""
       end
-      # expect(body_as_json['process_chain']['conversion_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
+      # expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['output_file_path']}).to eq [true, true]
     end
 
     it 'has an expected output file' do

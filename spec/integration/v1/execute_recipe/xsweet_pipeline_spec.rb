@@ -65,8 +65,8 @@ describe "User executes a recipe xsweet pipeline" do
 
         expect(response.status).to eq(200)
         expect(body_as_json['process_chain']['successful'])
-        expect(body_as_json['process_chain']['conversion_steps'].count).to eq 5
-        body_as_json['process_chain']['conversion_steps'].map do |s|
+        expect(body_as_json['process_chain']['process_steps'].count).to eq 5
+        body_as_json['process_chain']['process_steps'].map do |s|
           expect(s['execution_errors']).to eq ""
         end
       end
@@ -86,8 +86,8 @@ describe "User executes a recipe xsweet pipeline" do
       it 'also returns the steps' do
         perform_execute_request(auth_headers, execution_params)
 
-        expect(body_as_json['process_chain']['conversion_steps'].count).to eq 5
-        body_as_json['process_chain']['conversion_steps'].each do |result|
+        expect(body_as_json['process_chain']['process_steps'].count).to eq 5
+        body_as_json['process_chain']['process_steps'].each do |result|
           expect(result['execution_errors']).to eq ""
         end
       end

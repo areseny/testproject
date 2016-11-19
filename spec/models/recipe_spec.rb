@@ -54,7 +54,7 @@ def clone_to_conversion_chain(input_file)
   raise ExecutionErrors::NoFileSuppliedError.new unless input_file
   new_chain = process_chain.new(user: user, input_file: input_file)
   recipe_steps.each do |recipe_step|
-    new_chain.conversion_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)
+    new_chain.process_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)
   end
   new_chain
 end

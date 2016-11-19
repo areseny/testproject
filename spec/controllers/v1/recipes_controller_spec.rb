@@ -50,7 +50,7 @@ RSpec.describe Api::V1::RecipesController do
               recipe.update_attribute(:user_id, user.id)
             end
 
-            it 'tries to execute the conversion chain' do
+            it 'tries to execute the process chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_execute_request(execution_params)
               end
@@ -65,7 +65,7 @@ RSpec.describe Api::V1::RecipesController do
               recipe.update_attribute(:user_id, other_user.id)
             end
 
-            it 'tries to execute the conversion chain' do
+            it 'tries to execute the process chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_execute_request(execution_params)
               end
@@ -97,7 +97,7 @@ RSpec.describe Api::V1::RecipesController do
           end
 
           context 'if the recipe belongs to that user' do
-            it 'tries to execute the conversion chain' do
+            it 'tries to execute the process chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_execute_request(execution_params)
               end
@@ -431,10 +431,10 @@ RSpec.describe Api::V1::RecipesController do
             expect(assigns[:recipe]).to eq recipe
           end
 
-          context 'and it has conversion chains' do
-            let!(:step1)                  { create(:recipe_step, recipe: recipe, position: 1) }
+          context 'and it has process chains' do
+            let!(:step1)               { create(:recipe_step, recipe: recipe, position: 1) }
             let!(:process_chain)       { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
-            let!(:conversion_step)        { create(:executed_conversion_step_success, process_chain: process_chain) }
+            let!(:process_step)        { create(:executed_process_step_success, process_chain: process_chain) }
 
             before { recipe.reload }
 

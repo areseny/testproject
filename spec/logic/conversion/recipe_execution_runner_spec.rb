@@ -39,7 +39,7 @@ describe Conversion::RecipeExecutionRunner do
 
   describe '#execute' do
 
-    context 'for a successful conversion' do
+    context 'for a successful execution' do
 
       context 'if there are no steps' do
         subject         { Conversion::RecipeExecutionRunner.new([]) }

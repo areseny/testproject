@@ -16,17 +16,17 @@ FactoryGirl.define do
     input_file { File.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
   end
 
-  factory :conversion_step do
+  factory :process_step do
     process_chain
     position 1
     step_class_name "InkStep::BasicStep"
     notes "yay! done!"
     output_file { File.new('spec/fixtures/files/test_file.xml', 'r') }
-    factory :executed_conversion_step_success do
+    factory :executed_process_step_success do
       executed_at 2.minutes.ago
       output_file { File.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
     end
-    factory :executed_conversion_step_fail do
+    factory :executed_process_step_fail do
       executed_at 2.minutes.ago
       output_file nil
       execution_errors ["Very Serious Error"].to_yaml

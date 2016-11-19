@@ -1,4 +1,4 @@
-# create_table "conversion_steps", force: :cascade do |t|
+# create_table "process_steps", force: :cascade do |t|
 #   t.integer  "process_chain_id", null: false
 #   t.integer  "position",          null: false
 #   t.text     "notes"
@@ -10,8 +10,8 @@
 #   t.string   "step_class_name",   null: false
 # end
 
-class ConversionStep < ApplicationRecord
-  belongs_to :process_chain, inverse_of: :conversion_steps
+class ProcessStep < ApplicationRecord
+  belongs_to :process_chain, inverse_of: :process_steps
 
   has_many :files, as: :file_handler
 
@@ -26,7 +26,7 @@ class ConversionStep < ApplicationRecord
   end
 
   def output_file_path
-    Rails.application.routes.url_helpers.download_api_conversion_step_url(self)
+    Rails.application.routes.url_helpers.download_api_process_step_url(self)
   end
 
   def output_file_name

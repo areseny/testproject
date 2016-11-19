@@ -27,7 +27,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :conversion_steps, only: [:download_file] do
+      resources :process_steps, only: [:download_file] do
         member do
           get 'download_file', as: :download
         end

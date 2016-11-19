@@ -15,7 +15,7 @@ class ProcessChain < ApplicationRecord
 
   belongs_to :user
   belongs_to :recipe
-  has_many :conversion_steps, inverse_of: :process_chain
+  has_many :process_steps, inverse_of: :process_chain
 
   mount_uploader :input_file
   # mount_uploaders :files, FileUploader
@@ -37,21 +37,21 @@ class ProcessChain < ApplicationRecord
 
   def output_file
     return unless executed_at
-    return unless conversion_steps.any?
+    return unless process_steps.any?
     last_step.output_file
   end
 
   def last_step
-    conversion_steps.sort_by(&:position).last
+    process_steps.sort_by(&:position).last
   end
 
   def step_classes
     recipe.recipe_steps.sort_by(&:position).map(&:step_class)
   end
 
-  def map_results(runner, conversion_steps)
+  def map_results(runner, process_steps)
     runner.step_array.each_with_index do |runner_step, index|
-      step_model = conversion_steps[index]
+      step_model = process_steps[index]
       step_model.execution_errors = [runner_step.errors].flatten
       step_model.output_file = runner_step.output_files
       step_model.version = runner_step.version
@@ -71,7 +71,7 @@ class ProcessChain < ApplicationRecord
   end
 
   def successful?
-    conversion_steps.each do |step|
+    process_steps.each do |step|
       next if step.execution_errors.nil?
       return false if YAML.load(step.execution_errors).present?
     end
@@ -91,8 +91,8 @@ class ProcessChain < ApplicationRecord
   end
 
   def output_file_path
-    raise "No conversion steps" if last_step.nil?
-    Rails.application.routes.url_helpers.download_api_conversion_step_url(last_step)
+    raise "No process steps" if last_step.nil?
+    Rails.application.routes.url_helpers.download_api_process_step_url(last_step)
   end
 
 end

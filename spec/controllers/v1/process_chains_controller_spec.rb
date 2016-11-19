@@ -8,8 +8,8 @@ describe Api::V1::ProcessChainsController, type: :controller do
   let!(:demo_step)        { "RotThirteenStep" }
   let!(:text_file)        { File.new('spec/fixtures/files/plaintext.txt', 'r') }
   let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step) }
-  let!(:conversion_step)  { create(:conversion_step) }
-  let!(:process_chain)    { conversion_step.process_chain }
+  let!(:process_step)     { create(:process_step) }
+  let!(:process_chain)    { process_step.process_chain }
 
   let!(:params) {
     {
@@ -61,7 +61,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
               recipe_step.destroy
             end
 
-            it 'tries to execute the conversion chain' do
+            it 'tries to execute the process chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_retry_request(params)
               end
@@ -71,7 +71,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
           end
 
           context 'if the recipe has steps' do
-            it 'tries to execute the conversion chain' do
+            it 'tries to execute the process chain' do
               request_with_auth(user.create_new_auth_token) do
                 perform_retry_request(params)
               end
