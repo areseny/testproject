@@ -23,7 +23,7 @@ class ProcessChain < ApplicationRecord
 
   validates_presence_of :user, :recipe
 
-  def retry_conversion!(current_api_user:)
+  def retry_execution!(current_api_user:)
     # file = File.open(input_file.file.file) # LOL
     recipe.clone_and_execute(input_file: input_file, user: current_api_user)
   end

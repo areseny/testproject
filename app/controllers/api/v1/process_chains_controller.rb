@@ -9,7 +9,7 @@ module Api
       respond_to :json
 
       def retry
-        @new_chain = process_chain.retry_conversion!(current_api_user: current_api_user)
+        @new_chain = process_chain.retry_execution!(current_api_user: current_api_user)
         render json: @new_chain, status: 200
       rescue => e
         # puts e.message
