@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ProcessChain, type: :model do
 
+  let!(:other_user)       { create(:user) }
   let!(:demo_step)        { "InkStep::BasicStep" }
   let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step) }
-  let!(:process_step)  { create(:process_step, step_class_name: demo_step) }
-  let!(:process_chain) { process_step.process_chain }
+  let!(:recipe)           { recipe_step.recipe }
+  let!(:process_chain)    { create(:process_chain, recipe: recipe, user: other_user) }
+  let!(:process_step)     { create(:process_step, step_class_name: demo_step, process_chain: process_chain) }
 
   describe 'model validations' do
 
@@ -25,7 +27,6 @@ RSpec.describe ProcessChain, type: :model do
     it 'returns the step classes' do
       expect(process_chain.step_classes).to eq [InkStep::BasicStep]
     end
-
   end
 
   describe '#execute_process!' do

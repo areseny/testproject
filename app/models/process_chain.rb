@@ -14,7 +14,7 @@ class ProcessChain < ApplicationRecord
   include ExecutionErrors
 
   belongs_to :user
-  belongs_to :recipe
+  belongs_to :recipe, inverse_of: :process_chains
   has_many :process_steps, inverse_of: :process_chain
 
   mount_uploader :input_file
@@ -22,6 +22,8 @@ class ProcessChain < ApplicationRecord
   # has_many :files, as: :file_handler
 
   validates_presence_of :user, :recipe
+
+  scope :belongs_to_user, -> (user_id) { where(user_id: user_id) }
 
   def retry_execution!(current_api_user:)
     # file = File.open(input_file.file.file) # LOL
