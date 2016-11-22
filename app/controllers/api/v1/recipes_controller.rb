@@ -29,7 +29,7 @@ module Api
       end
 
       def show
-        render json: recipe
+        render json: recipe, user_id: current_api_user.id
       rescue => e
         # ap e.message
         # ap e.backtrace

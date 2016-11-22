@@ -15,7 +15,7 @@ class ProcessChain < ApplicationRecord
 
   belongs_to :user
   belongs_to :recipe, inverse_of: :process_chains
-  has_many :process_steps, inverse_of: :process_chain
+  has_many :process_steps, inverse_of: :process_chain, dependent: :destroy
 
   mount_uploader :input_file
   # mount_uploaders :files, FileUploader

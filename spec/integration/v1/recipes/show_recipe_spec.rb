@@ -48,15 +48,11 @@ describe "User finds a single recipe" do
 
           context 'and it has process chains' do
             let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1) }
-            let!(:process_chain)     { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
+            let!(:process_chain)     { create(:process_chain, recipe: recipe, user: user, executed_at: 2.minutes.ago) }
             let!(:process_step)      { create(:executed_process_step_success, process_chain: process_chain) }
-
-            before { recipe.reload }
 
             it 'also returns the chain information' do
               perform_show_request(auth_headers, recipe.id)
-
-              #  need to tweak serialisers!!!
 
               expect(body_as_json['recipe']['process_chains'].count).to eq 1
               expect(body_as_json['recipe']['process_chains'][0]['process_steps'].count).to eq 1
