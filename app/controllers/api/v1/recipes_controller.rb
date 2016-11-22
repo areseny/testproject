@@ -25,7 +25,7 @@ module Api
       end
 
       def index
-        render json: recipes
+        render json: recipes, user_id: current_api_user.id
       end
 
       def show

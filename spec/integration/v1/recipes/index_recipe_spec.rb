@@ -5,7 +5,7 @@ describe "User lists all their recipes" do
 
   # URL: /api/recipes/
   # Method: GET
-  # Get all the recipes belonging to the current user
+  # Get all the recipes belonging to the current user, serialised with steps and process chains/process steps.
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes
 
@@ -44,16 +44,29 @@ describe "User lists all their recipes" do
         context 'and there are some steps and process chains' do
           let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: "RotThirteenStep") }
           let!(:step2)             { create(:recipe_step, recipe: recipe, position: 2, step_class_name: "EpubToCalibreStep") }
-          let!(:process_chain1)    { create(:process_chain, recipe: recipe, executed_at: 5.minutes.ago) }
+          let!(:process_chain1)    { create(:process_chain, recipe: recipe, user: user, executed_at: 5.minutes.ago) }
           let!(:process_step1a)    { create(:executed_process_step_success, process_chain: process_chain1, position: 1, step_class_name: "RotThirteenStep") }
           let!(:process_step1b)    { create(:executed_process_step_success, process_chain: process_chain1, position: 2, step_class_name: "EpubToCalibreStep") }
-          let!(:process_chain2)    { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
+          let!(:process_chain2)    { create(:process_chain, recipe: recipe, user: user, executed_at: 2.minutes.ago) }
           let!(:process_step2a)    { create(:executed_process_step_success, process_chain: process_chain2, position: 1, step_class_name: "RotThirteenStep") }
           let!(:process_step2b)    { create(:executed_process_step_success, process_chain: process_chain2, position: 2, step_class_name: "EpubToCalibreStep") }
 
           before do
             [recipe, process_chain1, process_chain2, process_step1a, process_step1b, process_step2a, process_step2b].each do |thing|
               thing.reload
+            end
+          end
+
+          context 'and some chains belong to other users' do
+            before do
+              process_chain2.update_attribute(:user, create(:user))
+            end
+
+            it 'does not show them' do
+              perform_index_request(auth_headers)
+
+              expect(body_as_json['recipes'][0]['process_chains'].count).to eq 1
+              expect(body_as_json['recipes'][0]['process_chains'][0]['id']).to eq process_chain1.id
             end
           end
 
