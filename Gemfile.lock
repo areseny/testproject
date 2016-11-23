@@ -35,18 +35,18 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/step.git
-  revision: 3f128e90b4a5f66e53bb597073988665204e86bc
+  revision: a645576f7eb5101bf5af54e96f79e66f487f5504
   specs:
-    ink_step (0.0.10)
+    ink_step (0.0.11)
       awesome_print
       httparty
       rubyzip
 
 GIT
   remote: git@gitlab.coko.foundation:INK/xsweet_pipeline.git
-  revision: 430983409a73c9e31eb12c8c0d3cc95139c1e0ae
+  revision: a7c9c8173a0fba8151fa2f58b91afe6a873a4624
   specs:
-    xsweet_pipeline (0.0.10)
+    xsweet_pipeline (0.0.11)
       rubyzip
 
 GEM
