@@ -9,7 +9,7 @@
 class RecipeStep < ApplicationRecord
   include ObjectMethods
 
-  belongs_to :recipe
+  belongs_to :recipe, inverse_of: :recipe_steps
 
   validates_presence_of :recipe, :position, :step_class_name
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }

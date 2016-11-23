@@ -52,7 +52,7 @@ class Recipe < ApplicationRecord
   end
 
   def times_executed
-    process_chains.count
+    process_chains.belongs_to_user(current_api_user.id).count
   end
 
   def ensure_step_installation
