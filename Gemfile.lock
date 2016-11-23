@@ -35,9 +35,9 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/step.git
-  revision: ec37d5090189956e7d57a0f2c9a7ae6626e782d6
+  revision: 8972952dd278970a9b200cbde885bd81430d0db7
   specs:
-    ink_step (0.0.8)
+    ink_step (0.0.9)
       awesome_print
       httparty
       rubyzip
