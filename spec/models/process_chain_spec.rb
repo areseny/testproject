@@ -9,6 +9,8 @@ RSpec.describe ProcessChain, type: :model do
   let!(:process_chain)    { create(:process_chain, recipe: recipe, user: other_user) }
   let!(:process_step)     { create(:process_step, step_class_name: demo_step, process_chain: process_chain) }
 
+  before { recipe.reload }
+
   describe 'model validations' do
 
     it 'has a valid factory' do

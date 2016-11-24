@@ -41,15 +41,15 @@ describe "User executes a recipe xsweet pipeline" do
     let!(:step5)      { create(:recipe_step, recipe: recipe, position: 5, step_class_name: zorba5) }
 
     let(:step_1_xsl_file)             { File.read('spec/fixtures/files/xsweet_pipeline/docx-html-extract.xsl') }
-    let(:step_1_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/blob/ink-api-publish/docx-html-extract.xsl" }
+    let(:step_1_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/docx-html-extract.xsl" }
     let(:step_2_xsl_file)             { File.read('spec/fixtures/files/xsweet_pipeline/handle-notes.xsl') }
-    let(:step_2_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/blob/ink-api-publish/handle-notes.xsl" }
+    let(:step_2_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/handle-notes.xsl" }
     let(:step_3_xsl_file)             { File.read('spec/fixtures/files/xsweet_pipeline/scrub.xsl') }
-    let(:step_3_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/blob/ink-api-publish/scrub.xsl" }
+    let(:step_3_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/scrub.xsl" }
     let(:step_4_xsl_file)             { File.read('spec/fixtures/files/xsweet_pipeline/join-elements.xsl') }
-    let(:step_4_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/blob/ink-api-publish/join-elements.xsl" }
+    let(:step_4_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/join-elements.xsl" }
     let(:step_5_xsl_file)             { File.read('spec/fixtures/files/xsweet_pipeline/zorba-map.xsl') }
-    let(:step_5_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/blob/ink-api-publish/zorba-map.xsl" }
+    let(:step_5_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/zorba-map.xsl" }
 
     before do
       stub_xsl_download(step_1_remote_uri, step_1_xsl_file)
