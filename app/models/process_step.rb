@@ -13,9 +13,9 @@
 class ProcessStep < ApplicationRecord
   belongs_to :process_chain, inverse_of: :process_steps
 
-  has_many :files, as: :file_handler
+  # has_many :files, as: :file_handler
 
-  mount_uploader :output_file
+  mount_uploader :output_file, FileUploader
 
   validates_presence_of :process_chain, :position, :step_class_name
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
@@ -30,6 +30,7 @@ class ProcessStep < ApplicationRecord
   end
 
   def output_file_name
+    output_file.identifier unless output_file.identifier.nil?
     output_file.path.split("/").last if output_file && output_file.path
   end
 

@@ -17,16 +17,13 @@ class ProcessChain < ApplicationRecord
   belongs_to :recipe, inverse_of: :process_chains
   has_many :process_steps, inverse_of: :process_chain, dependent: :destroy
 
-  mount_uploader :input_file
-  # mount_uploaders :files, FileUploader
-  # has_many :files, as: :file_handler
+  mount_uploader :input_file, FileUploader
 
   validates_presence_of :user, :recipe
 
   scope :belongs_to_user, -> (user_id) { where(user_id: user_id) }
 
   def retry_execution!(current_api_user:)
-    # file = File.open(input_file.file.file) # LOL
     recipe.clone_and_execute(input_file: input_file, user: current_api_user)
   end
 
@@ -53,17 +50,25 @@ class ProcessChain < ApplicationRecord
 
   def map_results(runner, process_steps)
     runner.step_array.each_with_index do |runner_step, index|
-      step_model = process_steps[index]
-      step_model.execution_errors = [runner_step.errors].flatten
-      step_model.output_file = runner_step.output_files
-      step_model.version = runner_step.version
-      # if runner_step.output_files.respond_to(:map)
-      #   step_model.output_file = runner_step.output_files.map(&:open)
-      # elsif runner_step.output_files.respond_to(:open)
-      #   step_model.output_file = runner_step.output_files.open
-      # end
-      step_model.save!
+      process_step = process_steps[index]
+      process_step.execution_errors = [runner_step.errors].flatten
+      ap "#{index}: #{runner_step.class.name}"
+      map_output_file(runner_step, process_step)
+      process_step.version = runner_step.version
+      process_step.save!
     end
+  end
+
+  def map_output_file(runner_step, process_step)
+    # if runner_step.output_files.respond_to(:map)
+    #   step_model.output_file = runner_step.output_files.map(&:open)
+    # elsif runner_step.output_files.respond_to(:open)
+    #   step_model.output_file = runner_step.output_files.open
+    # end
+
+    # ap "Output files (runner step): #{runner_step.output_files.inspect}"
+    process_step.output_file = runner_step.output_files
+    # ap "output file (process step): #{process_step.output_file}"
   end
 
   def open_file(file_uploader)
