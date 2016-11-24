@@ -1,9 +1,13 @@
 class RecipeSerializer < ActiveModel::Serializer
 
   has_many :recipe_steps
-  # has_many :process_chains
 
   attributes :id, :name, :description, :active, :times_executed, :user_id, :executeRecipeInProgress, :public, :process_chains
+
+  def times_executed
+    user_id = @instance_options[:user_id]
+    object.times_executed(user_id)
+  end
 
   def process_chains
     user_id = @instance_options[:user_id]

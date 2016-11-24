@@ -51,8 +51,9 @@ class Recipe < ApplicationRecord
     generate_steps(data[:steps]) if data[:steps].present?
   end
 
-  def times_executed
-    process_chains.belongs_to_user(current_api_user.id).count
+  def times_executed(user_id=nil)
+    return process_chains.count unless user_id
+    process_chains.belongs_to_user(user_id).count
   end
 
   def ensure_step_installation
