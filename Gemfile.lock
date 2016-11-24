@@ -29,9 +29,9 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep-pdf-conversion.git
-  revision: 4057f4fd729f8aeefc3f54c4fc037ae99b024269
+  revision: 2d572facdcfdd9142b855f85ed3031c2767dc1b4
   specs:
-    inkstep-pdf-conversion (0.0.4)
+    inkstep-pdf-conversion (0.0.6)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/rot_thirteen.git
