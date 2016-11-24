@@ -29,11 +29,11 @@ class Recipe < ApplicationRecord
 
   scope :available_to_user, -> (user_id) { active.where("PUBLIC = ? OR USER_ID = ?", true, user_id) }
 
-  def clone_and_execute(input_file:, user:)
+  def clone_and_execute(input_file:, user:, callback_url:"")
     raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
     new_chain = clone_to_process_chain(input_file: input_file, user: user)
     new_chain.save!
-    new_chain.execute_process!
+    new_chain.execute_process!(callback_url)
     new_chain
   end
 

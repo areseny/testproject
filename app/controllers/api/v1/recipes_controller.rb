@@ -7,11 +7,11 @@ module Api
 
       def execute
         recipe.ensure_step_installation
-        @new_chain = recipe.clone_and_execute(input_file: execution_params, user: current_api_user)
+        @new_chain = recipe.clone_and_execute(input_file: input_file_param, callback_url: callback_url_param[:callback_url], user: current_api_user)
         render json: @new_chain, status: 200
       rescue => e
-        # ap e.message
-        # ap e.backtrace
+        ap e.message
+        ap e.backtrace
         render_error(e)
       end
 
@@ -60,8 +60,12 @@ module Api
         params.permit(steps: [], steps_with_positions: [:step_class_name, :position])
       end
 
-      def execution_params
+      def input_file_param
         params.require(:input_file)
+      end
+
+      def callback_url_param
+        params.permit(:callback_url)
       end
 
       def recipe

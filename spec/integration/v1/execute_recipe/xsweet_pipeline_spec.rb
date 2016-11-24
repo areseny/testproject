@@ -100,7 +100,6 @@ describe "User executes a recipe xsweet pipeline" do
 
   def stub_xsl_download(remote_uri, xsl_file)
     stub_request(:get, remote_uri).
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => xsl_file, :headers => {})
   end
 end

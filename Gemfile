@@ -91,6 +91,9 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
+  # better web server than webrick
+  gem 'thin'
+
   ######################### deployment ##########################
 
   gem 'capistrano', '~> 3.4.0'

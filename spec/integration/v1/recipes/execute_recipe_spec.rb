@@ -10,7 +10,7 @@ describe "User executes a single recipe" do
   # Method: GET
   # Execute a specific recipe belonging to the current user
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST --form "input_file=@my-file.txt" http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 

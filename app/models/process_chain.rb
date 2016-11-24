@@ -27,11 +27,11 @@ class ProcessChain < ApplicationRecord
     recipe.clone_and_execute(input_file: input_file, user: current_api_user)
   end
 
-  def execute_process!
+  def execute_process!(callback_url="")
     raise("Chain not saved yet") if self.new_record?
     raise ExecutionErrors::NoFileSuppliedError.new("No input file received") unless input_file.present?
     self.update_attribute(:executed_at, Time.zone.now)
-    ExecutionWorker.perform_async(self.id)
+    ExecutionWorker.perform_async(self.id, callback_url)
   end
 
   def output_file
