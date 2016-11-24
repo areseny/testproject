@@ -28,6 +28,12 @@ GIT
     epub_calibre (0.0.6)
 
 GIT
+  remote: git@gitlab.coko.foundation:INK/inkstep-pdf-conversion.git
+  revision: ae207c256d28e8d8a164c53735d69df035bc42f4
+  specs:
+    inkstep-pdf-conversion (0.0.1)
+
+GIT
   remote: git@gitlab.coko.foundation:INK/rot_thirteen.git
   revision: 69c8b3743cf3a9eb34786e99805a363f2439b6ca
   specs:
@@ -330,6 +336,7 @@ DEPENDENCIES
   epub_calibre!
   factory_girl_rails (~> 4.0)
   ink_step!
+  inkstep-pdf-conversion!
   jbuilder (~> 2.0)
   jquery-rails
   json_spec
