@@ -10,14 +10,13 @@ describe "User executes a recipe xsweet pipeline" do
   # Method: POST
   # Execute a specific recipe belonging to the current user
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST --form "input_file=@my-file.txt, callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 
     let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:docx_file)        { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
-    # let!(:docx_file)        { File.new('spec/fixtures/files/SampleStyles.docx', 'r') }
 
     let!(:recipe)           { create(:recipe, user: user) }
 
