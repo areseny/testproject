@@ -70,10 +70,13 @@ describe "User executes a recipe with multiple real steps" do
     end
 
     context 'and execution fails' do
-      let!(:boobytrapped_step)      { RotThirteenStep.new }
-      let(:step_spy)                { double(:epub_calibre) }
+      let!(:boobytrapped_step)      { RotThirteenStep.new(process_step: process_step_spy) }
+      let!(:step_spy)               { double(:epub_calibre) }
+      let!(:process_step_spy)       { create(:process_step, position: 2, step_class_name: "RotThirteenStep")}
 
       before do
+        allow(ProcessStep).to receive(:new).and_call_original
+        allow(ProcessStep).to receive(:new).with(position: 2, step_class_name: "RotThirteenStep").and_return(process_step_spy)
         allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
         allow(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
       end
@@ -85,7 +88,8 @@ describe "User executes a recipe with multiple real steps" do
         expect(body_as_json['process_chain']['successful']).to eq false
         expect(body_as_json['process_chain']['process_steps'].count).to eq 3
         expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["", "Oh noes! Error!", ""]
-        expect(body_as_json['process_chain']['process_steps'].last['executed_at']).to_not be_nil
+        expect(body_as_json['process_chain']['process_steps'].last['started_at']).to be_nil
+        expect(body_as_json['process_chain']['process_steps'].last['finished_at']).to be_nil
       end
 
       it 'does not execute the later steps' do

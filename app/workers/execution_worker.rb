@@ -6,10 +6,10 @@ class ExecutionWorker
   sidekiq_options retry: false
 
   def perform(chain_id, callback_url)
-    process_chain = ProcessChain.find(chain_id)
-    runner = Execution::RecipeExecutionRunner.new(process_chain.step_classes)
+    process_chain = ProcessChain.includes(:process_steps).find(chain_id)
+    runner = Execution::RecipeExecutionRunner.new(process_chain.process_steps.order(:position))
     runner.run!(files: process_chain.input_file)
-    process_chain.map_results(runner, process_chain.process_steps.sort_by(&:position))
+    process_chain.map_results(runner.step_array)
     process_chain.update_attribute(:finished_at, Time.now)
     post_to_callback(process_chain, callback_url)
   end

@@ -46,10 +46,12 @@ describe "User executes a recipe and provides a callback URL" do
     end
 
     context 'and execution fails' do
-      let!(:boobytrapped_step)      { RotThirteenStep.new }
+      let!(:process_step_spy)       { create(:process_step) }
+      let!(:boobytrapped_step)      { RotThirteenStep.new(process_step: process_step_spy) }
       let(:step_spy)                { double(:rot_thirteen_step) }
 
       before do
+        allow(ProcessStep).to receive(:new).and_return(process_step_spy)
         allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
         allow(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
       end

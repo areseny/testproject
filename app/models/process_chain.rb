@@ -45,16 +45,17 @@ class ProcessChain < ApplicationRecord
   end
 
   def step_classes
-    recipe.recipe_steps.sort_by(&:position).map(&:step_class)
+    process_steps.sort_by(&:position).map(&:step_class)
   end
 
-  def map_results(runner, process_steps)
-    runner.step_array.each_with_index do |runner_step, index|
-      process_step = process_steps[index]
+  def map_results(runner_steps)
+    runner_steps.each do |runner_step|
+      process_step = runner_step.process_step
       process_step.execution_errors = [runner_step.errors].flatten
-      ap "#{index}: #{runner_step.class.name}"
       map_output_file(runner_step, process_step)
       process_step.version = runner_step.version
+      process_step.started_at = runner_step.started_at
+      process_step.finished_at = runner_step.finished_at
       process_step.save!
     end
   end

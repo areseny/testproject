@@ -53,17 +53,17 @@ RSpec.describe ProcessChain, type: :model do
   describe '#map_results' do
     subject { create(:process_chain) }
 
-    let(:some_file)           { File.new('spec/fixtures/files/plaintext.txt') }
-
-    let(:runner_step1)        { double(:process_object, errors:[], output_files: some_file, version: "1.2.7") }
-    let(:runner_step2)        { double(:process_object, errors:["oh noes!"], output_files: nil, version: "0.2.1") }
-    let(:runner)              { double(:recipe_process_runner, step_array: [runner_step1, runner_step2]) }
-
     let(:process_step1)    { create(:process_step, process_chain: subject, position: 1, output_file: "nothing") }
     let(:process_step2)    { create(:process_step, process_chain: subject, position: 2, output_file: "nada") }
 
+    let(:some_file)           { File.new('spec/fixtures/files/plaintext.txt') }
+
+    let(:runner_step1)        { double(:process_object, started_at: 10.seconds.ago, finished_at: 5.seconds.ago, errors:[], output_files: some_file, version: "1.2.7", process_step: process_step1) }
+    let(:runner_step2)        { double(:process_object, started_at: 4.seconds.ago, finished_at: 2.seconds.ago, errors:["oh noes!"], output_files: nil, version: "0.2.1", process_step: process_step2) }
+    let(:runner)              { double(:recipe_process_runner, step_array: [runner_step1, runner_step2]) }
+
     before do
-      subject.map_results(runner, [process_step1, process_step2])
+      subject.map_results([runner_step1, runner_step2])
 
       process_step1.reload
       process_step2.reload
@@ -83,17 +83,13 @@ RSpec.describe ProcessChain, type: :model do
       expect(process_step1.output_file_name).to eq "plaintext.txt"
       expect(process_step2.output_file_name).to eq nil
     end
+
+    it 'maps start times and finishing times correctly' do
+      expect(process_step1.started_at.beginning_of_minute).to eq runner_step1.started_at.beginning_of_minute
+      expect(process_step1.finished_at.beginning_of_minute).to eq runner_step1.finished_at.beginning_of_minute
+
+      expect(process_step2.started_at.beginning_of_minute).to eq runner_step2.started_at.beginning_of_minute
+      expect(process_step2.finished_at.beginning_of_minute).to eq runner_step2.started_at.beginning_of_minute
+    end
   end
 end
-
-# runner.step_array.each_with_index do |runner_step, index|
-#   step_model = process_steps[index]
-#   step_model.execution_errors = [runner_step.errors].flatten
-#   step_model.output_file = runner_step.output_files
-#   # if runner_step.output_files.respond_to(:map)
-#   #   step_model.output_file = runner_step.output_files.map(&:open)
-#   # elsif runner_step.output_files.respond_to(:open)
-#   #   step_model.output_file = runner_step.output_files.open
-#   # end
-#   step_model.save!
-# end

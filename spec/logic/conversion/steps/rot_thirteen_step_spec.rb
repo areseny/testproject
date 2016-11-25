@@ -3,7 +3,7 @@ require 'rot_thirteen/rot_thirteen_step'
 
 describe RotThirteenStep do
 
-  subject               { RotThirteenStep.new }
+  subject               { RotThirteenStep.new(process_step: create(:process_step)) }
   let(:input_file)      { File.new('spec/fixtures/files/some_text.html', 'r') }
 
   describe 'rot 13' do

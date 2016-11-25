@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe InkStep::BasicStep do
 
-  subject               { InkStep::BasicStep.new }
+  subject               { InkStep::BasicStep.new(process_step: create(:process_step)) }
   let(:input_file)      { File.new('spec/fixtures/files/some_text.html', 'r') }
 
   describe 'basic step gem' do

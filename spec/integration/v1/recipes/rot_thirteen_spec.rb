@@ -45,15 +45,15 @@ describe "User executes a ROT13 recipe" do
     end
 
     it 'has an expected output file' do
-      wait_for_async
       result = ProcessChain.last.output_file
       expect(result.read).to eq "Guvf vf fbzr grkg."
     end
   end
 
   context 'if the execution fails' do
+    let!(:step_spy)           { create(:process_step, step_class_name: "RotThirteenStep") }
     let!(:photo_file)         { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let!(:boobytrapped_step)  { RotThirteenStep.new }
+    let!(:boobytrapped_step)  { RotThirteenStep.new(process_step: step_spy) }
 
     let!(:execution_params) {
       {
@@ -63,6 +63,7 @@ describe "User executes a ROT13 recipe" do
     }
 
     before do
+      allow(ProcessStep).to receive(:new).and_return(step_spy)
       expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }
       expect(RotThirteenStep).to receive(:new).and_return(boobytrapped_step)
     end
@@ -70,8 +71,7 @@ describe "User executes a ROT13 recipe" do
     it 'fails nicely' do
       perform_execute_request(auth_headers, execution_params)
 
-      wait_for_async
-      result = ProcessChain.last.output_file
+      result = step_spy.output_file
       expect(result.file).to be_nil
     end
   end

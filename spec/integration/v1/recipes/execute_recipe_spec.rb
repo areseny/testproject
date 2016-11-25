@@ -88,11 +88,13 @@ describe "User executes a single recipe" do
               end
 
               context 'and execution fails' do
-
-                let!(:steps)                  { [RotThirteenStep] }
-                let!(:boobytrapped_step)      { RotThirteenStep.new }
+                let!(:step_spy)               { create(:process_step, step_class_name: "RotThirteenStep") }
+                # let!(:steps)                  { [step_spy] }
+                let!(:boobytrapped_step)      { RotThirteenStep.new(process_step: step_spy) }
 
                 before do
+                  allow(ProcessStep).to receive(:new).and_call_original
+                  allow(ProcessStep).to receive(:new).with(position: 1, step_class_name: "RotThirteenStep").and_return(step_spy)
                   expect(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
                   allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
                 end
@@ -100,11 +102,10 @@ describe "User executes a single recipe" do
                 it 'returns the errors' do
                   perform_execute_request(auth_headers, execution_params)
 
-
                   expect(response.status).to eq(200)
                   expect(body_as_json['process_chain']['successful']).to eq false
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
-                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["Oh noes! Error!", "Oh noes! Error!"]
+                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["Oh noes! Error!", ""]
                 end
               end
             end

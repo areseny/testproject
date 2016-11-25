@@ -1,15 +1,15 @@
 module Execution
   class RecipeExecutionRunner
 
-    attr_accessor :steps, :step_array
+    attr_accessor :step_array, :process_steps
 
-    def initialize(steps)
-      @steps = steps
+    def initialize(process_steps)
+      @process_steps = process_steps
       @step_array = []
     end
 
     def run!(files:)
-      return nil if steps.empty?
+      return nil if @process_steps.empty?
       begin
         chain = build_chain
         chain.execute(files: files)
@@ -22,11 +22,13 @@ module Execution
 
     def build_chain
       latest_in_chain = nil
-      steps.reverse.each do |step|
-        next unless step
-        latest_in_chain = step.new(latest_in_chain)
+      @process_steps.reverse.each do |process_step|
+        next unless process_step
+        step_class = process_step.step_class
+        latest_in_chain = step_class.new(process_step: process_step, next_step: latest_in_chain)
         @step_array << latest_in_chain
       end
+
       @step_array.reverse!
       latest_in_chain
     end

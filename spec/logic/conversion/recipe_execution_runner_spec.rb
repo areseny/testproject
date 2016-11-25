@@ -5,9 +5,12 @@ describe Execution::RecipeExecutionRunner do
   let!(:text_file)         { File.new('spec/fixtures/files/plaintext.txt', 'r') }
   let!(:photo_file)        { File.new('spec/fixtures/files/kitty.jpeg', 'r') }
 
+  let(:step1)         { create(:process_step, step_class_name: "InkStep::BasicStep") }
+  let(:step2)         { create(:process_step, step_class_name: "RotThirteenStep") }
+
   describe '#build_chain' do
-    let!(:step1)    { InkStep::BasicStep}
-    let!(:step2)    { RotThirteenStep }
+    let(:step_class1)    { InkStep::BasicStep}
+    let(:step_class2)    { RotThirteenStep }
 
     context 'with 1 step' do
       let!(:steps)    { [step1] }
@@ -17,7 +20,7 @@ describe Execution::RecipeExecutionRunner do
       it 'hooks the steps to each other' do
         result = subject.build_chain
 
-        expect(result).to be_a step1
+        expect(result).to be_a InkStep::BasicStep
         expect(result.next_step).to eq nil
       end
     end
@@ -30,8 +33,8 @@ describe Execution::RecipeExecutionRunner do
       it 'hooks the steps to each other' do
         result = subject.build_chain
 
-        expect(result).to be_a step1
-        expect(result.next_step).to be_a step2
+        expect(result).to be_a InkStep::BasicStep
+        expect(result.next_step).to be_a RotThirteenStep
         expect(result.next_step.next_step).to eq nil
       end
     end
@@ -52,7 +55,7 @@ describe Execution::RecipeExecutionRunner do
       end
 
       context 'if there is 1 step' do
-        let!(:steps)    { [InkStep::BasicStep] }
+        let!(:steps)    { [step1] }
         subject         { Execution::RecipeExecutionRunner.new(steps) }
 
         it 'returns a result' do
@@ -64,7 +67,8 @@ describe Execution::RecipeExecutionRunner do
       end
 
       context 'if there are 3 steps' do
-        let!(:steps)    { [InkStep::BasicStep, InkStep::BasicStep, InkStep::BasicStep] }
+        let(:step3)     { create(:process_step, step_class_name: "InkStep::BasicStep") }
+        let(:steps)     { [step1, step2, step3] }
         subject         { Execution::RecipeExecutionRunner.new(steps) }
 
         it 'returns a result' do
@@ -77,8 +81,8 @@ describe Execution::RecipeExecutionRunner do
     end
 
     context 'if there is a failure' do
-      let!(:steps)              { [InkStep::BasicStep] }
-      let!(:boobytrapped_step)  { InkStep::BasicStep.new }
+      let(:steps)              { [step1] }
+      let(:boobytrapped_step)  { InkStep::BasicStep.new(process_step: step1) }
 
       before do
         expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }

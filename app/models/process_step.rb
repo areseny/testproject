@@ -11,9 +11,9 @@
 # end
 
 class ProcessStep < ApplicationRecord
-  belongs_to :process_chain, inverse_of: :process_steps
+  include ObjectMethods
 
-  # has_many :files, as: :file_handler
+  belongs_to :process_chain, inverse_of: :process_steps
 
   mount_uploader :output_file, FileUploader
 

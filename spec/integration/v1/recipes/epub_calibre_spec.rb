@@ -44,7 +44,6 @@ describe "User executes a single-step epub calibre recipe" do
     end
 
     it 'has an expected output file' do
-      wait_for_async
       result = ProcessChain.last.output_file
       expect(File.extname(result.path)).to eq '.epub'
     end
