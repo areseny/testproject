@@ -1,5 +1,6 @@
 require 'execution_errors'
 require 'yaml'
+require 'ink_step/mixins/helper_methods'
 
 # create_table "process_chains", force: :cascade do |t|
 #   t.integer  "user_id",           null: false
@@ -12,10 +13,15 @@ require 'yaml'
 
 class ProcessChain < ApplicationRecord
   include ExecutionErrors
+  include SlugMethods
 
   belongs_to :user
   belongs_to :recipe, inverse_of: :process_chains
   has_many :process_steps, inverse_of: :process_chain, dependent: :destroy
+
+  before_save do
+    generate_unique_slug
+  end
 
   mount_uploader :input_file, FileUploader
 
@@ -28,7 +34,7 @@ class ProcessChain < ApplicationRecord
   end
 
   def execute_process!(callback_url="")
-    raise("Chain not saved yet") if self.new_record?
+    raise "Chain not saved yet" if new_record?
     raise ExecutionErrors::NoFileSuppliedError.new("No input file received") unless input_file.present?
     self.update_attribute(:executed_at, Time.zone.now)
     ExecutionWorker.perform_async(self.id, callback_url)

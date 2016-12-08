@@ -18,6 +18,10 @@ RSpec.describe ProcessChain, type: :model do
     end
 
     expects_to_be_invalid_without :process_chain, :user, :recipe
+
+    it 'generates a slug automatically' do
+      expect(create(:process_chain, slug: nil).slug).to_not be_nil
+    end
   end
 
   describe '#step_classes' do
@@ -32,11 +36,13 @@ RSpec.describe ProcessChain, type: :model do
   end
 
   describe '#execute_process!' do
+
     context "if the chain hasn't been saved yet" do
+      let(:chain)   { build(:process_chain) }
+
       it 'fails' do
-        new_chain = ProcessChain.new
-        expect{new_chain.execute_process!}.to raise_error("Chain not saved yet")
-        expect(new_chain.executed_at).to be_nil
+        expect{chain.execute_process!}.to raise_error("Chain not saved yet")
+        expect(chain.executed_at).to be_nil
       end
     end
 

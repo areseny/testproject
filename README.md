@@ -32,9 +32,9 @@ Run sidekiq in another terminal - `bundle exec sidekiq`
 
 Check `localhost:3000/anyone` to see if it's up.
 
-### Further development
+## Further development
 
-## Adding a new step
+### Adding a new step
 
 To write a new step, create a gem (you can host it under RubyGems). I've included code so that the step files get autoloaded when Rails is present.
  
@@ -48,7 +48,7 @@ Via gemfile, you can edit the gemfile to include the line `gem 'rot_thirteen', g
 
 I'm working on a separate custom `StepGemfile` that gets installed as well, so that an instance's installed steps will be preserved. Stay tuned!
 
-## Upgrading API version
+### Upgrading API version
 
 To prevent breaking consumers of this API with upgrades, this API is versioned with a simple mechanism that looks for the API version specified in the request header.
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161124201024) do
+ActiveRecord::Schema.define(version: 20161201041320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20161124201024) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.datetime "finished_at"
+    t.string   "slug"
   end
 
   create_table "process_steps", force: :cascade do |t|
@@ -38,6 +39,7 @@ ActiveRecord::Schema.define(version: 20161124201024) do
     t.string   "version"
     t.datetime "started_at"
     t.datetime "finished_at"
+    t.string   "slug"
     t.index ["position", "process_chain_id"], name: "index_process_steps_on_position_and_process_chain_id", unique: true, using: :btree
   end
 
