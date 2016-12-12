@@ -6,12 +6,12 @@ class AddSlugToProcessSteps < ActiveRecord::Migration[5.0]
   def change
     add_column :process_steps, :slug, :string
 
-    ProcessStep.all.each do |step|
-      while ProcessStep.all.map(&:slug).include?(@new_slug) || @new_slug.empty?
-        @new_slug = "#{step.created_at.to_i}_#{random_alphanumeric_string}"
+    ProcessStep.all.each do |chain|
+      chain.process_steps.each do |step|
+        # find slug, generate if none
+        step.generate_unique_slug
+        step.save!
       end
-      step.slug = @new_slug
-      step.save
     end
   end
 end

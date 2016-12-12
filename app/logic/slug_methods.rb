@@ -8,12 +8,15 @@ module SlugMethods
   end
 
   def generate_unique_slug
-    raise "Use with ActiveRecord subclass only" unless self.class.respond_to?(:all)
     return if slug.present?
-    while @new_slug.nil? || self.class.all.map(&:slug).include?(@new_slug)
+    while @new_slug.nil? || slug_not_unique?(ProcessChain) || slug_not_unique?(ProcessStep)
       @new_slug = generate_slug
     end
     self.slug = @new_slug
+  end
+
+  def slug_not_unique?(klass)
+    klass.all.map(&:slug).include?(@new_slug)
   end
 
 end
