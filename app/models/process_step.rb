@@ -12,7 +12,6 @@
 
 class ProcessStep < ApplicationRecord
   include ObjectMethods
-  include SlugMethods
 
   belongs_to :process_chain, inverse_of: :process_steps
 

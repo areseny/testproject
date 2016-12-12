@@ -6,7 +6,7 @@ describe SlugMethods do
     let!(:slug)        { "abc123" }
     let!(:slug2)       { "abc1234" }
     let!(:chain_spy)   { create(:process_chain, slug: slug) }
-    let!(:new_step)    { ProcessStep.new(slug: nil) }
+    let!(:new_step)    { ProcessChain.new(slug: nil) }
 
     context 'when there is another object with a slug already existing' do
       before do
