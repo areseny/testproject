@@ -60,8 +60,8 @@ describe "User creates recipe" do
 
       context 'if there are steps supplied' do
 
-        let(:generic_step)      { "InkStep::BasicStep" }
-        let(:rot13)             { "RotThirteenStep" }
+        let(:generic_step)      { base_step_class.to_s }
+        let(:rot13)             { rot_thirteen_step_class.to_s }
 
         context 'presented as a series of steps with positions included' do
           let(:step_params)      { [{position: 1, step_class_name: generic_step}, {position: 2, step_class_name: rot13 }] }
@@ -126,7 +126,7 @@ describe "User creates recipe" do
         context 'presented as a series of steps with order implicit' do
           context 'and they are real steps' do
             before do
-              recipe_params[:steps] = ["InkStep::BasicStep", "RotThirteenStep"]
+              recipe_params[:steps] = [base_step_class.to_s, rot_thirteen_step_class.to_s]
             end
 
             it "creates the recipe with recipe steps" do
@@ -142,7 +142,7 @@ describe "User creates recipe" do
           context 'and they are not real' do
 
             it "creates the recipe for nonexistent step classes anyway" do
-              recipe_params[:steps] = ["NonexistentClass", "RotThirteenStep"]
+              recipe_params[:steps] = ["NonexistentClass", rot_thirteen_step_class.to_s]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200

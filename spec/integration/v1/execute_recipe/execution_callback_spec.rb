@@ -14,7 +14,7 @@ describe "User executes a recipe and provides a callback URL" do
 
   describe "POST execute recipe" do
 
-    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
+    let!(:user)             { create(:user) }
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
@@ -30,7 +30,7 @@ describe "User executes a recipe and provides a callback URL" do
       }
     }
 
-    let!(:rot13)      { "RotThirteenStep" }
+    let!(:rot13)      { rot_thirteen_step_class.to_s }
     let!(:step)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot13) }
 
     before do
@@ -46,14 +46,8 @@ describe "User executes a recipe and provides a callback URL" do
     end
 
     context 'and execution fails' do
-      let!(:process_step_spy)       { create(:process_step) }
-      let!(:boobytrapped_step)      { RotThirteenStep.new(process_step: process_step_spy) }
-      let(:step_spy)                { double(:rot_thirteen_step) }
-
       before do
-        allow(ProcessStep).to receive(:new).and_return(process_step_spy)
-        allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
-        allow(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
+        allow_any_instance_of(rot_thirteen_step_class).to receive(:perform_step) { raise "Oh noes! Error!" }
       end
 
       it 'sends the failed chain information back to the client' do

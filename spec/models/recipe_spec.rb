@@ -33,28 +33,10 @@ RSpec.describe Recipe, type: :model do
       let(:other_users_public_recipe) { create(:recipe, public: true, user: other_user) }
       let(:some_file)     { double(:file) }
 
-      it 'clones to belong to the current user' do
-        chain = other_users_public_recipe.clone_to_process_chain(input_file: some_file, user: user)
+      it 'clones and the chain belongs to the current user' do
+        chain = other_users_public_recipe.clone_to_process_chain(user: user)
         expect(chain.user).to eq user
       end
     end
-
-    context 'if there is no file' do
-      let(:my_recipe)     { create(:recipe, public: false, user: user) }
-
-      it 'fails' do
-        expect{my_recipe.clone_to_process_chain(input_file: nil, user: user)}.to raise_error(ExecutionErrors::NoFileSuppliedError)
-      end
-    end
-
   end
-end
-
-def clone_to_process_chain(input_file)
-  raise ExecutionErrors::NoFileSuppliedError.new unless input_file
-  new_chain = process_chain.new(user: user, input_file: input_file)
-  recipe_steps.each do |recipe_step|
-    new_chain.process_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)
-  end
-  new_chain
 end

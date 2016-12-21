@@ -6,33 +6,27 @@ module Api
 
       respond_to :json
 
-      def download_file
-        send_file(process_step.output_file.path,
+      def download_output_file
+        file_path = assemble_file_path(process_step.working_directory)
+
+        send_file(file_path,
+                  :disposition => 'attachment',
+                  :url_based_filename => true)
+      end
+
+      def download_output_zip
+        zip_path = process_step.assemble_output_file_zip
+
+        send_file(zip_path,
                   :disposition => 'attachment',
                   :url_based_filename => true)
       end
 
       private
 
-      # def process_step_params
-      #   params.require(:process_step).permit(:name, :description, :active)
-      # end
-      #
-      # def process_step_step_params
-      #   params.permit(steps: [], steps_with_positions: [:name, :position])
-      # end
-      
       def process_step
         @process_step ||= ProcessStep.find(params[:id])
       end
-
-      # def new_process_step
-      #   @new_process_step ||= current_api_user.process_steps.new(process_step_params)
-      # end
-      #
-      # def process_steps
-      #   @process_steps ||= current_api_user.process_steps.active
-      # end
 
       def authorise_user!
         if process_step.process_chain.user != current_api_user

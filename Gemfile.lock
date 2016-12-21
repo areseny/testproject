@@ -16,44 +16,25 @@ GIT
       mime-types (>= 1.16)
 
 GIT
-  remote: git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git
-  revision: 773eecbe51a62d8e15e7638f43e6daa3e9978832
+  remote: git@gitlab.coko.foundation:INK/ink-step.git
+  revision: b8dd026cf34987c3697b6602445853c1e9d85529
   specs:
-    docx_to_html_pandoc (0.0.8)
-
-GIT
-  remote: git@gitlab.coko.foundation:INK/epub_calibre.git
-  revision: 8d1aa9bc533222f12d89f901f715a8e1ff821ca5
-  specs:
-    epub_calibre (0.0.7)
-
-GIT
-  remote: git@gitlab.coko.foundation:INK/inkstep-pdf-conversion.git
-  revision: d90ce429cce81b11e0c3561c911862ec9f373c44
-  specs:
-    inkstep-pdf-conversion (0.0.7)
-
-GIT
-  remote: git@gitlab.coko.foundation:INK/rot_thirteen.git
-  revision: 7861ca00c60fe4d4b9064af7683484b6ed43d5f2
-  specs:
-    rot_thirteen (0.0.7)
-
-GIT
-  remote: git@gitlab.coko.foundation:INK/step.git
-  revision: 0a567ca739ade3b8cf49f0099e88d9b724577b7b
-  specs:
-    ink_step (0.0.13)
+    ink_step (0.1.3)
       awesome_print
       httparty
       rubyzip
 
 GIT
-  remote: git@gitlab.coko.foundation:INK/xsweet_pipeline.git
-  revision: 83376469b3256220e4dd5dfba06c6d8bf351cf65
+  remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
+  revision: 179dc2e22bb83a16b214b84489d1684b78777411
   specs:
-    xsweet_pipeline (0.0.13)
-      rubyzip
+    inkstep_coko_conversion (0.1.4)
+
+GIT
+  remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
+  revision: 80c84ac5680c15d7a3727cf84bcfa11aea33e8c0
+  specs:
+    inkstep_coko_demo_steps (0.1.3)
 
 GEM
   remote: https://rubygems.org/
@@ -188,7 +169,7 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.9.1)
     multi_json (1.12.1)
-    multi_xml (0.5.5)
+    multi_xml (0.6.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.2.0)
@@ -332,11 +313,10 @@ DEPENDENCIES
   database_cleaner
   devise
   devise_token_auth
-  docx_to_html_pandoc!
-  epub_calibre!
   factory_girl_rails (~> 4.0)
   ink_step!
-  inkstep-pdf-conversion!
+  inkstep_coko_conversion!
+  inkstep_coko_demo_steps!
   jbuilder (~> 2.0)
   jquery-rails
   json_spec
@@ -346,7 +326,6 @@ DEPENDENCIES
   rack-cors
   rails (= 5.0.0.1)
   rails-controller-testing
-  rot_thirteen!
   rspec-rails (~> 3.0)
   sidekiq
   sinatra
@@ -357,7 +336,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
   webmock
-  xsweet_pipeline!
 
 BUNDLED WITH
    1.13.6

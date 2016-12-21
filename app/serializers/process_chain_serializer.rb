@@ -5,8 +5,7 @@ class ProcessChainSerializer < ActiveModel::Serializer
 
   # has_many :process_steps
 
-  attributes :id, :recipe_id, :successful, :executed_at, :executed_at_for_humans, :input_file_name,
-             :input_file_path, :output_file_path, :output_file_name, :finished_at, :process_steps
+  attributes :id, :recipe_id, :successful, :executed_at, :executed_at_for_humans, :input_file_manifest, :output_file_manifest, :finished_at, :process_steps
 
   def process_steps
     object.process_steps.sort_by{ |step| step.position }.map{|step| ActiveModelSerializers::SerializableResource.new(step, adapter: :attribute).as_json}

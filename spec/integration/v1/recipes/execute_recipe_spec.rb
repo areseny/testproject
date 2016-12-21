@@ -16,26 +16,21 @@ describe "User executes a single recipe" do
 
     let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
-    let!(:xml_file)         { fixture_file_upload('files/test_file.xml', 'text/xml') }
-    let!(:photo_file)       { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
+    let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plaintext') }
 
     let!(:recipe)           { create(:recipe, user: user) }
 
     let!(:execution_params) {
       {
-          input_file: photo_file,
+          input_file: text_file,
           id: recipe.id
       }
     }
 
     context 'if user is signed in' do
-
       context 'and the recipe exists' do
-
         context 'and it belongs to the user' do
-
           context 'and a file is supplied' do
-
             context 'and it has no steps' do
               it 'responds with failure' do
                 perform_execute_request(auth_headers, execution_params)
@@ -45,13 +40,15 @@ describe "User executes a single recipe" do
             end
 
             context 'and it has steps' do
-              let!(:rot13)      { "RotThirteenStep" }
+              let!(:rot13)      { rot_thirteen_step_class.to_s }
               let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot13) }
               let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
               let(:gem_version) { "0.0.4" }
+              let(:base_gem_version) { "1.0.1" }
 
               before do
-                allow_any_instance_of(RotThirteenStep).to receive(:version).and_return(gem_version)
+                allow_any_instance_of(rot_thirteen_step_class).to receive(:version).and_return(gem_version)
+                allow_any_instance_of(base_step_class).to receive(:version).and_return(base_gem_version)
               end
 
               context 'and execution is successful' do
@@ -74,38 +71,34 @@ describe "User executes a single recipe" do
 
                   expect(body_as_json['process_chain']['recipe_id']).to eq process_chain.recipe_id
                   expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
-                  expect(body_as_json['process_chain']['input_file_name']).to eq process_chain.input_file_name
+                  expect(body_as_json['process_chain']['input_file_manifest']).to eq process_chain.input_file_manifest
                   expect(body_as_json['process_chain']['executed_at_for_humans']).to_not be_nil
                   expect(body_as_json['process_chain']['successful']).to eq true
+                  expect(body_as_json['process_chain']['input_file_manifest']).to eq ["plaintext.txt"]
+                  expect(body_as_json['process_chain']['output_file_manifest']).to eq ["plaintext_rot13_rot13.txt"]
                 end
 
                 it 'also returns the steps' do
                   perform_execute_request(auth_headers, execution_params)
 
+                  ap body_as_json
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
-                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['version']}).to eq ["0.0.4", "0.0.4"]
+                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['version']}).to eq [gem_version, gem_version]
                 end
               end
 
               context 'and execution fails' do
-                let!(:step_spy)               { create(:process_step, step_class_name: "RotThirteenStep") }
-                # let!(:steps)                  { [step_spy] }
-                let!(:boobytrapped_step)      { RotThirteenStep.new(process_step: step_spy) }
-
                 before do
-                  allow(ProcessStep).to receive(:new).and_call_original
-                  allow(ProcessStep).to receive(:new).with(position: 1, step_class_name: "RotThirteenStep").and_return(step_spy)
-                  expect(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
-                  allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
+                  allow_any_instance_of(base_step_class).to receive(:perform_step) { raise "Oh noes! Error!" }
                 end
 
                 it 'returns the errors' do
                   perform_execute_request(auth_headers, execution_params)
 
                   expect(response.status).to eq(200)
+                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["Oh noes! Error!", ""]
                   expect(body_as_json['process_chain']['successful']).to eq false
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
-                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["Oh noes! Error!", ""]
                 end
               end
             end

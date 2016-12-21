@@ -51,8 +51,13 @@ describe "User finds a single recipe" do
             let!(:process_chain)     { create(:process_chain, recipe: recipe, user: user, executed_at: 2.minutes.ago) }
             let!(:process_step)      { create(:executed_process_step_success, process_chain: process_chain) }
 
+            before do
+              process_chain.initialize_directories
+            end
+
             it 'also returns the chain information' do
               perform_show_request(auth_headers, recipe.id)
+              ap body_as_json
 
               expect(body_as_json['recipe']['process_chains'].count).to eq 1
               expect(body_as_json['recipe']['process_chains'][0]['process_steps'].count).to eq 1

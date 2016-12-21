@@ -25,7 +25,7 @@ describe "User executes a single-step epub calibre recipe" do
     }
   }
 
-    let!(:step_class)  { "EpubCalibreStep" }
+    let!(:step_class)  { epub_calibre_step_class.to_s }
     let!(:step1)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
 
   context 'if the execution is successful' do
@@ -44,8 +44,8 @@ describe "User executes a single-step epub calibre recipe" do
     end
 
     it 'has an expected output file' do
-      result = ProcessChain.last.output_file
-      expect(File.extname(result.path)).to eq '.epub'
+      result = ProcessChain.last.output_file_manifest
+      expect(result).to include("test.epub")
     end
   end
 

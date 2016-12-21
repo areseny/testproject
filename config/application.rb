@@ -35,6 +35,8 @@ module Ink
     # from https://robots.thoughtbot.com/catching-json-parse-errors-with-custom-middleware
     # config.middleware.insert_before ActionDispatch::ParamsParser, "CatchJsonParseErrors"
 
+    config.ink_api = config_for(:ink_api)
+
     config.debug_exception_response_format = :default
 
     config.middleware.use ::CatchJsonParseErrors

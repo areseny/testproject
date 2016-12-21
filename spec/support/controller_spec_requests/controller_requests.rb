@@ -40,7 +40,21 @@ def retry_execution(version, data = {}.to_json)
   get :retry, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
-def download_file(version, data = {}.to_json)
-  get :download_file, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+# process_chain requests
+
+def download_input_file(version, data = {}.to_json)
+  get :download_input_file, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
+def download_input_zip(version, data = {}.to_json)
+  get :download_input_zip, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
+def download_output_file(version, data = {}.to_json)
+  get :download_output_file, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
+def download_output_zip(version, data = {}.to_json)
+  get :download_output_zip, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 

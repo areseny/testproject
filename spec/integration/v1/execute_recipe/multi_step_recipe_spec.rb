@@ -28,9 +28,9 @@ describe "User executes a recipe with multiple real steps" do
       }
     }
 
-    let!(:pandoc)     { "DocxToHtmlPandocStep" }
-    let!(:rot13)      { "RotThirteenStep" }
-    let!(:epub)       { "EpubCalibreStep" }
+    let!(:pandoc)     { pandoc_to_html_step_class.to_s }
+    let!(:rot13)      { rot_thirteen_step_class.to_s }
+    let!(:epub)       { epub_calibre_step_class.to_s }
     let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: pandoc) }
     let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
     let!(:step3)      { create(:recipe_step, recipe: recipe, position: 3, step_class_name: epub) }
@@ -54,7 +54,8 @@ describe "User executes a recipe with multiple real steps" do
 
         expect(body_as_json['process_chain']['recipe_id']).to eq process_chain.recipe_id
         expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
-        expect(body_as_json['process_chain']['input_file_name']).to eq process_chain.input_file_name
+        expect(body_as_json['process_chain']['input_file_manifest']).to eq process_chain.input_file_manifest
+        expect(body_as_json['process_chain']['output_file_manifest']).to eq process_chain.output_file_manifest
         expect(body_as_json['process_chain']['executed_at_for_humans']).to_not be_nil
         expect(body_as_json['process_chain']['successful']).to eq true
       end
@@ -70,15 +71,9 @@ describe "User executes a recipe with multiple real steps" do
     end
 
     context 'and execution fails' do
-      let!(:boobytrapped_step)      { RotThirteenStep.new(process_step: process_step_spy) }
-      let!(:step_spy)               { double(:epub_calibre) }
-      let!(:process_step_spy)       { create(:process_step, position: 2, step_class_name: "RotThirteenStep")}
-
+      let!(:step_spy)               { double(:epub_calibre, errors: "", version: "1", started_at: nil, finished_at: nil) }
       before do
-        allow(ProcessStep).to receive(:new).and_call_original
-        allow(ProcessStep).to receive(:new).with(position: 2, step_class_name: "RotThirteenStep").and_return(process_step_spy)
-        allow(RotThirteenStep).to receive(:new).and_return boobytrapped_step
-        allow(boobytrapped_step).to receive(:perform_step) { raise "Oh noes! Error!" }
+        allow_any_instance_of(rot_thirteen_step_class).to receive(:perform_step) { raise "Oh noes! Error!" }
       end
 
       it 'halts execution after a failed step' do
@@ -93,8 +88,10 @@ describe "User executes a recipe with multiple real steps" do
       end
 
       it 'does not execute the later steps' do
-        allow(EpubCalibreStep).to receive(:new).and_return(step_spy)
+        allow(epub_calibre_step_class).to receive(:new).and_return(step_spy)
         allow(step_spy).to receive(:execute)
+
+        perform_execute_request(auth_headers, execution_params)
 
         expect(step_spy).to_not have_received(:execute)
       end

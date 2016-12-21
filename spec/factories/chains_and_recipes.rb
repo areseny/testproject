@@ -1,3 +1,5 @@
+require 'constants'
+
 FactoryGirl.define do
 
   factory :recipe do
@@ -13,18 +15,15 @@ FactoryGirl.define do
   factory :process_chain do
     recipe
     user
-    input_file { File.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
   end
 
   factory :process_step do
     process_chain
     position 1
-    step_class_name "InkStep::BasicStep"
+    step_class_name InkStep::ConversionStep.to_s
     notes "yay! done!"
-    output_file { File.new('spec/fixtures/files/test_file.xml', 'r') }
     factory :executed_process_step_success do
       executed_at 2.minutes.ago
-      output_file { File.new(File.join(Rails.root, 'spec', 'fixtures', 'files', 'test_file.xml')) }
     end
     factory :executed_process_step_fail do
       executed_at 2.minutes.ago
@@ -36,7 +35,7 @@ FactoryGirl.define do
 
   factory :recipe_step do
     recipe
-    step_class_name "InkStep::BasicStep"
+    step_class_name InkStep::ConversionStep.to_s
     position 1
   end
 

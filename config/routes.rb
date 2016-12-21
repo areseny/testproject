@@ -23,13 +23,17 @@ Rails.application.routes.draw do
         member do
           post 'execute'
           get 'retry'
-          get 'download_file', as: :download
+          get 'download_input_file'
+          get 'download_input_zip'
+          get 'download_output_file'
+          get 'download_output_zip'
         end
       end
 
       resources :process_steps, only: [:download_file] do
         member do
-          get 'download_file', as: :download
+          get 'download_output_file'
+          get 'download_output_zip'
         end
       end
 

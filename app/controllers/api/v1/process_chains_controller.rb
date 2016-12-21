@@ -2,6 +2,7 @@ module Api
   module V1
     class ProcessChainsController < ApplicationController
       include ExecutionErrors
+      include DirectoryMethods
 
       before_action :authenticate_api_user!, only: [:retry, :download_file]
       before_action :authorise_user!
@@ -17,8 +18,34 @@ module Api
         render_error(e)
       end
 
-      def download_file
-        send_file(process_chain.input_file.path,
+      def download_input_file
+        file_path = assemble_file_path(process_chain.input_files_directory)
+
+        send_file(file_path,
+                  :disposition => 'attachment',
+                  :url_based_filename => true)
+      end
+
+      def download_input_zip
+        zip_path = process_chain.assemble_input_file_zip
+
+        send_file(zip_path,
+                  :disposition => 'attachment',
+                  :url_based_filename => true)
+      end
+
+      def download_output_file
+        file_path = assemble_file_path(process_chain.last_step.working_directory)
+
+        send_file(file_path,
+                  :disposition => 'attachment',
+                  :url_based_filename => true)
+      end
+
+      def download_output_zip
+        zip_path = process_chain.assemble_output_file_zip
+
+        send_file(zip_path,
                   :disposition => 'attachment',
                   :url_based_filename => true)
       end

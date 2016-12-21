@@ -2,7 +2,7 @@ require "yaml"
 
 class ProcessStepSerializer < ActiveModel::Serializer
   attributes :id, :position, :process_chain_id, :step_class_name, :notes, :execution_errors,
-             :output_file_path, :output_file_name, :version, :started_at, :finished_at
+             :output_file_manifest, :version, :started_at, :finished_at
 
   def started_at
     object.started_at.nil? ? nil : object.started_at.iso8601

@@ -1,3 +1,4 @@
+require 'rails_helper'
 require_relative 'version'
 
 RSpec.describe Api::V1::RecipesController do
@@ -9,8 +10,8 @@ RSpec.describe Api::V1::RecipesController do
   let!(:name)           { "My Splendiferous PNG to JPG transmogrifier" }
   let!(:description)    { "It transmogrifies! It transforms! It even goes across filetypes!" }
 
-  let!(:step)           { "InkStep::BasicStep" }
-  let!(:rot_thirteen)   { "RotThirteenStep" }
+  let!(:step)           { base_step_class.to_s }
+  let!(:rot_thirteen)   { rot_thirteen_step_class.to_s }
 
   let!(:attributes)     { [:name, :description] }
 
@@ -25,7 +26,7 @@ RSpec.describe Api::V1::RecipesController do
 
   describe "POST execute" do
 
-    let(:demo_step)         { "InkStep::BasicStep" }
+    let(:demo_step)         { base_step_class.to_s }
     let(:xml_file)          { fixture_file_upload('files/test_file.xml', 'text/xml') }
     let(:photo_file)        { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
     let(:recipe_step)       { create(:recipe_step, step_class_name: demo_step) }

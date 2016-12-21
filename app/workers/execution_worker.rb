@@ -6,19 +6,26 @@ class ExecutionWorker
   sidekiq_options retry: false
 
   def perform(chain_id, callback_url)
-    process_chain = ProcessChain.includes(:process_steps).find(chain_id)
-    runner = Execution::RecipeExecutionRunner.new(process_chain.process_steps.order(:position))
-    runner.run!(files: process_chain.input_file)
-    process_chain.map_results(runner.step_array)
-    process_chain.update_attribute(:finished_at, Time.now)
-    post_to_callback(process_chain, callback_url)
+    @process_chain = ProcessChain.includes(:process_steps).find(chain_id)
+    runner = Execution::RecipeExecutionRunner.new(process_step_hash: process_step_hash, chain_file_location: @process_chain.working_directory)
+    runner.run!
+    @process_chain.map_results(runner.step_array)
+    @process_chain.update_attribute(:finished_at, Time.now)
+    post_to_callback(callback_url)
   end
 
-  def post_to_callback(process_chain, callback_url)
+  def process_step_hash
+    @process_chain.process_steps.order(:position).inject({}) do |result, step|
+      result[step.position] = step
+      result
+    end
+  end
+
+  def post_to_callback(callback_url)
     return unless callback_url.present?
     begin
       HTTParty.post(callback_url,
-                    :body => serialized_chain(process_chain),
+                    :body => serialized_chain,
                     :headers => { 'Content-Type' => 'application/json' } )
     rescue => e
       ap "Could not post to callback URL #{callback_url}"
@@ -27,8 +34,8 @@ class ExecutionWorker
     end
   end
 
-  def serialized_chain(process_chain)
-    serialization = ActiveModelSerializers::SerializableResource.new(process_chain)
+  def serialized_chain
+    serialization = ActiveModelSerializers::SerializableResource.new(@process_chain)
     serialization.to_json
   end
 end

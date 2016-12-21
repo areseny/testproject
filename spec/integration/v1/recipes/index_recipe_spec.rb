@@ -42,16 +42,19 @@ describe "User lists all their recipes" do
         end
 
         context 'and there are some steps and process chains' do
-          let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: "RotThirteenStep") }
-          let!(:step2)             { create(:recipe_step, recipe: recipe, position: 2, step_class_name: "EpubToCalibreStep") }
+          let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot_thirteen_step_class.to_s) }
+          let!(:step2)             { create(:recipe_step, recipe: recipe, position: 2, step_class_name: epub_calibre_step_class.to_s) }
           let!(:process_chain1)    { create(:process_chain, recipe: recipe, user: user, executed_at: 5.minutes.ago) }
-          let!(:process_step1a)    { create(:executed_process_step_success, process_chain: process_chain1, position: 1, step_class_name: "RotThirteenStep") }
-          let!(:process_step1b)    { create(:executed_process_step_success, process_chain: process_chain1, position: 2, step_class_name: "EpubToCalibreStep") }
+          let!(:process_step1a)    { create(:executed_process_step_success, process_chain: process_chain1, position: 1, step_class_name: rot_thirteen_step_class.to_s) }
+          let!(:process_step1b)    { create(:executed_process_step_success, process_chain: process_chain1, position: 2, step_class_name: epub_calibre_step_class.to_s) }
           let!(:process_chain2)    { create(:process_chain, recipe: recipe, user: user, executed_at: 2.minutes.ago) }
-          let!(:process_step2a)    { create(:executed_process_step_success, process_chain: process_chain2, position: 1, step_class_name: "RotThirteenStep") }
-          let!(:process_step2b)    { create(:executed_process_step_success, process_chain: process_chain2, position: 2, step_class_name: "EpubToCalibreStep") }
+          let!(:process_step2a)    { create(:executed_process_step_success, process_chain: process_chain2, position: 1, step_class_name: rot_thirteen_step_class.to_s) }
+          let!(:process_step2b)    { create(:executed_process_step_success, process_chain: process_chain2, position: 2, step_class_name: epub_calibre_step_class.to_s) }
 
           before do
+            process_chain1.initialize_directories
+            process_chain2.initialize_directories
+
             [recipe, process_chain1, process_chain2, process_step1a, process_step1b, process_step2a, process_step2b].each do |thing|
               thing.reload
             end

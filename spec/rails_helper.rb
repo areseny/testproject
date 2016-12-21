@@ -8,9 +8,14 @@ require 'rspec/rails'
 require 'support/async_wait'
 require 'support/factory_girl'
 require 'execution_errors'
+require 'constants'
+require 'step_class_constants'
+require 'directory_methods'
 
 require 'database_cleaner'
 include ActionDispatch::TestProcess
+include StepClassConstants
+include DirectoryMethods
 
 # Add additional requires below this line. Rails is not loaded until this point!
 

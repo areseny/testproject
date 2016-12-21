@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo
+echo "== Updating steps =="
+bundle update inkstep_coko_conversion inkstep_coko_demo_steps ink_step
+echo "== Bundling =="
+bundle install

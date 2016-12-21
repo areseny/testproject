@@ -28,7 +28,7 @@ describe "User executes a single recipe" do
     }
 
     context 'if user is signed in' do
-      let!(:step_class)  { "InkStep::BasicStep" }
+      let!(:step_class)  { base_step_class.to_s }
       let!(:step1)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
 
       context 'and execution is successful' do

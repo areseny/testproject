@@ -10,36 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161201041320) do
+ActiveRecord::Schema.define(version: 20161221014624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "process_chains", force: :cascade do |t|
-    t.integer  "user_id",     null: false
+    t.integer  "user_id",             null: false
     t.datetime "executed_at"
     t.string   "input_file"
-    t.integer  "recipe_id",   null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "recipe_id",           null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.datetime "finished_at"
     t.string   "slug"
+    t.text     "input_file_manifest"
   end
 
   create_table "process_steps", force: :cascade do |t|
-    t.integer  "process_chain_id", null: false
-    t.integer  "position",         null: false
+    t.integer  "process_chain_id",     null: false
+    t.integer  "position",             null: false
     t.text     "notes"
     t.datetime "executed_at"
     t.string   "output_file"
     t.text     "execution_errors"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.string   "step_class_name",  null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.string   "step_class_name",      null: false
     t.string   "version"
     t.datetime "started_at"
     t.datetime "finished_at"
-    t.string   "slug"
+    t.text     "output_file_manifest"
     t.index ["position", "process_chain_id"], name: "index_process_steps_on_position_and_process_chain_id", unique: true, using: :btree
   end
 

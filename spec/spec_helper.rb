@@ -106,11 +106,14 @@ RSpec.configure do |config|
 =end
 end
 
-
 def expects_to_be_invalid_without(factory, *things)
   things.each do |thing|
     it "expects it to have #{thing}" do
       expect(FactoryGirl.build(factory, thing => nil)).to_not be_valid
     end
   end
+end
+
+def create_directory_if_needed(path)
+  FileUtils.mkdir_p(path) unless File.directory?(path)
 end

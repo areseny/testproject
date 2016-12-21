@@ -18,17 +18,17 @@ describe "User executes a ROT13 recipe" do
 
   let!(:recipe)           { create(:recipe, user: user) }
 
-
-  let!(:step_class)       { "RotThirteenStep" }
+  let!(:step_class)       { rot_thirteen_step_class.to_s }
   let!(:step1)            { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
 
-  context 'if the execution is successful' do
-    let!(:execution_params) {
-      {
-          input_file: text_file,
-          id: recipe.id
-      }
+  let!(:execution_params) {
+    {
+        input_file: text_file,
+        id: recipe.id
     }
+  }
+
+  context 'if the execution is successful' do
 
     before do
       perform_execute_request(auth_headers, execution_params)
@@ -45,34 +45,24 @@ describe "User executes a ROT13 recipe" do
     end
 
     it 'has an expected output file' do
-      result = ProcessChain.last.output_file
-      expect(result.read).to eq "Guvf vf fbzr grkg."
+      process_chain = ProcessChain.last
+      result = process_chain.output_file_manifest.last
+      result_path = File.join(process_chain.process_steps.last.send(:working_directory), result)
+
+      expect(File.new(result_path).read).to eq "Guvf vf fbzr grkg."
     end
   end
 
   context 'if the execution fails' do
-    let!(:step_spy)           { create(:process_step, step_class_name: "RotThirteenStep") }
-    let!(:photo_file)         { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let!(:boobytrapped_step)  { RotThirteenStep.new(process_step: step_spy) }
-
-    let!(:execution_params) {
-      {
-          input_file: photo_file,
-          id: recipe.id
-      }
-    }
-
     before do
-      allow(ProcessStep).to receive(:new).and_return(step_spy)
-      expect(boobytrapped_step).to receive(:perform_step) { raise "OMG!" }
-      expect(RotThirteenStep).to receive(:new).and_return(boobytrapped_step)
+      allow_any_instance_of(rot_thirteen_step_class).to receive(:perform_step) { raise "OMG!" }
     end
 
-    it 'fails nicely' do
+    it 'still has files' do
       perform_execute_request(auth_headers, execution_params)
 
-      result = step_spy.output_file
-      expect(result.file).to be_nil
+      result = ProcessChain.last.output_file_manifest
+      expect(result).to match_array(["plaintext.txt"])
     end
   end
 

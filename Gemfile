@@ -29,12 +29,11 @@ gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 
 ################### basic steps #############################
 
-gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/step.git'
-gem 'rot_thirteen', git: 'git@gitlab.coko.foundation:INK/rot_thirteen.git'
-gem 'epub_calibre', git: 'git@gitlab.coko.foundation:INK/epub_calibre.git'
-gem 'docx_to_html_pandoc', git: 'git@gitlab.coko.foundation:INK/docx_to_html_pandoc.git'
-gem 'xsweet_pipeline', git: 'git@gitlab.coko.foundation:INK/xsweet_pipeline.git'
-gem 'inkstep-pdf-conversion', git: 'git@gitlab.coko.foundation:INK/inkstep-pdf-conversion.git'
+# gem 'ink_step', path: "~/projects/coko/ink-step"
+
+gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/ink-step.git'
+gem 'inkstep_coko_demo_steps', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git'
+gem 'inkstep_coko_conversion', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git'
 
 ################### javascript ###############
 
