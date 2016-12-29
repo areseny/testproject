@@ -178,7 +178,7 @@ RSpec.describe Api::V1::RecipesController do
 
             context 'and they are valid' do
               before do
-                recipe_params[:steps_with_positions] = step_params
+                recipe_params[:recipe][:steps_with_positions] = step_params
               end
 
               it "creates the recipe with recipe steps" do
@@ -197,7 +197,7 @@ RSpec.describe Api::V1::RecipesController do
               end
 
               it "creates the recipe for nonexistent step classes" do
-                recipe_params[:steps_with_positions] = [{position: 1, step_class_name: "NonexistentStep"}, {position: 2, step_class_name: rot_thirteen }]
+                recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: "NonexistentStep"}, {position: 2, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -210,7 +210,7 @@ RSpec.describe Api::V1::RecipesController do
             context 'and they are incorrect' do
 
               it "does not create the recipe with duplicate numbers" do
-                recipe_params[:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
+                recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -220,7 +220,7 @@ RSpec.describe Api::V1::RecipesController do
               end
 
               it "does not create the recipe with incorrect numbers" do
-                recipe_params[:steps_with_positions] = [{position: 0, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
+                recipe_params[:recipe][:steps_with_positions] = [{position: 0, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -230,7 +230,7 @@ RSpec.describe Api::V1::RecipesController do
               end
 
               it "does not create the recipe with skipped steps" do
-                recipe_params[:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 6, step_class_name: rot_thirteen }]
+                recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 6, step_class_name: rot_thirteen }]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -240,7 +240,7 @@ RSpec.describe Api::V1::RecipesController do
               end
 
               it "creates the recipe with nonsequential numbers" do
-                recipe_params[:steps_with_positions] = [{position: 2, step_class_name: step }, {position: 1, step_class_name: rot_thirteen}]
+                recipe_params[:recipe][:steps_with_positions] = [{position: 2, step_class_name: step }, {position: 1, step_class_name: rot_thirteen}]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)
@@ -260,7 +260,7 @@ RSpec.describe Api::V1::RecipesController do
           context 'presented as a series of steps with order implicit' do
             context 'and they are valid' do
               before do
-                recipe_params[:steps] = [step, rot_thirteen]
+                recipe_params[:recipe][:steps] = [step, rot_thirteen]
               end
 
               it "creates the recipe with recipe steps" do
@@ -279,7 +279,7 @@ RSpec.describe Api::V1::RecipesController do
               end
 
               it "creates the recipe for nonexistent step classes" do
-                recipe_params[:steps] = ["NonexistentStep", rot_thirteen]
+                recipe_params[:recipe][:steps] = ["NonexistentStep", rot_thirteen]
 
                 request_with_auth(user.create_new_auth_token) do
                   perform_create_request(recipe_params)

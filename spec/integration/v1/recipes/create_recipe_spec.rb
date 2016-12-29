@@ -68,7 +68,7 @@ describe "User creates recipe" do
 
           context 'and they are valid' do
             before do
-              recipe_params[:steps_with_positions] = step_params
+              recipe_params[:recipe][:steps_with_positions] = step_params
             end
 
             it "creates the recipe with recipe steps" do
@@ -84,35 +84,35 @@ describe "User creates recipe" do
           context 'and they are incorrect' do
 
             it "does not create the recipe for nonexistent step classes" do
-              recipe_params[:steps_with_positions] = [{position: 1, step_class_name: "rubbish"}, {position: 1, step_class_name: rot13 }]
+              recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: "rubbish"}, {position: 1, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params.to_json)
 
               expect(response.status).to eq 422
             end
 
             it "does not create the recipe with duplicate numbers" do
-              recipe_params[:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
+              recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "does not create the recipe with incorrect numbers" do
-              recipe_params[:steps_with_positions] = [{position: 0, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
+              recipe_params[:recipe][:steps_with_positions] = [{position: 0, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "does not create the recipe with skipped steps" do
-              recipe_params[:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 6, step_class_name: rot13 }]
+              recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 6, step_class_name: rot13 }]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "does create the recipe with numbers out of order" do
-              recipe_params[:steps_with_positions] = [{position: 2, step_class_name: rot13 }, {position: 1, step_class_name: generic_step}]
+              recipe_params[:recipe][:steps_with_positions] = [{position: 2, step_class_name: rot13 }, {position: 1, step_class_name: generic_step}]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
@@ -126,7 +126,7 @@ describe "User creates recipe" do
         context 'presented as a series of steps with order implicit' do
           context 'and they are real steps' do
             before do
-              recipe_params[:steps] = [base_step_class.to_s, rot_thirteen_step_class.to_s]
+              recipe_params[:recipe][:steps] = [base_step_class.to_s, rot_thirteen_step_class.to_s]
             end
 
             it "creates the recipe with recipe steps" do
@@ -142,7 +142,7 @@ describe "User creates recipe" do
           context 'and they are not real' do
 
             it "creates the recipe for nonexistent step classes anyway" do
-              recipe_params[:steps] = ["NonexistentClass", rot_thirteen_step_class.to_s]
+              recipe_params[:recipe][:steps] = ["NonexistentClass", rot_thirteen_step_class.to_s]
               perform_create_request(user.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
