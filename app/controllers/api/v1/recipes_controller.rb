@@ -20,7 +20,8 @@ module Api
         new_recipe.save!
         render json: new_recipe
       rescue => e
-        # ap e.message
+        ap e.message
+        ap e.backtrace
         render_unprocessable_error(e)
       end
 
@@ -57,7 +58,7 @@ module Api
       end
 
       def recipe_step_params
-        params.require(:recipe).permit(steps: [], steps_with_positions: [:step_class_name, :position])
+        params.require(:recipe).permit(:steps => [], steps_with_positions: [:step_class_name, :position])
       end
 
       def input_file_param

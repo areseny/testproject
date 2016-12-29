@@ -116,6 +116,7 @@ class Recipe < ApplicationRecord
   end
 
   def generate_steps(recipe_step_data)
+    # expecting this format:
     # [ "InkStep::DocxToXml", "InkStep::XmlToHtml" ]
     return unless recipe_step_data.present?
     count = 0
