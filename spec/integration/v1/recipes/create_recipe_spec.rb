@@ -37,7 +37,7 @@ describe "User creates recipe" do
 
         it 'responds with success' do
           expect(response.status).to eq(422)
-          expect(body_as_json['errors']).to eq ["Validation failed: Recipe steps can't be blank"]
+          expect(body_as_json['errors']).to eq ["Validation failed: Recipe steps - Please add at least one recipe step"]
         end
       end
 

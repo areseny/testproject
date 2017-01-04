@@ -31,10 +31,6 @@ RSpec.describe Recipe, type: :model do
       expect(Recipe.available_to_user(user.id)).to match_array([recipe1, recipe2, recipe3])
       expect(Recipe.available_to_user(other_user.id)).to match_array([recipe1, recipe2, recipe4])
     end
-
-    it 'does a thing' do
-
-    end
   end
 
   describe '#clone_to_process_chain' do

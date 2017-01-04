@@ -13,14 +13,17 @@ class ApplicationController < ActionController::API
   end
 
   def render_error(e)
-    if e.is_a? ActiveRecord::RecordNotFound
-      render_not_found_error(e)
-    elsif e.is_a? ExecutionErrors::NotAuthorisedError
-      render_unauthorised_error(e)
-    elsif e.is_a? StepNotInstalledError
+    if e.is_a? StepNotInstalledError
       render_step_not_installed_error(e)
+      return
+    end
+
+    if e.is_a? ActiveRecord::RecordNotFound
+      render_not_found_error(e.message)
+    elsif e.is_a? ExecutionErrors::NotAuthorisedError
+      render_unauthorised_error(e.message)
     else
-      render_unprocessable_error(e)
+      render_unprocessable_error(e.message)
     end
   end
 
@@ -28,16 +31,16 @@ class ApplicationController < ActionController::API
     render json: {errors: "#{e.message} #{e.missing_step_classes}"}, status: 422
   end
 
-  def render_unauthorised_error(e)
-    render json: {errors: [e.message]}, status: 401
+  def render_unauthorised_error(message)
+    render json: {errors: [message].flatten}, status: 401
   end
 
-  def render_unprocessable_error(e)
-    render json: {errors: [e.message]}, status: 422
+  def render_unprocessable_error(message)
+    render json: {errors: [message].flatten}, status: 422
   end
 
-  def render_not_found_error(e)
-    render json: {errors: [e.message]}, status: 404
+  def render_not_found_error(message)
+    render json: {errors: [message].flatten}, status: 404
   end
 
   # Prevent CSRF attacks by raising an exception.
