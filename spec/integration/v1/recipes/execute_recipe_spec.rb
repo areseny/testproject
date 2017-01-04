@@ -73,8 +73,7 @@ describe "User executes a single recipe" do
                 it 'also returns the steps' do
                   perform_execute_request(auth_headers, params)
 
-                  # version is not showing up for some reason??
-                  ap body_as_json
+                  # recipe.process_chains.first.reload
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
                   expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['version']}).to eq [gem_version, gem_version]
                 end

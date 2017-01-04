@@ -84,6 +84,7 @@ class ProcessChain < ApplicationRecord
     runner_steps.each_with_index do |runner_step, index|
       process_step = process_steps[index]
       process_step.execution_errors = [runner_step.errors].flatten
+      ap "saving step #{process_step.step_class_name} v. #{version}"
       process_step.version = runner_step.version
       process_step.started_at = runner_step.started_at
       process_step.finished_at = runner_step.finished_at
