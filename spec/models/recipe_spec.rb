@@ -12,6 +12,12 @@ RSpec.describe Recipe, type: :model do
     end
 
     expects_to_be_invalid_without :recipe, :name, :user, :active, :public
+
+    it 'is invalid if it has no steps' do
+      recipe = build(:recipe)
+      recipe.recipe_steps = []
+      expect(recipe).to_not be_valid
+    end
   end
 
   describe 'available recipes to user scope' do
@@ -24,6 +30,10 @@ RSpec.describe Recipe, type: :model do
     specify do
       expect(Recipe.available_to_user(user.id)).to match_array([recipe1, recipe2, recipe3])
       expect(Recipe.available_to_user(other_user.id)).to match_array([recipe1, recipe2, recipe4])
+    end
+
+    it 'does a thing' do
+
     end
   end
 

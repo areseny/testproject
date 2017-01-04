@@ -22,6 +22,7 @@ class Recipe < ApplicationRecord
   validates_inclusion_of :active, :in => [true, false]
   validates_inclusion_of :public, :in => [true, false]
   validate :steps_have_unique_positions, :steps_contiguous?
+  validates_presence_of :recipe_steps
 
   after_initialize :set_as_active
 
