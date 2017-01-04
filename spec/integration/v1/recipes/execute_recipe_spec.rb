@@ -118,6 +118,8 @@ describe "User executes a single recipe" do
               body_as_json['process_chain']['process_steps'].map do |s|
                 expect(s['execution_errors']).to eq ""
               end
+              expect(body_as_json['process_chain']['input_file_manifest']).to match([{"path"=>"kitty.jpeg", "size"=>"21.6 kB"}, {"path"=>"plaintext.txt", "size"=>"18 bytes"}])
+              expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"kitty.jpeg", "size"=>"21.6 kB"}, {"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}])
             end
           end
 
