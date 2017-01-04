@@ -107,7 +107,7 @@ describe Execution::RecipeExecutionRunner do
         ap chain
 
         expect(result).to be_a base_step_class
-        expect(chain.output_file_manifest).to eq ["plaintext.txt"]
+        expect(chain.output_file_manifest).to eq [{:path=>"plaintext.txt", :size=>"18 bytes"}]
       end
 
       it 'logs the error' do

@@ -13,8 +13,8 @@ module Api
         @new_chain = process_chain.retry_execution!(current_api_user: current_api_user)
         render json: @new_chain, status: 200
       rescue => e
-        # puts e.message
-        # puts e.backtrace
+        puts e.message
+        puts e.backtrace
         render_error(e)
       end
 

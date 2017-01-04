@@ -30,7 +30,7 @@ describe "Executing a recipe and making sure all the files get put in the right 
   it 'places the input file into the right folder' do
     process_chain = recipe.process_chains.last
 
-    expect(process_chain.input_file_list).to contain_exactly("test_file.xml")
+    expect(process_chain.input_file_manifest).to match([{:path=>"test_file.xml", :size=>"110 bytes"}])
   end
 
   it 'creates the proper folder in the filesystem for the steps' do

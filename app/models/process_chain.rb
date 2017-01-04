@@ -84,7 +84,6 @@ class ProcessChain < ApplicationRecord
     runner_steps.each_with_index do |runner_step, index|
       process_step = process_steps[index]
       process_step.execution_errors = [runner_step.errors].flatten
-      ap "saving step #{process_step.step_class_name} v. #{version}"
       process_step.version = runner_step.version
       process_step.started_at = runner_step.started_at
       process_step.finished_at = runner_step.finished_at
@@ -112,30 +111,15 @@ class ProcessChain < ApplicationRecord
     File.join(working_directory, Constants::INPUT_FILE_DIRECTORY_NAME)
   end
 
-  def input_file_list
-    Dir.chdir(input_files_directory) do
-      Dir.glob('**/*').select {|f| File.file? f}
-    end
-  end
-
   def open_input_files
-    input_file_manifest.inject([]) do |list, file|
+    recursive_file_list(input_files_directory).inject([]) do |list, file|
       list << UploadedFile.new(input_files_directory: input_files_directory, relative_path: file)
       list
     end
   end
 
-  def write_output_file_manifest
-    ap output_file_manifest
-    raise "WRITE THIS METHOD!"
-  end
-
-  def write_input_file_manifest
-    raise "WRITE THIS METHOD!"
-  end
-
   def input_file_manifest
-    recursive_file_list(input_files_directory)
+    assemble_manifest(input_files_directory)
   end
 
   def output_file_manifest

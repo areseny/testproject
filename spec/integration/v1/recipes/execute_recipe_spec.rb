@@ -44,9 +44,11 @@ describe "User executes a single recipe" do
                     id: recipe.id
                 }}
 
-                it 'returns the objects' do
+                before do
                   perform_execute_request(auth_headers, params)
+                end
 
+                it 'returns the objects' do
                   expect(response.status).to eq(200)
                   expect(body_as_json['process_chain']['successful']).to eq true
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
@@ -57,25 +59,27 @@ describe "User executes a single recipe" do
                 end
 
                 it 'returns a ProcessChain object' do
-                  perform_execute_request(auth_headers, params)
-
                   process_chain = recipe.reload.process_chains.first
 
                   expect(body_as_json['process_chain']['recipe_id']).to eq process_chain.recipe_id
                   expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
-                  expect(body_as_json['process_chain']['input_file_manifest']).to eq process_chain.input_file_manifest
+                  expect(body_as_json['process_chain']['input_file_manifest']).to match([{"path"=>"plaintext.txt", "size"=>"18 bytes"}])
                   expect(body_as_json['process_chain']['executed_at_for_humans']).to_not be_nil
                   expect(body_as_json['process_chain']['successful']).to eq true
-                  expect(body_as_json['process_chain']['input_file_manifest']).to eq ["plaintext.txt"]
-                  expect(body_as_json['process_chain']['output_file_manifest']).to eq ["plaintext_rot13_rot13.txt"]
+                  expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}])
                 end
 
                 it 'also returns the steps' do
-                  perform_execute_request(auth_headers, params)
-
-                  # recipe.process_chains.first.reload
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
                   expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['version']}).to eq [gem_version, gem_version]
+                end
+
+                it 'returns an input file manifest' do
+                  expect(body_as_json['process_chain']['input_file_manifest']).to match([{'size' => "18 bytes", 'path' => "plaintext.txt"}])
+                end
+
+                it 'returns an output file manifest' do
+                  expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}])
                 end
               end
 

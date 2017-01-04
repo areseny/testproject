@@ -4,6 +4,20 @@ module DirectoryMethods
     FileUtils.mkdir_p(path) unless File.directory?(path)
   end
 
+  def assemble_manifest(directory_path)
+    files = recursive_file_list(directory_path)
+    # [5, 6, 7, 8].inject (0) { |result_memo, object| result_memo + object }
+    files.inject([]) do |result, file_relative_path|
+      file_info_hash = {}
+      file_info_hash[:path] = file_relative_path
+      absolute_file_path = File.join(directory_path, file_relative_path)
+      file_info_hash[:size] = file_size_for_humans(absolute_file_path)
+      result << file_info_hash
+      result
+    end
+
+  end
+
   def recursive_file_list(directory_path)
     # ap "recursive_file_list of #{directory_path}"
     Dir.chdir(directory_path) do
@@ -23,6 +37,17 @@ module DirectoryMethods
     file_path = File.join(location, params[:relative_path])
     raise "Cannot find #{params[:relative_path]}" unless File.exists?(file_path) && File.file?(file_path)
     file_path
+  end
+
+  def file_size_for_humans(path)
+    file_size_in_bytes = File.size(path)
+    if file_size_in_bytes > 299000
+      "#{(file_size_in_bytes / 1000000.0).round(1)} MB"
+    elsif file_size_in_bytes > 1000
+      "#{(file_size_in_bytes / 1000.0).round(1)} kB"
+    else
+      "#{file_size_in_bytes} bytes"
+    end
   end
 
   # def experimental_file_list(directory_path)

@@ -37,7 +37,7 @@ class ProcessStep < ApplicationRecord
   end
 
   def output_file_manifest
-    recursive_file_list(working_directory)
+    assemble_manifest(working_directory)
   end
 
   def assemble_output_file_zip

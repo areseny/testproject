@@ -73,8 +73,8 @@ describe "User executes a recipe xsweet pipeline" do
         expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
         expect(body_as_json['process_chain']['executed_at_for_humans']).to_not be_nil
         expect(body_as_json['process_chain']['successful']).to eq true
-        expect(body_as_json['process_chain']['input_file_manifest']).to eq process_chain.input_file_manifest
-        expect(body_as_json['process_chain']['output_file_manifest']).to eq process_chain.output_file_manifest
+        expect(body_as_json['process_chain']['input_file_manifest']).to match(process_chain.input_file_manifest.map(&:stringify_keys))
+        expect(body_as_json['process_chain']['output_file_manifest']).to match(process_chain.output_file_manifest.map(&:stringify_keys))
       end
 
       it 'also returns the steps' do

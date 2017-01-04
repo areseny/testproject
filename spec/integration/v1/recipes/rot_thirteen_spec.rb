@@ -46,7 +46,7 @@ describe "User executes a ROT13 recipe" do
 
     it 'has an expected output file' do
       process_chain = ProcessChain.last
-      result = process_chain.output_file_manifest.last
+      result = process_chain.output_file_manifest.last[:path]
       result_path = File.join(process_chain.process_steps.last.send(:working_directory), result)
 
       expect(File.new(result_path).read).to eq "Guvf vf fbzr grkg."
@@ -62,7 +62,7 @@ describe "User executes a ROT13 recipe" do
       perform_execute_request(auth_headers, execution_params)
 
       result = ProcessChain.last.output_file_manifest
-      expect(result).to match_array(["plaintext.txt"])
+      expect(result).to match_array([{:path=>"plaintext.txt", :size=>"18 bytes"}])
     end
   end
 
