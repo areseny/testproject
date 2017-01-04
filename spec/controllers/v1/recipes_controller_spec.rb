@@ -302,7 +302,7 @@ RSpec.describe Api::V1::RecipesController do
             end
 
             expect(response.status).to eq 422
-            expect(body_as_json['errors']).to eq ["Please enter a name"]
+            expect(body_as_json['errors']).to eq ["Validation failed: Name can't be blank"]
           end
         end
       end

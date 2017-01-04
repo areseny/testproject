@@ -127,6 +127,37 @@ describe Api::V1::ProcessChainsController, type: :controller do
       end
     end
 
+    context 'if the user tries to access a file up the file tree' do
+      context 'for an absolute file path' do
+        let!(:download_params) {
+          {
+              id: process_chain.id,
+              relative_path: "/etc/important.config.file"
+          }
+        }
+
+        it "doesn't allow access" do
+          request_with_auth(user.create_new_auth_token) do
+            expect{perform_download_output_file_request(download_params)}.to raise_error("Cannot find /etc/important.config.file")
+          end
+        end
+      end
+
+      context 'for a relative file path' do
+        let!(:download_params) {
+          {
+              id: process_chain.id,
+              relative_path: "../../important.config.file"
+          }
+        }
+        it "doesn't allow access" do
+          request_with_auth(user.create_new_auth_token) do
+            expect{perform_download_output_file_request(download_params)}.to raise_error("Cannot find ../../important.config.file")
+          end
+        end
+      end
+    end
+
     context 'if a nonexistent file is supplied' do
       let!(:download_params) {
         {
@@ -232,7 +263,6 @@ describe Api::V1::ProcessChainsController, type: :controller do
                 perform_retry_request(params)
               end
 
-              ap body_as_json
               expect(response.status).to eq 200
               expect(assigns(:new_chain)).to_not eq process_chain
               expect(assigns(:new_chain).executed_at).to_not be_nil

@@ -7,7 +7,7 @@ module Api
       respond_to :json
 
       def download_output_file
-        file_path = assemble_file_path(process_step.working_directory)
+        file_path = assemble_file_path(location: process_step.working_directory, relative_path: params[:relative_path])
 
         send_file(file_path,
                   :disposition => 'attachment',

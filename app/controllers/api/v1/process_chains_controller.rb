@@ -19,7 +19,7 @@ module Api
       end
 
       def download_input_file
-        file_path = assemble_file_path(process_chain.input_files_directory)
+        file_path = assemble_file_path(location: process_chain.input_files_directory, relative_path: params[:relative_path])
 
         send_file(file_path,
                   :disposition => 'attachment',
@@ -35,7 +35,7 @@ module Api
       end
 
       def download_output_file
-        file_path = assemble_file_path(process_chain.last_step.working_directory)
+        file_path = assemble_file_path(location: process_chain.last_step.working_directory, relative_path: params[:relative_path])
 
         send_file(file_path,
                   :disposition => 'attachment',

@@ -1,3 +1,5 @@
+require 'pathname'
+
 module DirectoryMethods
 
   def create_directory_if_needed(path)
@@ -32,10 +34,11 @@ module DirectoryMethods
     FileUtils.cp(absolute_path, destination_directory)
   end
 
-  def assemble_file_path(location)
-    raise "Please provide a relative file path" unless params[:relative_path].present?
-    file_path = File.join(location, params[:relative_path])
-    raise "Cannot find #{params[:relative_path]}" unless File.exists?(file_path) && File.file?(file_path)
+  def assemble_file_path(location:, relative_path:)
+    raise "Please provide a relative file path" unless relative_path.present?
+    file_path = File.join(location, relative_path)
+    raise "Cannot find #{relative_path}" unless located_in?(location, file_path) && File.file?(file_path)
+    # raise "Cannot find #{relative_path}" unless File.exists?(file_path) && File.file?(file_path)
     file_path
   end
 
@@ -50,21 +53,9 @@ module DirectoryMethods
     end
   end
 
-  # def experimental_file_list(directory_path)
-  #   i=0
-  #   curr_file = nil
-  #
-  #   Dir.chdir(directory_path) do
-  #     Dir.glob("**/*") do |f|
-  #       file = File.stat(f)
-  #       next unless file.file?
-  #       i += 1
-  #       curr_file = [f, file] if curr_file.nil? or curr_file[1].ctime > file.ctime
-  #     end
-  #
-  #     puts "#{curr_file[0]} #{curr_file[1].ctime.to_s}"
-  #     puts "total files #{i}"
-  #   end
-  # end
+  def located_in?(parent_directory, child)
+    path = Pathname.new(child)
+    path.fnmatch?(File.join(parent_directory,'**'))
+  end
 
 end
