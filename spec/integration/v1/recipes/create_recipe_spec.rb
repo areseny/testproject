@@ -36,25 +36,8 @@ describe "User creates recipe" do
         end
 
         it 'responds with success' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'returns a Recipe object' do
-          expect(body_as_json['recipe']['name']).to eq name
-          expect(body_as_json['recipe']['description']).to eq description
-          expect(body_as_json['recipe']['active']).to be_truthy
-          expect(body_as_json['recipe']['public']).to be_truthy
-        end
-
-        it 'creates a new recipe with the parameters' do
-          expect(user.reload.recipes.count).to eq 1
-
-          recipe = user.recipes.first
-          expect(recipe.user).to eq user
-          expect(recipe.name).to eq name
-          expect(recipe.description).to eq description
-          expect(recipe.active).to be_truthy
-          expect(recipe.public).to be_truthy
+          expect(response.status).to eq(422)
+          expect(body_as_json['errors']).to eq ["Validation failed: Recipe steps can't be blank"]
         end
       end
 
@@ -69,15 +52,32 @@ describe "User creates recipe" do
           context 'and they are valid' do
             before do
               recipe_params[:recipe][:steps_with_positions] = step_params
+              perform_create_request(user.create_new_auth_token, recipe_params)
             end
 
             it "creates the recipe with recipe steps" do
-              perform_create_request(user.create_new_auth_token, recipe_params)
-
               expect(response.status).to eq 200
               new_recipe = user.recipes.first
               expect(new_recipe.recipe_steps.count).to eq 2
               expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [generic_step, rot13]
+            end
+
+            it 'returns a Recipe object' do
+              expect(body_as_json['recipe']['name']).to eq name
+              expect(body_as_json['recipe']['description']).to eq description
+              expect(body_as_json['recipe']['active']).to be_truthy
+              expect(body_as_json['recipe']['public']).to be_truthy
+            end
+
+            it 'creates a new recipe with the parameters' do
+              expect(user.reload.recipes.count).to eq 1
+
+              recipe = user.recipes.first
+              expect(recipe.user).to eq user
+              expect(recipe.name).to eq name
+              expect(recipe.description).to eq description
+              expect(recipe.active).to be_truthy
+              expect(recipe.public).to be_truthy
             end
           end
 

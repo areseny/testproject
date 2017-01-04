@@ -18,11 +18,11 @@ describe "User executes a recipe xsweet pipeline" do
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:docx_file)        { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
-    let!(:recipe)           { create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user, step_classes: [extract1, notes2, scrub3, join4, zorba5]) }
 
     let!(:execution_params) {
       {
-          input_file: docx_file,
+          input_files: docx_file,
           id: recipe.id
       }
     }
@@ -32,12 +32,6 @@ describe "User executes a recipe xsweet pipeline" do
     let!(:scrub3)     { xsweet_step_3_scrub_step_class.to_s }
     let!(:join4)      { xsweet_step_4_join_step_class.to_s }
     let!(:zorba5)     { xsweet_step_5_zorba_step_class.to_s }
-
-    let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: extract1) }
-    let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: notes2) }
-    let!(:step3)      { create(:recipe_step, recipe: recipe, position: 3, step_class_name: scrub3) }
-    let!(:step4)      { create(:recipe_step, recipe: recipe, position: 4, step_class_name: join4) }
-    let!(:step5)      { create(:recipe_step, recipe: recipe, position: 5, step_class_name: zorba5) }
 
     let(:step_1_xsl_file)             { File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/docx-html-extract.xsl')) }
     let(:step_1_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/docx-html-extract.xsl" }

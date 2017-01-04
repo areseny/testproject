@@ -62,7 +62,7 @@ module Api
       end
 
       def input_file_param
-        params.require(:input_file)
+        params.require(:input_files)
       end
 
       def callback_url_param

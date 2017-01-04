@@ -7,8 +7,8 @@ RSpec.describe ProcessChain, type: :model do
 
   let!(:other_user)         { create(:user) }
   let!(:demo_step)          { base_step_class.to_s }
-  let!(:recipe_step)        { create(:recipe_step, step_class_name: demo_step) }
-  let!(:recipe)             { recipe_step.recipe }
+  let!(:recipe)             { create(:recipe) }
+  let(:recipe_step)         { recipe.recipe_steps.first }
   let!(:process_chain)      { create(:process_chain, recipe: recipe, user: other_user) }
   let!(:process_step)       { create(:process_step, step_class_name: demo_step, process_chain: process_chain) }
 

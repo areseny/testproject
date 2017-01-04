@@ -16,20 +16,20 @@ describe "User executes a ROT13 recipe" do
   let!(:auth_headers)     { user.create_new_auth_token }
   let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plain') }
 
-  let!(:recipe)           { create(:recipe, user: user) }
-
   let!(:step_class)       { rot_thirteen_step_class.to_s }
-  let!(:step1)            { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
+
+  let!(:recipe)           { create(:recipe, user: user, step_classes: [step_class]) }
+
+  let!(:step1)            { recipe.recipe_steps.first }
 
   let!(:execution_params) {
     {
-        input_file: text_file,
+        input_files: text_file,
         id: recipe.id
     }
   }
 
   context 'if the execution is successful' do
-
     before do
       perform_execute_request(auth_headers, execution_params)
     end

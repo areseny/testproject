@@ -8,8 +8,7 @@ describe "Executing a recipe and making sure all the files get put in the right 
 
   let!(:user)             { create(:user) }
   let!(:demo_step)        { base_step_class.to_s }
-  let!(:recipe)           { create(:recipe, user: user) }
-  let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step, recipe: recipe) }
+  let!(:recipe)           { create(:recipe, user: user, step_classes: [demo_step]) }
 
   let!(:file_path)        { Rails.root.join("spec", "fixtures", "files", "test_file.xml") }
   let!(:file_contents)    { File.open(file_path) }

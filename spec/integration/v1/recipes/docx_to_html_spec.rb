@@ -18,18 +18,19 @@ describe "User executes a single recipe" do
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:docx_file)        { fixture_file_upload('files/basic_doc.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
-    let!(:recipe)           { create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user, step_classes: [step_class]) }
 
     let!(:execution_params) {
       {
-          input_file: docx_file,
+          input_files: docx_file,
           id: recipe.id
       }
     }
 
     context 'if user is signed in' do
       let!(:step_class)  { base_step_class.to_s }
-      let!(:step1)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
+      # let!(:step1)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
+      let!(:step1)       { recipe.recipe_steps.first }
 
       context 'and execution is successful' do
 

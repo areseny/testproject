@@ -29,13 +29,13 @@ RSpec.describe Api::V1::RecipesController do
     let(:demo_step)         { base_step_class.to_s }
     let(:xml_file)          { fixture_file_upload('files/test_file.xml', 'text/xml') }
     let(:photo_file)        { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
-    let(:recipe_step)       { create(:recipe_step, step_class_name: demo_step) }
-    let(:recipe)            { create(:recipe, user: user, recipe_steps: [recipe_step]) }
+    let(:recipe)            { create(:recipe, user: user) }
+    let(:recipe_step)       { recipe.recipe_steps.first }
 
     let(:execution_params) {
         {
             id: recipe.id,
-            input_file: photo_file
+            input_files: photo_file
         }
     }
 
@@ -127,7 +127,7 @@ RSpec.describe Api::V1::RecipesController do
 
       context 'if no file is supplied' do
         before do
-          execution_params.delete(:input_file)
+          execution_params.delete(:input_files)
         end
 
         it 'fails' do
@@ -158,152 +158,152 @@ RSpec.describe Api::V1::RecipesController do
     context 'if a valid token is supplied' do
 
       context 'if the recipe is valid' do
-        it "assigns" do
-          request_with_auth(user.create_new_auth_token) do
-            perform_create_request(recipe_params)
-          end
 
-          expect(response.status).to eq 200
-          new_recipe = assigns[:new_recipe]
-          expect(new_recipe).to be_a Recipe
-          attributes.each do |attribute|
-            expect(new_recipe.send(attribute)).to eq self.send(attribute)
-          end
-        end
+        context 'presented as a series of steps with positions included' do
+          let!(:step_params)      { [{position: 1, step_class_name: step }, {position: 2, step_class_name: rot_thirteen }] }
 
-        context 'if there are steps supplied' do
-
-          context 'presented as a series of steps with positions included' do
-            let!(:step_params)      { [{position: 1, step_class_name: step }, {position: 2, step_class_name: rot_thirteen }] }
-
-            context 'and they are valid' do
-              before do
-                recipe_params[:recipe][:steps_with_positions] = step_params
-              end
-
-              it "creates the recipe with recipe steps" do
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
-
-                expect(response.status).to eq 200
-                new_recipe = assigns[:new_recipe]
-                expect(new_recipe).to be_a Recipe
-                attributes.each do |attribute|
-                  expect(new_recipe.send(attribute)).to eq self.send(attribute)
-                end
-                expect(new_recipe.recipe_steps.count).to eq 2
-                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [step, rot_thirteen]
-              end
-
-              it "creates the recipe for nonexistent step classes" do
-                recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: "NonexistentStep"}, {position: 2, step_class_name: rot_thirteen }]
-
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
-
-                expect(response.status).to eq 200
-              end
+          context 'and they are valid' do
+            before do
+              recipe_params[:recipe][:steps_with_positions] = step_params
             end
 
-            context 'and they are incorrect' do
-
-              it "does not create the recipe with duplicate numbers" do
-                recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
-
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
-
-                expect(response.status).to eq 422
+            it "creates the recipe with recipe steps" do
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
               end
 
-              it "does not create the recipe with incorrect numbers" do
-                recipe_params[:recipe][:steps_with_positions] = [{position: 0, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
+              expect(response.status).to eq 200
+              new_recipe = assigns[:new_recipe]
+              expect(new_recipe).to be_a Recipe
+              attributes.each do |attribute|
+                expect(new_recipe.send(attribute)).to eq self.send(attribute)
+              end
+              expect(new_recipe.recipe_steps.count).to eq 2
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [step, rot_thirteen]
+            end
 
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
+            it "creates the recipe for nonexistent step classes" do
+              recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: "NonexistentStep"}, {position: 2, step_class_name: rot_thirteen }]
 
-                expect(response.status).to eq 422
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
               end
 
-              it "does not create the recipe with skipped steps" do
-                recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 6, step_class_name: rot_thirteen }]
-
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
-
-                expect(response.status).to eq 422
-              end
-
-              it "creates the recipe with nonsequential numbers" do
-                recipe_params[:recipe][:steps_with_positions] = [{position: 2, step_class_name: step }, {position: 1, step_class_name: rot_thirteen}]
-
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
-
-                expect(response.status).to eq 200
-                new_recipe = assigns[:new_recipe]
-                expect(new_recipe).to be_a Recipe
-                attributes.each do |attribute|
-                  expect(new_recipe.send(attribute)).to eq self.send(attribute)
-                end
-                expect(new_recipe.recipe_steps.count).to eq 2
-              end
+              expect(response.status).to eq 200
             end
           end
 
-          context 'presented as a series of steps with order implicit' do
-            context 'and they are valid' do
-              before do
-                recipe_params[:recipe][:steps] = [step, rot_thirteen]
+          context 'and they are incorrect' do
+
+            it "does not create the recipe with duplicate numbers" do
+              recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
+
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
               end
 
-              it "creates the recipe with recipe steps" do
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
+              expect(response.status).to eq 422
+            end
 
-                expect(response.status).to eq 200
-                new_recipe = assigns[:new_recipe]
-                expect(new_recipe).to be_a Recipe
-                attributes.each do |attribute|
-                  expect(new_recipe.send(attribute)).to eq self.send(attribute)
-                end
-                expect(new_recipe.recipe_steps.count).to eq 2
-                expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [step, rot_thirteen]
+            it "does not create the recipe with incorrect numbers" do
+              recipe_params[:recipe][:steps_with_positions] = [{position: 0, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
+
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
               end
 
-              it "creates the recipe for nonexistent step classes" do
-                recipe_params[:recipe][:steps] = ["NonexistentStep", rot_thirteen]
+              expect(response.status).to eq 422
+            end
 
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
+            it "does not create the recipe with skipped steps" do
+              recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 6, step_class_name: rot_thirteen }]
 
-                expect(response.status).to eq 200
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
               end
+
+              expect(response.status).to eq 422
+            end
+
+            it "creates the recipe with nonsequential numbers" do
+              recipe_params[:recipe][:steps_with_positions] = [{position: 2, step_class_name: step }, {position: 1, step_class_name: rot_thirteen}]
+
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
+              end
+
+              expect(response.status).to eq 200
+              new_recipe = assigns[:new_recipe]
+              expect(new_recipe).to be_a Recipe
+              attributes.each do |attribute|
+                expect(new_recipe.send(attribute)).to eq self.send(attribute)
+              end
+              expect(new_recipe.recipe_steps.count).to eq 2
             end
           end
         end
 
+        context 'presented as a series of steps with order implicit' do
+          context 'and they are valid' do
+            before do
+              recipe_params[:recipe][:steps] = [step, rot_thirteen]
+            end
+
+            it "creates the recipe with recipe steps" do
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
+              end
+
+              expect(response.status).to eq 200
+              new_recipe = assigns[:new_recipe]
+              expect(new_recipe).to be_a Recipe
+              attributes.each do |attribute|
+                expect(new_recipe.send(attribute)).to eq self.send(attribute)
+              end
+              expect(new_recipe.recipe_steps.count).to eq 2
+              expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [step, rot_thirteen]
+            end
+
+            it "creates the recipe for nonexistent step classes" do
+              recipe_params[:recipe][:steps] = ["NonexistentStep", rot_thirteen]
+
+              request_with_auth(user.create_new_auth_token) do
+                perform_create_request(recipe_params)
+              end
+
+              expect(response.status).to eq 200
+            end
+          end
+        end
       end
 
       context 'if the recipe is invalid' do
-        before do
-          recipe_params[:recipe].delete(:name)
+
+        context 'if there are no steps supplied' do
+          it "assigns" do
+            request_with_auth(user.create_new_auth_token) do
+              perform_create_request(recipe_params)
+            end
+
+            expect(response.status).to eq 422
+            expect(body_as_json['errors']).to eq ["Validation failed: Recipe steps can't be blank"]
+          end
         end
 
-        it "is not successful" do
-          request_with_auth(user.create_new_auth_token) do
-            perform_create_request(recipe_params)
+        context 'if the recipe is missing a field' do
+          before do
+            recipe_params[:recipe].delete(:name)
+            recipe_params[:recipe][:steps] = [step]
           end
 
-          expect(response.status).to eq 422
+          it "is not successful" do
+            request_with_auth(user.create_new_auth_token) do
+              perform_create_request(recipe_params)
+            end
+
+            expect(response.status).to eq 422
+            expect(body_as_json['errors']).to eq ["Validation failed: Name can't be blank"]
+          end
         end
       end
     end
@@ -433,7 +433,6 @@ RSpec.describe Api::V1::RecipesController do
           end
 
           context 'and it has process chains' do
-            let!(:step1)               { create(:recipe_step, recipe: recipe, position: 1) }
             let!(:process_chain)       { create(:process_chain, recipe: recipe, executed_at: 2.minutes.ago) }
             let!(:process_step)        { create(:executed_process_step_success, process_chain: process_chain) }
 

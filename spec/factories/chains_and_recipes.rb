@@ -11,13 +11,18 @@ FactoryGirl.define do
     factory :archived_recipe do
       active false
     end
+    transient do
+      step_classes { [base_step_class.to_s] }
+    end
 
     # the after(:create) yields two values; the user instance itself and the
     # evaluator, which stores all values from the factory, including transient
     # attributes; `create_list`'s second argument is the number of records
     # to create and we make sure the user is associated properly to the post
     after(:build) do |recipe, evaluator|
-      recipe.recipe_steps.new(step_class_name: base_step_class, position: 1)
+      evaluator.step_classes.each_with_index do |klass, index|
+        recipe.recipe_steps.new(step_class_name: klass, position: index+1)
+      end
     end
   end
 

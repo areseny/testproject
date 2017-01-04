@@ -5,7 +5,7 @@ RSpec.describe RecipeStep, type: :model do
   describe 'model validations' do
 
     it 'has a valid factory' do
-      expect(build(:recipe_step)).to be_valid
+      expect(build(:recipe_step, position: 2)).to be_valid
     end
 
     expects_to_be_invalid_without :recipe_step, :recipe, :position, :step_class_name
@@ -24,13 +24,13 @@ RSpec.describe RecipeStep, type: :model do
       end
 
       it 'is greater than 0' do
-        expect(build(:recipe_step, position: 1)).to be_valid
+        expect(build(:recipe_step, position: 6)).to be_valid
       end
 
       it 'is unique to that recipe / position combination' do
         recipe = create(:recipe)
-        create(:recipe_step, recipe: recipe, position: 1)
-        expect(build(:recipe_step, recipe: recipe, position: 1)).to_not be_valid
+        create(:recipe_step, recipe: recipe, position: 2)
+        expect(build(:recipe_step, recipe: recipe, position: 2)).to_not be_valid
       end
 
     end

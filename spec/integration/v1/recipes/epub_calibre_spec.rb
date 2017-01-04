@@ -12,21 +12,22 @@ describe "User executes a single-step epub calibre recipe" do
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
+  let!(:step_class)  { epub_calibre_step_class.to_s }
+
   let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
   let!(:auth_headers)     { user.create_new_auth_token }
   let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
-  let!(:recipe)           { create(:recipe, user: user) }
+  let!(:recipe)           { create(:recipe, user: user, step_classes: [step_class]) }
 
   let!(:execution_params) {
     {
-        input_file: html_file,
+        input_files: html_file,
         id: recipe.id
     }
   }
 
-    let!(:step_class)  { epub_calibre_step_class.to_s }
-    let!(:step1)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
+  let!(:step1)        { recipe.recipe_steps.first }
 
   context 'if the execution is successful' do
     before do

@@ -36,7 +36,7 @@ describe "User finds a single recipe" do
           end
 
           context 'and it has steps' do
-            let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1) }
+            let!(:step1)      { recipe.recipe_steps.first }
             let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2) }
 
             it 'also returns the steps' do
@@ -47,7 +47,7 @@ describe "User finds a single recipe" do
           end
 
           context 'and it has process chains' do
-            let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1) }
+            let!(:step1)             { recipe.recipe_steps.first }
             let!(:process_chain)     { create(:process_chain, recipe: recipe, user: user, executed_at: 2.minutes.ago) }
             let!(:process_step)      { create(:executed_process_step_success, process_chain: process_chain) }
 

@@ -15,7 +15,7 @@ describe "User lists all their recipes" do
     let!(:other_user)         { create(:user) }
 
     let!(:auth_headers)       { user.create_new_auth_token }
-    let!(:recipe)           { create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot_thirteen_step_class.to_s]) }
     let!(:inactive_recipe)  { create(:recipe, user: user, active: false) }
     let!(:other_recipe)     { create(:recipe, user: other_user) }
 
@@ -42,7 +42,7 @@ describe "User lists all their recipes" do
         end
 
         context 'and there are some steps and process chains' do
-          let!(:step1)             { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot_thirteen_step_class.to_s) }
+          let!(:step1)             { recipe.recipe_steps.first }
           let!(:step2)             { create(:recipe_step, recipe: recipe, position: 2, step_class_name: epub_calibre_step_class.to_s) }
           let!(:process_chain1)    { create(:process_chain, recipe: recipe, user: user, executed_at: 5.minutes.ago) }
           let!(:process_step1a)    { create(:executed_process_step_success, process_chain: process_chain1, position: 1, step_class_name: rot_thirteen_step_class.to_s) }
@@ -52,6 +52,7 @@ describe "User lists all their recipes" do
           let!(:process_step2b)    { create(:executed_process_step_success, process_chain: process_chain2, position: 2, step_class_name: epub_calibre_step_class.to_s) }
 
           before do
+            # step1.update_attribute(:step_class_name, rot_thirteen_step_class.to_s)
             process_chain1.initialize_directories
             process_chain2.initialize_directories
 

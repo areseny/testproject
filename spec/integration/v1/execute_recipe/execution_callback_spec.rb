@@ -18,20 +18,19 @@ describe "User executes a recipe and provides a callback URL" do
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
-    let!(:recipe)           { create(:recipe, user: user) }
+    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot13]) }
 
     let(:callback_url)     { "http://example.com/call_me_back" }
 
     let!(:execution_params) {
       {
-          input_file: html_file,
+          input_files: html_file,
           id: recipe.id,
           callback_url: callback_url
       }
     }
 
     let!(:rot13)      { rot_thirteen_step_class.to_s }
-    let!(:step)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot13) }
 
     before do
       stub_callback_request

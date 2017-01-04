@@ -7,7 +7,8 @@ describe Api::V1::ProcessChainsController, type: :controller do
   let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
   let!(:demo_step)        { rot_thirteen_step_class.to_s }
   let!(:text_file)        { File.new('spec/fixtures/files/plaintext.txt', 'r') }
-  let!(:recipe_step)      { create(:recipe_step, step_class_name: demo_step) }
+  let!(:recipe)           { create(:recipe) }
+  let!(:recipe_step)      { recipe.recipe_steps.first }
   let!(:process_step)     { create(:process_step) }
   let!(:process_chain)    { process_step.process_chain }
 
@@ -18,7 +19,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
   }
 
   before do
-    recipe_step.update_attribute(:recipe_id, process_chain.recipe.id)
+    process_chain.update_attribute(:recipe_id, recipe.id)
     process_chain.update_attribute(:user_id, user.id)
     process_chain.recipe.update_attribute(:user_id, user.id)
     process_chain.initialize_directories

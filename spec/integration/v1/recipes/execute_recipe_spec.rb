@@ -6,6 +6,8 @@ Sidekiq::Testing.inline!
 
 describe "User executes a single recipe" do
 
+  let!(:rot13)      { rot_thirteen_step_class.to_s }
+
   # URL: /api/recipes/:id/execute
   # Method: GET
   # Execute a specific recipe belonging to the current user
@@ -17,32 +19,17 @@ describe "User executes a single recipe" do
     let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plaintext') }
+    let!(:image_file)        { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
 
-    let!(:recipe)           { create(:recipe, user: user) }
-
-    let!(:execution_params) {
-      {
-          input_file: text_file,
-          id: recipe.id
-      }
-    }
+    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot13, rot13]) }
 
     context 'if user is signed in' do
       context 'and the recipe exists' do
         context 'and it belongs to the user' do
-          context 'and a file is supplied' do
-            context 'and it has no steps' do
-              it 'responds with failure' do
-                perform_execute_request(auth_headers, execution_params)
-
-                expect(response.status).to eq(422)
-              end
-            end
-
+          context 'and a single file is supplied' do
             context 'and it has steps' do
-              let!(:rot13)      { rot_thirteen_step_class.to_s }
-              let!(:step1)      { create(:recipe_step, recipe: recipe, position: 1, step_class_name: rot13) }
-              let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2, step_class_name: rot13) }
+              let!(:step1)      { recipe.recipe_steps[0] }
+              let!(:step2)      { recipe.recipe_steps[1] }
               let(:gem_version) { "0.0.4" }
               let(:base_gem_version) { "1.0.1" }
 
@@ -51,12 +38,17 @@ describe "User executes a single recipe" do
                 allow_any_instance_of(base_step_class).to receive(:version).and_return(base_gem_version)
               end
 
-              context 'and execution is successful' do
+              context 'and a single file is supplied' do
+                let(:params) {{
+                    input_files: [text_file],
+                    id: recipe.id
+                }}
+
                 it 'returns the objects' do
-                  perform_execute_request(auth_headers, execution_params)
+                  perform_execute_request(auth_headers, params)
 
                   expect(response.status).to eq(200)
-                  expect(body_as_json['process_chain']['successful'])
+                  expect(body_as_json['process_chain']['successful']).to eq true
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
                   body_as_json['process_chain']['process_steps'].map do |s|
                     expect(s['execution_errors']).to eq ""
@@ -65,7 +57,7 @@ describe "User executes a single recipe" do
                 end
 
                 it 'returns a ProcessChain object' do
-                  perform_execute_request(auth_headers, execution_params)
+                  perform_execute_request(auth_headers, params)
 
                   process_chain = recipe.reload.process_chains.first
 
@@ -79,8 +71,9 @@ describe "User executes a single recipe" do
                 end
 
                 it 'also returns the steps' do
-                  perform_execute_request(auth_headers, execution_params)
+                  perform_execute_request(auth_headers, params)
 
+                  # version is not showing up for some reason??
                   ap body_as_json
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
                   expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['version']}).to eq [gem_version, gem_version]
@@ -88,30 +81,51 @@ describe "User executes a single recipe" do
               end
 
               context 'and execution fails' do
+                let(:params) {{
+                    id: recipe.id,
+                    input_files: [text_file]
+                }}
+
                 before do
                   allow_any_instance_of(base_step_class).to receive(:perform_step) { raise "Oh noes! Error!" }
                 end
 
                 it 'returns the errors' do
-                  perform_execute_request(auth_headers, execution_params)
+                  perform_execute_request(auth_headers, params)
 
                   expect(response.status).to eq(200)
-                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_errors']}).to eq ["Oh noes! Error!", ""]
-                  expect(body_as_json['process_chain']['successful']).to eq false
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
                 end
               end
             end
           end
 
-          context 'and no file is supplied' do
-            before do
-              # execution_params[:input_file] = nil #this causes a JSON parse error!
-              execution_params.delete(:input_file)
+          context 'and multiple files are supplied' do
+            let(:params) {{
+                id: recipe.id,
+                input_files: [text_file, image_file]
+            }}
+
+            it 'returns the objects' do
+              perform_execute_request(auth_headers, params)
+
+              expect(response.status).to eq(200)
+              expect(body_as_json['process_chain']['successful']).to eq true
+              expect(body_as_json['process_chain']['process_steps'].count).to eq 2
+              body_as_json['process_chain']['process_steps'].map do |s|
+                expect(s['execution_errors']).to eq ""
+              end
             end
+          end
+
+          context 'and no file is supplied' do
+            let(:params) {{
+                id: recipe.id,
+                input_files: []
+            }}
 
             it 'returns an error' do
-              perform_execute_request(auth_headers, execution_params)
+              perform_execute_request(auth_headers, params)
 
               expect(response.status).to eq(422)
             end
@@ -121,23 +135,31 @@ describe "User executes a single recipe" do
         context 'and it belongs to a different user' do
 
           let!(:other_user)     { create(:user) }
+          let(:params) {{
+              input_files: [text_file],
+              id: recipe.id
+          }}
 
           before do
             recipe.update_attribute(:user_id, other_user.id)
           end
 
           it 'responds with failure' do
-            perform_execute_request(auth_headers, execution_params)
+            perform_execute_request(auth_headers, params)
             expect(response.status).to eq(404)
           end
         end
       end
 
       context 'and the recipe does not exist' do
+        let(:params) {{
+            input_files: [text_file],
+            id: recipe.id
+        }}
 
         before do
           recipe.destroy
-          perform_execute_request(auth_headers, execution_params)
+          perform_execute_request(auth_headers, params)
         end
 
         it 'responds with failure' do
@@ -147,8 +169,13 @@ describe "User executes a single recipe" do
     end
 
     context 'if no user is signed in' do
+      let(:params) {{
+          input_files: [text_file],
+          id: recipe.id
+      }}
+
       before do
-        perform_execute_request({}, execution_params)
+        perform_execute_request({}, params)
       end
 
       it 'raises an error' do
@@ -161,9 +188,14 @@ describe "User executes a single recipe" do
     end
 
     context 'if the token has expired' do
+      let(:params) {{
+          input_files: [text_file],
+          id: recipe.id
+      }}
+
       before do
         expire_token(user, auth_headers['client'])
-        perform_execute_request({}, execution_params)
+        perform_execute_request({}, params)
       end
 
       it 'raises an error' do
