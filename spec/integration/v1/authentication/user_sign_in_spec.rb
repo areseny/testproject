@@ -42,6 +42,7 @@ describe "User sign in" do
         perform_sign_in_request({})
 
         expect(response.status).to eq(401)
+        expect(body_as_json['errors']).to match(["Invalid login credentials. Please try again."])
       end
     end
 
@@ -50,6 +51,7 @@ describe "User sign in" do
         perform_sign_in_request(valid_params.merge(email: "nonsensical_rubbish@example.com"))
 
         expect(response.status).to eq(401)
+        expect(body_as_json['errors']).to match(["Invalid login credentials. Please try again."])
       end
     end
 
@@ -58,6 +60,20 @@ describe "User sign in" do
         perform_sign_in_request(valid_params.merge(password: "nonsense"))
 
         expect(response.status).to eq(401)
+        expect(body_as_json['errors']).to match(["Invalid login credentials. Please try again."])
+      end
+    end
+
+    context 'for an unconfirmed user' do
+      before do
+        user.update_attribute(:confirmed_at, nil)
+      end
+
+      it 'raises an error' do
+        perform_sign_in_request(valid_params)
+
+        expect(response.status).to eq(401)
+        expect(body_as_json['errors']).to match(["A confirmation email was sent to your account at '#{user.email}'. You must follow the instructions in the email before your account can be activated"])
       end
     end
   end
