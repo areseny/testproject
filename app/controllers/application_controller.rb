@@ -28,7 +28,7 @@ class ApplicationController < ActionController::API
   end
 
   def render_step_not_installed_error(e)
-    render json: {errors: "#{e.message} #{e.missing_step_classes}"}, status: 422
+    render json: {errors: "The following steps are not installed: #{e.missing_step_classes.join(", ")}. Check the spelling of the step class name, contact the system administrator to ask to install the step, or try with a different recipe."}, status: 422
   end
 
   def render_unauthorised_error(message)
