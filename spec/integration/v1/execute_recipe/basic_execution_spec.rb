@@ -34,6 +34,17 @@ describe "User executes a recipe" do
       end
     end
 
+    context 'and execution fails due to an error outside of the step' do
+      let(:recipe)                   { create(:recipe, user: user, step_classes: [rot_thirteen_step_class.to_s]) }
+
+      specify do
+        perform_execute_request(auth_headers, execution_params.except(:input_files))
+
+        expect(response.status).to eq(422)
+        expect(body_as_json['errors']).to eq ["param is missing or the value is empty: input_files"]
+      end
+    end
+
     context 'and the recipe step class is not installed' do
       let(:nonexistent_step_class1)   { "NonExistentStepClass::NonsenseStep" }
       let(:nonexistent_step_class2)   { "NonExistentStepClass::RubbishStep" }
