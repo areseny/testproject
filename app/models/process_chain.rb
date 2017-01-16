@@ -87,14 +87,14 @@ class ProcessChain < ApplicationRecord
       process_step.version = runner_step.version
       process_step.started_at = runner_step.started_at
       process_step.finished_at = runner_step.finished_at
+      process_step.successful = runner_step.successful
       process_step.save!
     end
   end
 
   def successful?
     process_steps.each do |step|
-      next if step.execution_errors.nil?
-      return false if YAML.load(step.execution_errors).present?
+      return false unless step.successful
     end
     true
   end

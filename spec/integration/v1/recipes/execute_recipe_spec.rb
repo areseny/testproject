@@ -50,7 +50,7 @@ describe "User executes a single recipe" do
 
                 it 'returns the objects' do
                   expect(response.status).to eq(200)
-                  expect(body_as_json['process_chain']['successful']).to eq true
+                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['successful']}).to eq [true, true]
                   expect(body_as_json['process_chain']['process_steps'].count).to eq 2
                   body_as_json['process_chain']['process_steps'].map do |s|
                     expect(s['execution_errors']).to eq ""
@@ -64,8 +64,6 @@ describe "User executes a single recipe" do
                   expect(body_as_json['process_chain']['recipe_id']).to eq process_chain.recipe_id
                   expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
                   expect(body_as_json['process_chain']['input_file_manifest']).to match([{"path"=>"plaintext.txt", "size"=>"18 bytes"}])
-                  expect(body_as_json['process_chain']['executed_at_for_humans']).to_not be_nil
-                  expect(body_as_json['process_chain']['successful']).to eq true
                   expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}])
                 end
 
@@ -113,11 +111,12 @@ describe "User executes a single recipe" do
               perform_execute_request(auth_headers, params)
 
               expect(response.status).to eq(200)
-              expect(body_as_json['process_chain']['successful']).to eq true
               expect(body_as_json['process_chain']['process_steps'].count).to eq 2
               body_as_json['process_chain']['process_steps'].map do |s|
                 expect(s['execution_errors']).to eq ""
               end
+              expect(body_as_json['process_chain']['executed_at']).to_not be_nil
+              expect(body_as_json['process_chain']['finished_at']).to_not be_nil
               expect(body_as_json['process_chain']['input_file_manifest']).to match([{"path"=>"kitty.jpeg", "size"=>"21.6 kB"}, {"path"=>"plaintext.txt", "size"=>"18 bytes"}])
               expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"kitty.jpeg", "size"=>"21.6 kB"}, {"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}])
             end

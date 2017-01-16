@@ -8,7 +8,6 @@ module DirectoryMethods
 
   def assemble_manifest(directory_path)
     files = recursive_file_list(directory_path)
-    # [5, 6, 7, 8].inject (0) { |result_memo, object| result_memo + object }
     files.inject([]) do |result, file_relative_path|
       file_info_hash = {}
       file_info_hash[:path] = file_relative_path
@@ -23,7 +22,13 @@ module DirectoryMethods
   def recursive_file_list(directory_path)
     # ap "recursive_file_list of #{directory_path}"
     Dir.chdir(directory_path) do
-      Dir["**/*.*"]
+      files = Dir["**/*"] # Dir["**/*.*"]
+      files_only = []
+      files.each do |file|
+        full_path = File.join(directory_path, file)
+        files_only << file if File.file?(full_path)
+      end
+      files_only
     end
   end
 
@@ -37,7 +42,7 @@ module DirectoryMethods
   def assemble_file_path(location:, relative_path:)
     raise "Please provide a relative file path" unless relative_path.present?
     file_path = File.join(location, relative_path)
-    raise "Cannot find #{relative_path}" unless located_in?(location, file_path) && File.file?(file_path)
+    raise "Cannot find #{relative_path}" unless located_in?(location, file_path) && File.file?(Pathname.new(file_path))
     # raise "Cannot find #{relative_path}" unless File.exists?(file_path) && File.file?(file_path)
     file_path
   end

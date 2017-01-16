@@ -1,6 +1,8 @@
 module Api
   module V1
     class ProcessStepsController < ApplicationController
+      include DirectoryMethods
+
       before_action :authenticate_api_user!
       before_action :authorise_user!
 

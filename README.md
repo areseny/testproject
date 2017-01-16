@@ -10,7 +10,7 @@ Ink is an API. It provides an extensible step-based framework for file conversio
 
 This project is an API, and therefore is using the `rails-api` gem.
 
-## Setup
+## Setup (for developers)
 
 Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
@@ -32,19 +32,21 @@ Run sidekiq in another terminal - `bundle exec sidekiq`
 
 Check `localhost:3000/anyone` to see if it's up.
 
+Once it is up and running, run the rake task in `lib/setup.rake` to create some users.
+
 ## Further development
 
 ### Adding a new step
 
 To write a new step, create a gem (you can host it under RubyGems). I've included code so that the step files get autoloaded when Rails is present.
  
-The example I'll use here is `RotThirteen`. 
+The example I'll use here is `InkStep::RotThirteen` included in the gem `coko_demo_steps`. 
 
 You can install in a few ways:
 
-Manually: `gem specific_install -l https://gitlab.coko.foundation/INK/rot_thirteen`. You'll have to update manually whenever there is an update.
+Manually: `gem specific_install -l https://gitlab.coko.foundation/INK/coko_demo_steps`. You'll have to update manually whenever there is an update.
 
-Via gemfile, you can edit the gemfile to include the line `gem 'rot_thirteen', git: 'git@gitlab.coko.foundation:INK/rot_thirteen.git` and run `bundle install`. However, with this method, when you pull the latest changes to INK, your gemfile will be removed.
+Via gemfile, you can edit the gemfile to include the line `gem 'coko_demo_steps', git: 'git@gitlab.coko.foundation:INK/coko_demo_steps.git` and run `bundle install`. However, with this method, when you pull the latest changes to INK, your gemfile will be removed.
 
 I'm working on a separate custom `StepGemfile` that gets installed as well, so that an instance's installed steps will be preserved. Stay tuned!
 

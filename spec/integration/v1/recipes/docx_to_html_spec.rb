@@ -29,7 +29,6 @@ describe "User executes a single recipe" do
 
     context 'if user is signed in' do
       let!(:step_class)  { base_step_class.to_s }
-      # let!(:step1)       { create(:recipe_step, recipe: recipe, position: 1, step_class_name: step_class) }
       let!(:step1)       { recipe.recipe_steps.first }
 
       context 'and execution is successful' do
@@ -40,7 +39,7 @@ describe "User executes a single recipe" do
 
         it 'returns the objects' do
           expect(response.status).to eq(200)
-          expect(body_as_json['process_chain']['successful']).to_not be_nil
+          expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['successful']}).to eq [nil]
         end
 
         it 'includes the associated steps' do

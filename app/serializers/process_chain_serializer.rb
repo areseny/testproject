@@ -5,7 +5,7 @@ class ProcessChainSerializer < ActiveModel::Serializer
 
   # has_many :process_steps
 
-  attributes :id, :recipe_id, :successful, :executed_at, :executed_at_for_humans, :input_file_manifest, :output_file_manifest, :finished_at, :process_steps
+  attributes :id, :recipe_id, :executed_at, :input_file_manifest, :output_file_manifest, :finished_at, :process_steps
 
   def process_steps
     object.process_steps.sort_by{ |step| step.position }.map{|step| ActiveModelSerializers::SerializableResource.new(step, adapter: :attribute).as_json}
@@ -17,15 +17,6 @@ class ProcessChainSerializer < ActiveModel::Serializer
 
   def finished_at
     object.finished_at.nil? ? nil : object.finished_at.iso8601
-  end
-
-  def executed_at_for_humans
-    return "" if object.executed_at.nil?
-    "#{distance_of_time_in_words(object.executed_at, Time.now)} ago"
-  end
-
-  def successful
-    object.successful?
   end
 
 end
