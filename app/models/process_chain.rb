@@ -24,9 +24,9 @@ class ProcessChain < ApplicationRecord
   belongs_to :recipe, inverse_of: :process_chains
   has_many :process_steps, inverse_of: :process_chain, dependent: :destroy
 
-  after_initialize do
-    generate_unique_slug
-  end
+  # after_initialize do
+  #   generate_unique_slug
+  # end
 
   before_save :generate_unique_slug
 
