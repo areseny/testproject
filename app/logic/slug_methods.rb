@@ -8,6 +8,7 @@ module SlugMethods
   end
 
   def generate_unique_slug
+    @all_chain_slugs ||= ProcessChain.all.map(&:slug)
     return if slug.present?
     while @new_slug.nil? || slug_not_unique?
       @new_slug = generate_slug
@@ -18,7 +19,7 @@ module SlugMethods
   end
 
   def slug_not_unique?
-    ProcessChain.all.map(&:slug).include?(@new_slug)
+    @all_process_chains.include?(@new_slug)
   end
 
 end
