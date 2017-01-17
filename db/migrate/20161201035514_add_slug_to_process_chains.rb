@@ -7,8 +7,7 @@ class AddSlugToProcessChains < ActiveRecord::Migration[5.0]
     add_column :process_chains, :slug, :string
 
     ProcessChain.all.each do |chain|
-      # find slug, generate if none
-      chain.generate_unique_slug
+      # chain.generate_unique_slug
       chain.save!
     end
   end
