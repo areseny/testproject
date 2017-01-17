@@ -25,7 +25,7 @@ class MigrateFilesToKitchenBench < ActiveRecord::Migration[5.0]
       create_directory_if_needed(chain_input_directory)
 
       # copy input file to that directory
-      next unless chain.input_file_path
+      next unless chain.input_file
       FileUtils.cp chain.carrierwave_input_file_path, File.join(chain_input_directory, chain.input_file_name)
 
       chain.process_steps.each do |step|
