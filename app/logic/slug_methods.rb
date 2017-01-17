@@ -11,6 +11,8 @@ module SlugMethods
     return if slug.present?
     while @new_slug.nil? || slug_not_unique?
       @new_slug = generate_slug
+      ap "Slug for #{self.id} generated: `#{@new_slug}`"
+      ap "Slug already exists? #{slug_not_unique?}"
     end
     self.slug = @new_slug
   end
