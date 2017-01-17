@@ -26,24 +26,19 @@ class MigrateFilesToKitchenBench < ActiveRecord::Migration[5.0]
 
       # copy input file to that directory
       puts "No input file" unless chain.input_file
-      begin
-        FileUtils.cp chain.carrierwave_input_file_path, File.join(chain_input_directory, chain.input_file_name)
+      FileUtils.cp chain.carrierwave_input_file_path, File.join(chain_input_directory, chain.input_file_name)
 
-        chain.process_steps.each do |step|
-          puts "Moving files for step #{step.id}"
-          # create position directory in filesystem under chain slug directory
-          step_directory = File.join(file_location, chain.slug, step.position.to_s)
-          create_directory_if_needed(step_directory)
-          raise "Directory #{step_directory} not created - check permissions" unless File.exists?(step_directory)
+      chain.process_steps.each do |step|
+        puts "Moving files for step #{step.id}"
+        # create position directory in filesystem under chain slug directory
+        step_directory = File.join(file_location, chain.slug, step.position.to_s)
+        create_directory_if_needed(step_directory)
+        raise "Directory #{step_directory} not created - check permissions" unless File.exists?(step_directory)
 
-          # create output_files in step slug directory
+        # create output_files in step slug directory
 
-          # copy output file to that directory
-          FileUtils.cp step.carrierwave_output_file_path, File.join(step.output_files_location, step.carrierwave_output_file_name)
-        end
-      rescue => e
-        ap e.message
-        ap e.backtrace
+        # copy output file to that directory
+        FileUtils.cp step.carrierwave_output_file_path, File.join(step.output_files_location, step.carrierwave_output_file_name)
       end
     end
   end
