@@ -16,7 +16,16 @@ Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
 Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.
 
+Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.
+
 `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
+
+## Setup (for production)
+
+In addition to the above, on the server (I suggest rbenv):
+
+- Set up an environment variable as per `secrets.yml` for Devise token auth.
+- Set up nginx and passenger to act as web server.
 
 ### Step Third-party Binary Dependencies
 
