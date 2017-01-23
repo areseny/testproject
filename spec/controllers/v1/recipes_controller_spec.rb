@@ -19,7 +19,8 @@ RSpec.describe Api::V1::RecipesController do
     {
         recipe: {
             name: name,
-            description: description
+            description: description,
+            public: true
         }
     }
   }
@@ -194,7 +195,6 @@ RSpec.describe Api::V1::RecipesController do
           end
 
           context 'and they are incorrect' do
-
             it "does not create the recipe with duplicate numbers" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
 
@@ -272,6 +272,75 @@ RSpec.describe Api::V1::RecipesController do
               end
 
               expect(response.status).to eq 200
+            end
+
+            context 'if the recipe is flagged private' do
+              let(:recipe_params) {
+                {
+                    recipe: {
+                        name: name,
+                        description: description,
+                        public: false,
+                        steps: [step]
+                    }
+                }
+              }
+
+              specify do
+                request_with_auth(user.create_new_auth_token) do
+                  perform_create_request(recipe_params)
+                end
+
+                expect(response.status).to eq 200
+                new_recipe = assigns[:new_recipe]
+                expect(new_recipe.public).to eq false
+              end
+            end
+
+            context 'if the recipe is flagged public' do
+              let(:recipe_params) {
+                {
+                    recipe: {
+                        name: name,
+                        description: description,
+                        public: true,
+                        steps: [step]
+                    }
+                }
+              }
+
+              specify do
+                request_with_auth(user.create_new_auth_token) do
+                  perform_create_request(recipe_params)
+                end
+
+                expect(response.status).to eq 200
+                new_recipe = assigns[:new_recipe]
+                expect(new_recipe.public).to eq true
+              end
+            end
+
+            context 'if the recipe does not have an indication of public/private' do
+              let(:recipe_params) {
+                {
+                    recipe: {
+                        name: name,
+                        description: description,
+                        public: nil,
+                        steps: [step]
+                    }
+                }
+              }
+
+              specify do
+                request_with_auth(user.create_new_auth_token) do
+                  perform_create_request(recipe_params)
+                end
+
+                expect(response.status).to eq 200
+                new_recipe = assigns[:new_recipe]
+                expect(new_recipe.public).to eq false
+              end
             end
           end
         end

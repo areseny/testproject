@@ -18,7 +18,7 @@ describe "User executes a recipe xsweet pipeline" do
     let!(:auth_headers)     { user.create_new_auth_token }
     let!(:docx_file)        { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [extract1, notes2, scrub3, join4, zorba5]) }
+    let!(:recipe)           { create(:recipe, user: user, step_classes: [extract1, notes2, scrub3, join4, collapse5]) }
 
     let!(:execution_params) {
       {
@@ -31,18 +31,18 @@ describe "User executes a recipe xsweet pipeline" do
     let!(:notes2)     { xsweet_step_2_notes_step_class.to_s }
     let!(:scrub3)     { xsweet_step_3_scrub_step_class.to_s }
     let!(:join4)      { xsweet_step_4_join_step_class.to_s }
-    let!(:zorba5)     { xsweet_step_5_zorba_step_class.to_s }
+    let!(:collapse5)  { xsweet_step_5_collapse_paragraphs_step_class.to_s }
 
     let(:step_1_xsl_file)             { File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/docx-html-extract.xsl')) }
-    let(:step_1_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/docx-html-extract.xsl" }
+    let(:step_1_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/applications/docx-extract/docx-html-extract.xsl" }
     let(:step_2_xsl_file)             { File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/handle-notes.xsl')) }
-    let(:step_2_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/handle-notes.xsl" }
+    let(:step_2_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/applications/docx-extract/handle-notes.xsl" }
     let(:step_3_xsl_file)             { File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/scrub.xsl')) }
-    let(:step_3_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/scrub.xsl" }
+    let(:step_3_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/applications/docx-extract/scrub.xsl" }
     let(:step_4_xsl_file)             { File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/join-elements.xsl')) }
-    let(:step_4_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/join-elements.xsl" }
-    let(:step_5_xsl_file)             { File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/zorba-map.xsl')) }
-    let(:step_5_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/zorba-map.xsl" }
+    let(:step_4_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/applications/docx-extract/join-elements.xsl" }
+    let(:step_5_xsl_file)             { File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/collapse-paragraphs.xsl')) }
+    let(:step_5_remote_uri)           { "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/applications/docx-extract/collapse-paragraphs.xsl" }
 
     before do
       stub_xsl_download(step_1_remote_uri, step_1_xsl_file)

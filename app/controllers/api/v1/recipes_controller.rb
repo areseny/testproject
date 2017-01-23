@@ -55,7 +55,9 @@ module Api
       private
 
       def recipe_params
-        params.require(:recipe).permit(:name, :description, :active, :public)
+        the_params = params.require(:recipe).permit(:name, :description, :active, :public)
+        the_params[:public] = public_param(the_params[:public]) unless the_params[:public].nil?
+        the_params
       end
 
       def recipe_step_params
@@ -64,6 +66,12 @@ module Api
 
       def input_file_param
         params.require(:input_files)
+      end
+
+      def public_param(public)
+        return public if [true, false].include?(public)
+        return false if public.empty?
+        public && public.is_a?(String) ? public.to_boolean : false
       end
 
       def callback_url_param
@@ -81,7 +89,14 @@ module Api
       def recipes
         @recipes ||= Recipe.includes(:recipe_steps, :process_chains).available_to_user(current_api_user.id)
       end
-
     end
+  end
+end
+
+class String
+  def to_boolean
+    return true if ['true', '1', 'yes', 'on', 't'].include? self
+    return false if ['false', '0', 'no', 'off', 'f'].include? self
+    nil
   end
 end

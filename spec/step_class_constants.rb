@@ -26,22 +26,22 @@ module StepClassConstants
   # xsweet pipeline
 
   def xsweet_step_1_extract_step_class
-    InkStep::XsweetPipeline::DocxToHtmlExtractStep
+    InkStep::XsweetPipeline::DocxExtract::DocxToHtmlExtractStep
   end
 
   def xsweet_step_2_notes_step_class
-    InkStep::XsweetPipeline::HandleNotesStep
+    InkStep::XsweetPipeline::DocxExtract::HandleNotesStep
   end
 
   def xsweet_step_3_scrub_step_class
-    InkStep::XsweetPipeline::ScrubStep
+    InkStep::XsweetPipeline::DocxExtract::ScrubStep
   end
 
   def xsweet_step_4_join_step_class
-    InkStep::XsweetPipeline::JoinElementsStep
+    InkStep::XsweetPipeline::DocxExtract::JoinElementsStep
   end
 
-  def xsweet_step_5_zorba_step_class
-    InkStep::XsweetPipeline::ZorbaMapStep
+  def xsweet_step_5_collapse_paragraphs_step_class
+    InkStep::XsweetPipeline::DocxExtract::CollapseParagraphsStep
   end
 end
