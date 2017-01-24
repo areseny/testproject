@@ -30,9 +30,8 @@ gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 ################### basic steps #############################
 
 # gem 'ink_step', path: "~/projects/coko/ink-step"
-gem 'ink_step', path: "~/RubymineProjects/coko/ink-step"
 
-# gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/ink-step.git'
+gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/ink-step.git'
 gem 'inkstep_coko_demo_steps', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git'
 gem 'inkstep_coko_conversion', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git'
 
