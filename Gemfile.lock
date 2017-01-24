@@ -16,6 +16,15 @@ GIT
       mime-types (>= 1.16)
 
 GIT
+  remote: git@gitlab.coko.foundation:INK/ink-step.git
+  revision: 6fccadb8c5db4312aa846b123cb77951135305cf
+  specs:
+    ink_step (0.1.7)
+      awesome_print
+      httparty
+      rubyzip
+
+GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
   revision: 0a86da7dd3a11529dd2972c95d24035628423720
   specs:
@@ -26,14 +35,6 @@ GIT
   revision: d985d768b7f61c8a265bef2f1826afda73613c32
   specs:
     inkstep_coko_demo_steps (0.1.6)
-
-PATH
-  remote: ~/RubymineProjects/coko/ink-step
-  specs:
-    ink_step (0.1.7)
-      awesome_print
-      httparty
-      rubyzip
 
 GEM
   remote: https://rubygems.org/
