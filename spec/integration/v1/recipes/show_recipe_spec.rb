@@ -33,6 +33,7 @@ describe "User finds a single recipe" do
             expect(body_as_json['recipe']['name']).to eq recipe.name
             expect(body_as_json['recipe']['description']).to eq recipe.description
             expect(body_as_json['recipe']['active']).to eq recipe.active
+            expect(body_as_json['recipe']['public']).to eq recipe.public
           end
 
           context 'and it has steps' do
@@ -43,6 +44,8 @@ describe "User finds a single recipe" do
               perform_show_request(auth_headers, recipe.id)
 
               expect(body_as_json['recipe']['recipe_steps'].count).to eq 2
+              expect(body_as_json['recipe']['recipe_steps'].sort_by{|s| s['position']}.map{|s| s['step_class_name']}).to match([base_step_class.to_s, conversion_step_class.to_s])
+              expect(body_as_json['recipe']['recipe_steps'].sort_by{|s| s['position']}.map{|s| s['description']}).to match([base_step_class.description, conversion_step_class.description])
             end
           end
 

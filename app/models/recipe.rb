@@ -69,11 +69,7 @@ class Recipe < ApplicationRecord
   def ensure_step_installation
     missing_steps = []
     recipe_steps.each do |step|
-      begin
-        step.step_class
-      rescue NameError
-        missing_steps << step.step_class_name
-      end
+      missing_steps << step.step_class_name if step.step_class.nil?
     end
 
     if missing_steps.any?
