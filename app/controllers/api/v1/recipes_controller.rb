@@ -39,9 +39,11 @@ module Api
       end
 
       def update
-        recipe.update!(recipe_params)
+        recipe.update!(update_recipe_params)
         render json: recipe, root: false
       rescue => e
+        ap e.message
+        ap e.backtrace
         render_error(e)
       end
 
@@ -55,9 +57,11 @@ module Api
       private
 
       def recipe_params
-        the_params = params.require(:recipe).permit(:name, :description, :active, :public)
-        the_params[:public] = public_param(the_params[:public]) unless the_params[:public].nil?
-        the_params
+        params.require(:recipe).permit(:name, :description, :active, :public)
+      end
+
+      def update_recipe_params
+        params.require(:recipe).permit(:name, :description, :active, :public)
       end
 
       def recipe_step_params
@@ -66,12 +70,6 @@ module Api
 
       def input_file_param
         params.require(:input_files)
-      end
-
-      def public_param(public)
-        return public if [true, false].include?(public)
-        return false if public.empty?
-        public && public.is_a?(String) ? public.to_boolean : false
       end
 
       def callback_url_param

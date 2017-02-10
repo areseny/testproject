@@ -154,12 +154,39 @@ RSpec.describe Api::V1::RecipesController do
     end
   end
 
+  describe "POST update" do
+    let!(:new_name)         { "fabulous recipe" }
+    let!(:new_description)  { "absolutely magical" }
+    let(:recipe_params) {
+        {
+          recipe: {
+          name: new_name,
+          description: new_description,
+          public: false
+        },
+          id: recipe.id
+      }
+    }
+    let(:recipe)            { create(:recipe, user: user, public: true) }
+
+    it 'updates the values' do
+      request_with_auth(user.create_new_auth_token) do
+        perform_update_request(recipe_params)
+      end
+
+      recipe.reload
+
+      expect(response.status).to eq 200
+      expect(recipe.name).to eq new_name
+      expect(recipe.description).to eq new_description
+      expect(recipe.public).to eq false
+    end
+  end
+
   describe "POST create" do
 
     context 'if a valid token is supplied' do
-
       context 'if the recipe is valid' do
-
         context 'presented as a series of steps with positions included' do
           let!(:step_params)      { [{position: 1, step_class_name: step }, {position: 2, step_class_name: rot_thirteen }] }
 
@@ -319,29 +346,6 @@ RSpec.describe Api::V1::RecipesController do
                 expect(new_recipe.public).to eq true
               end
             end
-
-            context 'if the recipe does not have an indication of public/private' do
-              let(:recipe_params) {
-                {
-                    recipe: {
-                        name: name,
-                        description: description,
-                        public: nil,
-                        steps: [step]
-                    }
-                }
-              }
-
-              specify do
-                request_with_auth(user.create_new_auth_token) do
-                  perform_create_request(recipe_params)
-                end
-
-                expect(response.status).to eq 200
-                new_recipe = assigns[:new_recipe]
-                expect(new_recipe.public).to eq false
-              end
-            end
           end
         end
       end
@@ -398,7 +402,7 @@ RSpec.describe Api::V1::RecipesController do
 
       it "assigns" do
         request_with_auth(user.create_new_auth_token) do
-          perform_put_request(recipe_params.merge(id: recipe.id))
+          perform_update_request(recipe_params.merge(id: recipe.id))
         end
 
         expect(response.status).to eq 200
@@ -414,7 +418,7 @@ RSpec.describe Api::V1::RecipesController do
 
       it "does not assign anything" do
         request_with_auth do
-          perform_put_request(recipe_params.merge(id: recipe.id))
+          perform_update_request(recipe_params.merge(id: recipe.id))
         end
 
         expect(response.status).to eq 401
@@ -619,7 +623,7 @@ RSpec.describe Api::V1::RecipesController do
     post_create_request(version, data)
   end
 
-  def perform_put_request(data)
+  def perform_update_request(data)
     put_update_request(version, data)
   end
 

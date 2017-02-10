@@ -17,22 +17,22 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/ink-step.git
-  revision: 6fccadb8c5db4312aa846b123cb77951135305cf
+  revision: 52d1fc58d6c3c583ad5f584f45ad1675033281d9
   specs:
-    ink_step (0.1.7)
+    ink_step (0.1.8)
       awesome_print
       httparty
       rubyzip
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
-  revision: 0a86da7dd3a11529dd2972c95d24035628423720
+  revision: be5afe427bf1ac1a125d326fc0bd1d062b1f84bf
   specs:
-    inkstep_coko_conversion (0.1.9)
+    inkstep_coko_conversion (0.2.1)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
-  revision: d985d768b7f61c8a265bef2f1826afda73613c32
+  revision: 9d99984fd8208a09ffae34ef6a361443771c6c31
   specs:
     inkstep_coko_demo_steps (0.1.6)
 
@@ -244,7 +244,7 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rubyzip (1.2.0)
+    rubyzip (1.2.1)
     safe_yaml (1.0.4)
     sidekiq (4.2.2)
       concurrent-ruby (~> 1.0)

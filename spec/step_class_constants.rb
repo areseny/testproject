@@ -44,4 +44,16 @@ module StepClassConstants
   def xsweet_step_5_collapse_paragraphs_step_class
     InkStep::XsweetPipeline::DocxExtract::CollapseParagraphsStep
   end
+
+  def xsweet_step_6_header_promotion_step_class
+    InkStep::XsweetPipeline::HeaderPromote::HeaderPromotionStep
+  end
+
+  def xsweet_step_7_final_rinse_step_class
+    InkStep::XsweetPipeline::FinaliseTypescript::FinalRinseStep
+  end
+
+  def xsweet_step_8_editoria_step_class
+    InkStep::XsweetPipeline::PrepareForEditoria::EditoriaPrepareStep
+  end
 end

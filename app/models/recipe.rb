@@ -140,7 +140,4 @@ class Recipe < ApplicationRecord
     contiguous = array.sort.each_cons(2).all? { |x,y| y == x + 1 }
     errors.add(:recipe_step_positions, "must be contiguous") unless contiguous
   end
-
-
-
 end
