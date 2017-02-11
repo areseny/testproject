@@ -12,17 +12,21 @@ This project is an API, and therefore is using the `rails-api` gem.
 
 ## Setup (for developers)
 
+Install `rbenv` (recommended) or `rvm` and install the required ruby version (see `.ruby-version.rb`)
+
 Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
 Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.
 
 Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.
 
-`bundle` and usual rake db restoration procedure. Use `db:schema:load`.
+Run `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
+
+Run the rake tasks for creating a user if you want, or use `rails console`.
 
 ## Setup (for production)
 
-In addition to the above, on the server (I suggest rbenv):
+In addition to the above, on the server:
 
 - Set up an environment variable as per `secrets.yml` for Devise token auth.
 - Set up nginx and passenger to act as web server.
