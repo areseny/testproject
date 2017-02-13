@@ -7,15 +7,6 @@ GIT
       sshkit (~> 1.3)
 
 GIT
-  remote: git://github.com/carrierwaveuploader/carrierwave.git
-  revision: a2c93fe1a9d3a3f60d1662e5ec34fdba7bf2b304
-  specs:
-    carrierwave (0.10.0)
-      activemodel (>= 4.0.0)
-      activesupport (>= 4.0.0)
-      mime-types (>= 1.16)
-
-GIT
   remote: git@gitlab.coko.foundation:INK/ink-step.git
   revision: f6b2175c1b870cbc9f43e8b57b01545072ba41ea
   specs:
@@ -26,9 +17,9 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
-  revision: 0f1c691297618cc03958a64c34976de823337aa2
+  revision: b073000504554601a244b29e775230b45282efbb
   specs:
-    inkstep_coko_conversion (0.2.3)
+    inkstep_coko_conversion (0.2.4)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
@@ -308,7 +299,6 @@ DEPENDENCIES
   capistrano-rails (~> 1.1)
   capistrano-rbenv!
   capistrano-sidekiq
-  carrierwave!
   coffee-rails (~> 4.1.0)
   database_cleaner
   devise

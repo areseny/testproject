@@ -23,10 +23,6 @@ gem 'sinatra', :require => nil # for sidekiq-web
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
 
-################### file upload ###################
-
-gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
-
 ################### basic steps #############################
 
 # gem 'ink_step', path: "~/projects/coko/ink-step"
