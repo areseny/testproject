@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       get 'members_only' => 'pages#members_only'
       get 'anyone' => 'pages#anyone'
 
+      get 'available_step_classes' => 'step_class#index'
+
       resources :recipes, only: [:index, :show, :create, :update, :destroy] do
         member do
           post 'execute'

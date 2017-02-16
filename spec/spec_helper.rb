@@ -4,6 +4,7 @@ require 'support/auth_helper'
 require 'support/controller_spec_requests/controller_requests'
 require 'support/integration_spec_requests/recipe_requests'
 require 'support/integration_spec_requests/auth_requests'
+require 'support/integration_spec_requests/infrastructure_requests'
 
 require 'webmock/rspec'
 
