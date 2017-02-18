@@ -14,8 +14,14 @@ class ProcessStepSerializer < ActiveModel::Serializer
 
   def execution_errors
     return "" if object.execution_errors.nil?
-    errors = YAML::load(object.execution_errors)
+    errors = [YAML::load(object.execution_errors)].flatten
     errors.join(", ").gsub(/\n/, "")
+  end
+
+  def notes
+    return "" if object.notes.nil?
+    notes = [YAML::load(object.notes)].flatten
+    notes.join(", ").gsub(/\n/, "")
   end
 
 end
