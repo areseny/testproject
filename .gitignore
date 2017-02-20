@@ -13,5 +13,6 @@
 /tmp
 
 .idea/
+.env
 public/uploads/*
 public/test/*
