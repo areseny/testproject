@@ -4,7 +4,10 @@
 
 development:
   environment: development
-  file_location: /home/charlie/ink_api_files
+  file_location: ./ink_api_files
 test:
   environment: test
   file_location: /tmp/ink_api_files/
+production:
+  environment: production
+  file_location: ./ink_api_files/
