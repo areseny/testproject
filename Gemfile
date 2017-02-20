@@ -30,9 +30,9 @@ gem 'pg', '~> 0.15'
 
 # gem 'ink_step', path: "~/projects/coko/ink-step"
 
-gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/ink-step.git'
-gem 'inkstep_coko_demo_steps', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git'
-gem 'inkstep_coko_conversion', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git'
+gem 'ink_step', git: 'https://gitlab.coko.foundation/INK/ink-step.git'
+gem 'inkstep_coko_demo_steps', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_demo_steps.git'
+gem 'inkstep_coko_conversion', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_conversion.git'
 
 ################### javascript ###############
 
@@ -103,7 +103,7 @@ group :development do
   gem 'capistrano', '~> 3.4.0'
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-bundler', '~> 1.1.2'
-  gem 'capistrano-rbenv', github: "capistrano/rbenv"
+  gem 'capistrano-rbenv', git: "https://github.com/capistrano/rbenv.git"
   gem 'capistrano-sidekiq'
 
   gem 'sshkit-sudo'
