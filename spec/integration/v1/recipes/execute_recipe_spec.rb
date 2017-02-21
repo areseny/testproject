@@ -117,8 +117,8 @@ describe "User executes a single recipe" do
               end
               expect(body_as_json['process_chain']['executed_at']).to_not be_nil
               expect(body_as_json['process_chain']['finished_at']).to_not be_nil
-              expect(body_as_json['process_chain']['input_file_manifest']).to match([{"path"=>"plaintext.txt", "size"=>"18 bytes"}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB"}])
-              expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB"}])
+              expect(body_as_json['process_chain']['input_file_manifest']).to match_array([{"path"=>"plaintext.txt", "size"=>"18 bytes"}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB"}])
+              expect(body_as_json['process_chain']['output_file_manifest']).to match_array([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB"}])
             end
           end
 
