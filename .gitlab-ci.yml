@@ -32,7 +32,7 @@ test:
   stage: test
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
-    - docker run registry.inkmap.com:5000/devops/ink-api docker/init_tests.sh
+    - docker run registry.inkmap.com:5000/devops/ink-api /bin/sh docker/init_tests.sh
 deploy:
   variables:
     RANCHER_ACCESS_KEY: $RANCHER_ACCESS_KEY
