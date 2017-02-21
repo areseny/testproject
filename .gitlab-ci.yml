@@ -22,15 +22,15 @@ build:
   stage: build
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
-    - docker build -t registry.inkmap.com:5000/ink-api/ink-api .
-    - docker push registry.inkmap.com:5000/ink-api/ink-api
+    - docker build -t registry.inkmap.com:5000/devops/ink-api .
+    - docker push registry.inkmap.com:5000/devops/ink-api
 test:
   services:
   - mysql:latest
   - redis:alpine
   stage: test
   script:
-    - docker run registry.inkmap.com:5000/ink-api/ink-api docker/init_tests.sh
+    - docker run registry.inkmap.com:5000/devops/ink-api docker/init_tests.sh
 deploy:
   variables:
     RANCHER_ACCESS_KEY: $RANCHER_ACCESS_KEY
