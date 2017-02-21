@@ -2,5 +2,6 @@
 
 set -x
 # setup database and start tests
-RAILS_ENV=development bin/rake db:schema:load
+
+RAILS_ENV=test bin/rake db:create
 RAILS_ENV=test bundle exec rake spec
