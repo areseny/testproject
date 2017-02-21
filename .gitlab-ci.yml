@@ -26,6 +26,7 @@ build:
     - docker push registry.inkmap.com:5000/devops/ink-api
 test:
   services:
+  - docker:dind
   - postgres:9.5
   - redis:latest
   stage: test
