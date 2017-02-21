@@ -1,6 +1,10 @@
-image: docker:latest
+image: tmaier/docker-compose:latest
 services:
   - docker:dind
+
+before_script:
+  - docker info
+  - docker-compose --version
 stages:
   - build
   - test
@@ -25,14 +29,12 @@ build:
     - docker build -t registry.inkmap.com:5000/devops/ink-api .
     - docker push registry.inkmap.com:5000/devops/ink-api
 test:
-  services:
-  - docker:dind
-  - postgres:9.5
-  - redis:latest
   stage: test
   script:
+    - mv .env.sample .env
+    - mv docker/docker-compose-test.yml docker-compose-test.yml
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
-    - docker run registry.inkmap.com:5000/devops/ink-api /bin/sh docker/init_tests.sh
+    - docker-compose -f docker-compose-test.yml up
 deploy:
   variables:
     RANCHER_ACCESS_KEY: $RANCHER_ACCESS_KEY
