@@ -34,7 +34,7 @@ test:
     - mv .env.sample .env
     - mv docker/docker-compose-test.yml docker-compose-test.yml
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
-    - docker-compose -f docker-compose-test.yml up
+    - /bin/sh docker/ci-test.sh
 deploy:
   variables:
     RANCHER_ACCESS_KEY: $RANCHER_ACCESS_KEY
