@@ -1,4 +1,4 @@
-FROM registry.inkmap.com:5000/ink-api/ink-api-base-image:latest
+FROM inkmap/ink-api-base-image:latest
 MAINTAINER Vasilis Kefallinos <vasilios.kefallinos@sourcefabric.org>
 ENV INSTALL_PATH /ink-api
 RUN mkdir -p $INSTALL_PATH
