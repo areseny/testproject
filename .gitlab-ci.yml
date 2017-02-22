@@ -31,6 +31,6 @@ test:
   stage: test
   script:
     # - mv .env.sample .env
-    # - mv docker/docker-compose-test.yml docker-compose-test.yml
+    - mv docker/docker-compose-test.yml docker-compose-test.yml
     # - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
     - /bin/sh docker/ci-test.sh
