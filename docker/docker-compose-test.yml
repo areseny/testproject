@@ -13,7 +13,8 @@ services:
     volumes:
       - ./redis:/var/lib/redis/data
   web:
-    image: registry.inkmap.com:5000/devops/ink-api
+    # image: registry.inkmap.com:5000/devops/ink-api
+    build: .
     command: '/bin/sh docker/init_tests.sh'
     links:
       - postgres
