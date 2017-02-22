@@ -9,6 +9,22 @@ Ink is an API. It provides an extensible step-based framework for file conversio
 ## Rails version
 
 This project is an API, and therefore is using the `rails-api` gem.
+## Setup with docker
+Follow the instructions here https://docs.docker.com/compose/install/ to install docker and docker-compose
+To run the stack:
+
+    docker-compose build
+    docker-compose up
+
+##Setup gitlab CI
+You 
+
+Go to /admin/runners on gitlab and copy the ci token.
+Go to an accessible server and install a gitlab runner https://docs.gitlab.com/runner/
+Register the runner with the ci token
+  Choose docker+machine as execute type and docker:latest as the image
+
+
 
 ## Setup (for developers)
 
@@ -45,7 +61,7 @@ Run slanger on the target server (replace APP_KEY, SECRET, ADDRESS and PORT): `s
 
 ### Step Third-party Binary Dependencies
 
-These are listed under the gem readme files for the appropriate step gems. 
+These are listed under the gem readme files for the appropriate step gems.
 
 ### Run it
 
@@ -64,8 +80,8 @@ Once it is up and running, run the rake task in `lib/setup.rake` to create some 
 ### Adding a new step
 
 To write a new step, create a gem (you can host it under RubyGems). I've included code so that the step files get autoloaded when Rails is present.
- 
-The example I'll use here is `InkStep::RotThirteen` included in the gem `coko_demo_steps`. 
+
+The example I'll use here is `InkStep::RotThirteen` included in the gem `coko_demo_steps`.
 
 You can install in a few ways:
 
