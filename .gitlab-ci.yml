@@ -6,7 +6,7 @@ before_script:
   - docker info
   - docker-compose --version
 stages:
-  - build
+  # - build
   - test
 variables:
   POSTGRESQL_HOST: "postgres"
@@ -20,17 +20,17 @@ variables:
   DEVELOPMENT_FILE_LOCATION: "./ink_api_files/"
   TEST_FILE_LOCATION: "/tmp/ink_api_files/"
   PRODUCTION_FILE_LOCATION: "./ink_api_files/"
-
-build:
-  stage: build
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
-    - docker build -t registry.inkmap.com:5000/devops/ink-api .
-    - docker push registry.inkmap.com:5000/devops/ink-api
+# remove
+# build:
+#   stage: build
+#   script:
+#     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
+#     - docker build -t registry.inkmap.com:5000/devops/ink-api .
+#     - docker push registry.inkmap.com:5000/devops/ink-api
 test:
   stage: test
   script:
-    - mv .env.sample .env
+    # - mv .env.sample .env
     - mv docker/docker-compose-test.yml docker-compose-test.yml
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.inkmap.com:5000
     - /bin/sh docker/ci-test.sh
