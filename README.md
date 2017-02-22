@@ -17,13 +17,15 @@ To run the stack:
     docker-compose up
 
 ##Setup gitlab CI
-You 
 
 Go to /admin/runners on gitlab and copy the ci token.
 Go to an accessible server and install a gitlab runner https://docs.gitlab.com/runner/
+Make sure the runner's host has docker-engine installed
 Register the runner with the ci token
-  Choose docker+machine as execute type and docker:latest as the image
-
+  Choose docker+machine as executor type and docker:latest as the image
+  You can do this with this command
+  `gitlab-runner register -n -u $GITLAB_CI_URL --docker-image docker:latest -r $GITLAB_TOKEN --executor docker+machine --docker-privileged`
+Now whenever you push to the repo the rspec test will run.
 
 
 ## Setup (for developers)
@@ -32,9 +34,15 @@ Install `rbenv` (recommended) or `rvm` and install the required ruby version (se
 
 Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
-Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.
+Copy the .env.sample file to .env
 
-Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.
+Fill the .env file variables with your values
+
+Run `eval $(cat .env | sed 's/^/export /')` to export the variables to the environment
+
+~~Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.~~
+
+~~Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.~~
 
 Run `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
