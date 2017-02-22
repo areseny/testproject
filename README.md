@@ -16,7 +16,7 @@ To run the stack:
     docker-compose build
     docker-compose up
 
-##Setup gitlab CI
+## Setup gitlab CI
 
 Go to /admin/runners on gitlab and copy the ci token.
 Go to an accessible server and install a gitlab runner https://docs.gitlab.com/runner/
