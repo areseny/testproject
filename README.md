@@ -19,13 +19,19 @@ To run the stack:
 ## Setup gitlab CI
 
 Go to /admin/runners on gitlab and copy the ci token.
+
 Go to an accessible server and install a gitlab runner https://docs.gitlab.com/runner/
+
 Make sure the runner's host has docker-engine installed
+
 Register the runner with the ci token
+
   Choose docker+machine as executor type and docker:latest as the image
+
   You can do this with this command
   `gitlab-runner register -n -u $GITLAB_CI_URL --docker-image docker:latest -r $GITLAB_TOKEN --executor docker+machine --docker-privileged`
-Now whenever you push to the repo the rspec test will run.
+
+Now whenever you push to the repo the rspec tests will run.
 
 
 ## Setup (for developers)
