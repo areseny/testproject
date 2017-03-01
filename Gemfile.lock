@@ -17,9 +17,9 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
-  revision: 582147103412616f85e15633e3660e5484b8a328
+  revision: e490e92e3df38da72816a89c80b71cfe7172c18d
   specs:
-    inkstep_coko_conversion (0.2.9)
+    inkstep_coko_conversion (0.2.10)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
@@ -328,4 +328,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.13.6
+   1.14.5
