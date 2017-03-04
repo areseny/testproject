@@ -1,3 +1,6 @@
+require 'erb'
+require 'yaml'
+
 # config valid only for current version of Capistrano
 lock '3.4.1'
 
@@ -6,7 +9,7 @@ set :repo_url, 'git@gitlab.coko.foundation:INK/ink-api.git'
 
 set :deploy_to, '/home/admin/ink-api'
 
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'config/ink_api.yml')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'config/ink_api.yml', '.env')
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 
 set :bundle_binstubs, nil
@@ -72,10 +75,24 @@ namespace :deploy do
     end
   end
 
+  before :publishing do
+    puts "Checking secrets"
+
+    path_to_secrets = File.dirname(__FILE__) + '/../config/secrets.yml'
+    erb = ERB.new(File.read(path_to_secrets))
+    secrets = YAML.load(erb.result(binding))
+    environment = ENV['RAILS_ENV'].downcase
+
+    missing_keys = secrets[environment].select { |_, value| value.nil? }
+
+    if missing_keys.any?
+      raise "Please set the #{missing_keys.map { |k, v| k.upcase }.join(', ')} environment variable(s)."
+    end
+  end
+
   after :publishing, 'deploy:restart'
   # after :publishing, 'deploy:custom_symlinks'
   after :finishing, 'deploy:cleanup'
 
 end
-
 

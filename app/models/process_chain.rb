@@ -19,6 +19,7 @@ class ProcessChain < ApplicationRecord
   include ExecutionErrors
   include SlugMethods
   include DirectoryMethods
+  include EventConstants
 
   belongs_to :user
   belongs_to :recipe, inverse_of: :process_chains

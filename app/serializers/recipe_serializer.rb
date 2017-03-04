@@ -2,15 +2,10 @@ class RecipeSerializer < ActiveModel::Serializer
 
   # has_many :recipe_steps
 
-  attributes :id, :name, :description, :active, :times_executed, :user_id, :executeRecipeInProgress, :public, :process_chains, :recipe_steps
+  attributes :id, :name, :description, :active, :user_id, :executeRecipeInProgress, :public, :process_chains, :recipe_steps
 
   def recipe_steps
     object.recipe_steps.order(position: :asc).map{|recipe_step| ActiveModelSerializers::SerializableResource.new(recipe_step, adapter: :attribute).as_json}
-  end
-
-  def times_executed
-    user_id = @instance_options[:user_id]
-    object.times_executed(user_id)
   end
 
   def process_chains

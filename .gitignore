@@ -17,3 +17,5 @@ config/database.yml
 config/ink_api.yml
 public/uploads/*
 public/test/*
+
+.env

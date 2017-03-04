@@ -23,7 +23,7 @@ describe Execution::RecipeExecutionRunner do
     context 'with 1 step' do
       let!(:step_hash)    { {1 => step1} }
 
-      subject         { Execution::RecipeExecutionRunner.new(process_step_hash: step_hash, chain_file_location: chain.working_directory) }
+      subject         { Execution::RecipeExecutionRunner.new(process_step_hash: step_hash, chain_file_location: chain.working_directory, chain_id: chain.id) }
 
       it 'hooks the steps to each other' do
         result = subject.build_pipeline
@@ -38,7 +38,7 @@ describe Execution::RecipeExecutionRunner do
       let!(:step2)          { create(:process_step, process_chain: chain, position: 2, step_class_name: rot_thirteen_step_class.to_s) }
       let(:steps)           { {1 => step1, 2 => step2} }
 
-      subject         { Execution::RecipeExecutionRunner.new(process_step_hash: steps, chain_file_location: chain.working_directory) }
+      subject         { Execution::RecipeExecutionRunner.new(process_step_hash: steps, chain_file_location: chain.working_directory, chain_id: chain.id) }
 
       it 'hooks the steps to each other' do
         result = subject.build_pipeline
@@ -55,7 +55,7 @@ describe Execution::RecipeExecutionRunner do
     context 'for a successful execution' do
 
       context 'if there are no steps' do
-        subject         { Execution::RecipeExecutionRunner.new(process_step_hash: {}, chain_file_location: chain.working_directory) }
+        subject         { Execution::RecipeExecutionRunner.new(process_step_hash: {}, chain_file_location: chain.working_directory, chain_id: chain.id) }
 
         it 'returns nil - no change was made' do
           result = subject.run!
@@ -67,7 +67,7 @@ describe Execution::RecipeExecutionRunner do
       context 'if there is 1 step' do
         let!(:step1)          { create(:process_step, process_chain: chain, position: 1, step_class_name: base_step_class.to_s) }
 
-        subject               { Execution::RecipeExecutionRunner.new(process_step_hash: {1 => step1}, chain_file_location: chain.working_directory) }
+        subject               { Execution::RecipeExecutionRunner.new(process_step_hash: {1 => step1}, chain_file_location: chain.working_directory, chain_id: chain.id) }
 
         it 'returns a result' do
           result = subject.run!
@@ -83,7 +83,7 @@ describe Execution::RecipeExecutionRunner do
         let!(:step2)          { create(:process_step, process_chain: chain, position: 2, step_class_name: rot_thirteen_step_class.to_s) }
         let!(:step3)          { create(:process_step, process_chain: chain, position: 3, step_class_name: base_step_class.to_s) }
         let(:steps)           { {1 => step1, 2 => step2, 3 => step3} }
-        subject               { Execution::RecipeExecutionRunner.new(process_step_hash: steps, chain_file_location: chain.working_directory) }
+        subject               { Execution::RecipeExecutionRunner.new(process_step_hash: steps, chain_file_location: chain.working_directory, chain_id: chain.id) }
 
         it 'returns a result' do
           result = subject.run!
@@ -95,7 +95,7 @@ describe Execution::RecipeExecutionRunner do
 
     context 'if there is a failure' do
       let(:steps)               { {1 => step1} }
-      subject                   { Execution::RecipeExecutionRunner.new(process_step_hash: steps, chain_file_location: chain.working_directory) }
+      subject                   { Execution::RecipeExecutionRunner.new(process_step_hash: steps, chain_file_location: chain.working_directory, chain_id: chain.id) }
 
       before do
         allow_any_instance_of(base_step_class).to receive(:perform_step) { raise "Oh noes! Error!" }

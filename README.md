@@ -24,12 +24,22 @@ Run `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
 Run the rake tasks for creating a user if you want, or use `rails console`.
 
+Run slanger (replace variables APP_KEY, SECRET, ADDRESS and PORT): `slanger --app_key APP_KEY --secret SECRET -w ADDRESS:PORT`
+
+### Install 'slanger'
+
+Go to [the Slanger homepage](https://github.com/stevegraham/slanger) and install it according to the 'server setup' directions.
+
+The Slanger web service uses localhost port 4444 by default, but this can be changed by setting the `SLANGER-PORT` and 'SLANGER-SERVER' env variables
+
 ## Setup (for production)
 
 In addition to the above, on the server:
 
 - Set up an environment variable as per `secrets.yml` for Devise token auth.
 - Set up nginx and passenger to act as web server.
+
+Copy the `env.sample` file into `.env`. Populate with the environment variables needed in the `deployable_settings` bit.
 
 ### Step Third-party Binary Dependencies
 

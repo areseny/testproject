@@ -7,15 +7,20 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'support/async_wait'
 require 'support/factory_girl'
+require 'support/secrets_helper'
+
 require 'execution_errors'
 require 'constants'
 require 'step_class_constants'
 require 'directory_methods'
 
+require 'pusher-fake/support/rspec'
+
 require 'database_cleaner'
 include ActionDispatch::TestProcess
 include StepClassConstants
 include DirectoryMethods
+include EventConstants
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -43,6 +48,7 @@ RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.include WaitForAsync
+  config.include SecretsHelper
 
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)

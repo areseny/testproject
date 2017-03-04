@@ -1,23 +1,18 @@
 module Execution
   class RecipeExecutionRunner
-
     attr_accessor :step_array, :process_steps, :chain_file_location
 
-    def initialize(process_step_hash:, chain_file_location:)
+    def initialize(process_step_hash:, chain_file_location:, chain_id:)
       @process_steps = process_step_hash
       @chain_file_location = chain_file_location
       @step_array = []
+      @chain_id = chain_id
     end
 
     def run!
       return nil if @process_steps.empty?
-      begin
-        pipeline = build_pipeline
-        pipeline.execute
-      rescue => e
-        ap e.message
-        ap e.backtrace
-      end
+      pipeline = build_pipeline
+      pipeline.execute
       pipeline
     end
 

@@ -21,6 +21,12 @@ Rails.application.configure do
   # for use with ink-api.coko.foundation
   Rails.application.routes.default_url_options[:host] = 'ink-api.coko.foundation'
 
+  # missing_values = []
+  #
+  # ['SLANGER_ID', 'SLANGER_KEY', 'SLANGER_SECRET', 'SLANGER_HOST', 'SLANGER_PORT'].each do |key|
+  #   missing_values << key unless ENV[key].present?
+  # end
+  # raise "Missing environment values: #{missing_values.join(", ")}. Please set these environment variables for Slanger" if missing_values.any?
 
   # config.assets.enabled = false
 

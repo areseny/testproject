@@ -50,6 +50,9 @@ gem 'jbuilder', '~> 2.0'
 
 gem 'awesome_print'
 
+# we're actually using slanger
+gem 'pusher'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -78,6 +81,8 @@ group :test do
 
   # mocking external services during testing
   gem 'webmock'
+
+  gem 'pusher-fake'
 end
 
 group :development do
