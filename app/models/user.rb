@@ -43,8 +43,6 @@ class User < ApplicationRecord
 
   def add_roles(roles_to_add)
     [roles_to_add].flatten.each do |role|
-      ap "next role: #{role}"
-      ap "role list: #{roles}"
       user_roles.create(role: role) unless roles.include?(role)
     end
   end

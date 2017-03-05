@@ -33,11 +33,7 @@ RSpec.describe User, type: :model do
       end
 
       specify do
-        user.add_roles(new_role)
-
-        user.reload
-
-        expect(user.roles).to eq ["absolute_monarch", new_role]
+        expect{user.add_roles(new_role)}.to_not change{user.roles.count}
       end
     end
   end
