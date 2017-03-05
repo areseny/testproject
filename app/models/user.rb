@@ -35,5 +35,18 @@ class User < ApplicationRecord
 
   has_many :recipes, inverse_of: :user
   has_many :process_chains, inverse_of: :user
+  has_many :user_roles, inverse_of: :user
+
+  def roles
+    user_roles.map(&:role).uniq
+  end
+
+  def add_roles(roles_to_add)
+    [roles_to_add].flatten.each do |role|
+      ap "next role: #{role}"
+      ap "role list: #{roles}"
+      user_roles.create(role: role) unless roles.include?(role)
+    end
+  end
 
 end

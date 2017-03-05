@@ -14,5 +14,10 @@ FactoryGirl.define do
     end
   end
 
+  factory :user_role do
+    user
+    role "admin"
+  end
+
 
 end

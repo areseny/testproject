@@ -9,7 +9,12 @@ class ApplicationController < ActionController::API
     # remove if you want the root element to serialise as well
     # {root: false}
     # {}
+  end
 
+  def authorise_admin!
+    unless current_api_user.roles.include?("admin")
+      render_unauthorised_error("Sorry, this is not for you")
+    end
   end
 
   def render_error(e)

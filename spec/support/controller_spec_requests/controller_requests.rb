@@ -58,3 +58,12 @@ def download_output_zip(version, data = {}.to_json)
   get :download_output_zip, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
+# admin_controller requests
+
+def get_users_request(version, data = {}.to_json)
+  get :users, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
+def service_accounts_request(version, data = {}.to_json)
+  get :service_accounts, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end

@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
       mount_devise_token_auth_for 'User', at: 'auth'
 
+      namespace :admin do
+        get 'users' => 'accounts#users'
+        get 'service_accounts' => 'accounts#service_accounts'
+      end
+
       get 'members_only' => 'pages#members_only'
       get 'anyone' => 'pages#anyone'
 
