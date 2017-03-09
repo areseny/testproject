@@ -77,7 +77,7 @@ describe "User executes a recipe xsweet pipeline" do
         perform_execute_request(auth_headers, execution_params)
 
         process_chain = recipe.reload.process_chains.first
-
+        ap body_as_json
         expect(body_as_json['process_chain']['recipe_id']).to eq process_chain.recipe_id
         expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
         expect(body_as_json['process_chain']['finished_at']).to_not be_nil

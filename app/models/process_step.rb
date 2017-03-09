@@ -18,6 +18,8 @@ class ProcessStep < ApplicationRecord
   include ObjectMethods
   include DirectoryMethods
 
+  serialize :output_file_list
+
   belongs_to :process_chain, inverse_of: :process_steps
 
   validates_presence_of :process_chain, :position, :step_class_name
@@ -28,6 +30,15 @@ class ProcessStep < ApplicationRecord
     class_from_string(step_class_name)
   end
 
+  def output_file_manifest
+    if output_file_list.present?
+      # YAML.load(output_file_list)
+      output_file_list
+    else
+      assemble_manifest(working_directory)
+    end
+  end
+
   def working_directory
     File.join(process_chain.working_directory, position.to_s)
   end
@@ -36,8 +47,12 @@ class ProcessStep < ApplicationRecord
     working_directory
   end
 
-  def output_file_manifest
-    assemble_manifest(working_directory)
+  def finished?
+    !!finished_at
+  end
+
+  def started?
+    !!started_at
   end
 
   def assemble_output_file_zip

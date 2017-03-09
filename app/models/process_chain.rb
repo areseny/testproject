@@ -21,6 +21,8 @@ class ProcessChain < ApplicationRecord
   include DirectoryMethods
   include EventConstants
 
+  serialize :input_file_list
+
   belongs_to :user
   belongs_to :recipe, inverse_of: :process_chains
   has_many :process_steps, inverse_of: :process_chain, dependent: :destroy
@@ -42,10 +44,9 @@ class ProcessChain < ApplicationRecord
 
   def execute_process!(input_files:, callback_url: "")
     raise "Chain not saved yet" if new_record?
-    raise ExecutionErrors::NoFileSuppliedError.new("No input file received") unless input_files.present?
+    raise ExecutionErrors::NoFileSuppliedError.new("No input files received") unless input_files.present?
     initialize_directories
     write_input_files(input_files)
-    self.update_attribute(:executed_at, Time.zone.now)
     ExecutionWorker.perform_async(self.id, callback_url)
   end
 
@@ -91,6 +92,7 @@ class ProcessChain < ApplicationRecord
       process_step.started_at = runner_step.started_at
       process_step.finished_at = runner_step.finished_at
       process_step.successful = runner_step.successful
+      process_step.output_file_list = assemble_manifest(process_step.working_directory)
       process_step.save!
     end
   end
@@ -100,10 +102,6 @@ class ProcessChain < ApplicationRecord
       return false unless step.successful
     end
     true
-  end
-
-  def finished_at
-    last_step.try(:finished_at)
   end
 
   def working_directory
@@ -121,8 +119,17 @@ class ProcessChain < ApplicationRecord
     end
   end
 
+  def save_input_file_manifest!
+    self.input_file_list = assemble_manifest(input_files_directory)
+    save!
+  end
+
   def input_file_manifest
-    assemble_manifest(input_files_directory)
+    if input_file_list.present?
+      input_file_list
+    else
+      save_input_file_manifest!
+    end
   end
 
   def output_file_manifest

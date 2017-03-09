@@ -66,7 +66,7 @@ RSpec.describe ProcessChain, type: :model do
       it 'successfully starts execution' do
         process_chain.execute_process!(input_files: [input_file])
 
-        expect(process_chain.executed_at).to_not be_nil
+        expect(process_chain.reload.executed_at).to_not be_nil
         expect(recursive_file_list(working_directory)).to match_array(["input_files/plaintext.txt", "1/plaintext.txt"])
       end
     end
@@ -85,6 +85,10 @@ RSpec.describe ProcessChain, type: :model do
     let(:runner)              { double(:recipe_process_runner, step_array: [runner_step1, runner_step2]) }
 
     before do
+      create_directory_if_needed(subject.input_files_directory)
+      create_directory_if_needed(process_step1.working_directory)
+      create_directory_if_needed(process_step2.working_directory)
+
       subject.reload
 
       subject.map_results([runner_step1, runner_step2])

@@ -101,13 +101,11 @@ describe Execution::RecipeExecutionRunner do
         allow_any_instance_of(base_step_class).to receive(:perform_step) { raise "Oh noes! Error!" }
       end
 
-      it 'the step does not have an output file' do
+      it 'has the original files copied but not modified' do
         result = subject.run!
-        chain.reload
-        ap chain
 
         expect(result).to be_a base_step_class
-        expect(chain.output_file_manifest).to eq [{:path=>"plaintext.txt", :size=>"18 bytes"}]
+        expect(chain.reload.output_file_manifest).to eq [{:path=>"plaintext.txt", :size=>"18 bytes"}]
       end
 
       it 'logs the error' do

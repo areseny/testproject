@@ -6,17 +6,25 @@ module EventConstants
   # Pusher.trigger(['channel_1', 'channel_2'], 'event_name', {foo: 'bar'})
 
   def trigger_event(channels:, event:, data: {})
-    ap "Triggering event #{event} on channels #{channels} with data #{data}"
-    ap "Pusher info: app ID: #{Pusher.app_id}, key: #{Pusher.key}, secret: #{Pusher.secret}, host: #{Pusher.host}, port: #{Pusher.port}"
-    Pusher.trigger(channels, event, {})
+    log "Triggering event #{event} on channels #{channels} with data #{data}"
+    log "Pusher info: app ID: #{Pusher.app_id}, key: #{Pusher.key}, secret: #{Pusher.secret}, host: #{Pusher.host}, port: #{Pusher.port}"
+    Pusher.trigger(channels, event, data)
   rescue Pusher::Error => e
     # (Pusher::AuthenticationError, Pusher::HTTPError, or Pusher::Error)
-    ap "PUSHER ERROR!"
-    ap e.message
-    ap e.backtrace
+    log "PUSHER ERROR!"
+    log e.message
+    log e.backtrace
   rescue => e
-    ap e.message
-    ap e.backtrace
+    log e.message
+    log e.backtrace
+  end
+
+  def log(message)
+    if self.respond_to?(:log_as_step)
+      log_as_step message
+    else
+      ap message
+    end
   end
 
   # recipe channel and events
@@ -47,18 +55,14 @@ module EventConstants
     'processing_completed'
   end
 
-  # process step channel and events
-
-  def process_step_channel(process_step_id)
-    "process_step_#{process_step_id}"
-  end
+  # process step events
 
   def process_step_started_event
     'process_step_started'
   end
 
   def process_step_finished_event
-    'process_step_finished'
+    'process_step_completed'
   end
 
 end
