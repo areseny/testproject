@@ -12,7 +12,7 @@ class ApplicationController < ActionController::API
   end
 
   def authorise_admin!
-    unless current_api_user.roles.include?("admin")
+    unless current_api_user.is_admin?
       render_unauthorised_error("Sorry, this is not for you")
     end
   end

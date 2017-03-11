@@ -45,7 +45,7 @@ class Recipe < ApplicationRecord
     new_chain.save!
 
     new_chain.execute_process!(callback_url: callback_url, input_files: [input_files].flatten)
-    new_chain
+    new_chain.reload
   end
 
   def clone_to_process_chain(user:)

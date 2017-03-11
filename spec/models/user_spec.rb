@@ -37,4 +37,24 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#is_admin?' do
+    let!(:user)     { create(:user) }
+
+    context 'if the user is not an admin' do
+      specify do
+        expect(user.is_admin?).to be_falsey
+      end
+    end
+
+    context 'if the user is an admin' do
+      before do
+        create(:user_role, user: user, role: "admin")
+      end
+
+      specify do
+        expect(user.is_admin?).to be_truthy
+      end
+    end
+  end
 end

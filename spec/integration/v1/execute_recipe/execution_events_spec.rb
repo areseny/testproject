@@ -32,7 +32,7 @@ describe "User executes a recipe and an event is triggered" do
       it 'fires the events' do
         perform_execute_request(auth_headers, execution_params)
 
-        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
+        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_chain_started_processing_event, data: { "recipe_id" => recipe.id, "chain_id" => ProcessChain.last.id } )
         expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_chain_done_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
         expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_step_started_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
         expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_step_finished_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
