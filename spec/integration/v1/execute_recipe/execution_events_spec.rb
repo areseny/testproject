@@ -32,10 +32,10 @@ describe "User executes a recipe and an event is triggered" do
       it 'fires the events' do
         perform_execute_request(auth_headers, execution_params)
 
-        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_chain_started_processing_event, data: { "recipe_id" => recipe.id, "chain_id" => ProcessChain.last.id } )
-        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_chain_done_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
-        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_step_started_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
-        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_step_finished_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
+        expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
+        expect_event(channels: execution_channel, event: process_chain_done_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
+        expect_event(channels: execution_channel, event: process_step_started_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
+        expect_event(channels: execution_channel, event: process_step_finished_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
       end
     end
 
@@ -49,17 +49,21 @@ describe "User executes a recipe and an event is triggered" do
 
         expect(response.status).to eq(200)
 
-        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id})
-        expect_event(channels: "process_chain_#{ProcessChain.last.id}", event: process_chain_error_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id})
+        expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id})
+        expect_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id})
       end
     end
 
     def expect_event(channels:, event:, data: {})
-      expect(WebMock).to have_requested(:post,  /#{Pusher.host}\:#{Pusher.port}\/apps\/#{Pusher.app_id}\/events/).with(body: hash_including({"name" => event, "channels" => [channels].flatten, "data" => "#{data}"}))
+      expect(WebMock).to have_requested(:post,  /#{Pusher.host}\:#{Pusher.port}\/apps\/#{Pusher.app_id}\/events/).with(body: hash_including({"name" => event, "channels" => [channels].flatten, "data" => "#{data.to_json}"}))
     end
 
     def stub_event_request
       stub_request(:post, "#{Pusher.host}:#{Pusher.port}")
+    end
+
+    def execution_channel
+      "process_chain_#{ProcessChain.last.id}"
     end
 
   end

@@ -29,8 +29,12 @@ module EventConstants
 
   # recipe channel and events
 
-  def recipe_channel(recipe_id)
-    "recipe_#{recipe_id}"
+  # def recipe_channel(recipe_id)
+  #   "recipe_#{recipe_id}"
+  # end
+
+  def recipe_channel
+    "recipes"
   end
 
   def recipe_updated_event
@@ -39,9 +43,13 @@ module EventConstants
 
   # process chain channel and events
 
-  def process_chain_channel(process_chain_id)
-    "process_chain_#{process_chain_id}"
+  def execution_channel
+    "process_chain_execution"
   end
+
+  # def process_chain_channel(process_chain_id)
+  #   "process_chain_#{process_chain_id}"
+  # end
 
   def process_chain_error_event
     'processing_error'
