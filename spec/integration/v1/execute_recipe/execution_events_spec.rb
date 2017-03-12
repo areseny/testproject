@@ -14,7 +14,7 @@ describe "User executes a recipe and an event is triggered" do
 
     let!(:rot13)            { rot_thirteen_step_class.to_s }
     let!(:base)             { base_step_class.to_s }
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot13, base]) }
+    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot13]) }
 
     let!(:execution_params) {
       {
@@ -22,20 +22,69 @@ describe "User executes a recipe and an event is triggered" do
           id: recipe.id
       }
     }
-
+    let(:chain) { ProcessChain.last }
+    let(:step) { ProcessStep.last }
 
     before do
       stub_event_request
     end
 
     context 'and execution is successful' do
-      it 'fires the events' do
+
+      it 'fires the chain start event' do
         perform_execute_request(auth_headers, execution_params)
 
-        expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
-        expect_event(channels: execution_channel, event: process_chain_done_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
-        expect_event(channels: execution_channel, event: process_step_started_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
-        expect_event(channels: execution_channel, event: process_step_finished_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id } )
+        expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: chain.id } )
+      end
+
+      it 'fires the first step start event' do
+        perform_execute_request(auth_headers, execution_params)
+
+        expect_event(channels: execution_channel, event: process_step_started_event, data: { recipe_id: recipe.id, chain_id: chain.id, position: 1, version: step.version } )
+      end
+
+      it 'fires the first step completion event' do
+        perform_execute_request(auth_headers, execution_params)
+
+        # expecting "channels"=>["process_chain_execution"], "data"=>"{\"chain_id\":1,\"position\":1,\"successful\":true,\"notes\":\"[]\",\"execution_errors\":\"[]\",\"recipe_id\":1,\"output_file_manifest\":[{\"path\":\"test_rot13.html\",\"size\":\"84 bytes\"}]}", "name"=>"process_step_completed"})
+        # actual "channels":["process_chain_execution"],"data":"{\"chain_id\":1,\"position\":1,\"successful\":true,\"notes\":[],\"execution_errors\":[],\"recipe_id\":1,\"output_file_manifest\":[{\"path\":\"test_rot13.html\",\"size\":\"84 bytes\"}]}"}'
+        expect_event(channels: execution_channel, event: process_step_finished_event, data: { chain_id: chain.id, position: step.position, successful: step.successful, notes: step.notes, execution_errors: step.execution_errors, recipe_id: recipe.id, output_file_manifest: step.output_file_manifest } )
+      end
+
+      it 'fires the chain completion event' do
+        perform_execute_request(auth_headers, execution_params)
+
+        expect_event(channels: execution_channel, event: process_chain_done_processing_event, data: { recipe_id: recipe.id, chain_id: chain.id, output_file_manifest: chain.output_file_manifest } )
+      end
+    end
+
+    context 'if the step has an error' do
+      before do
+        allow_any_instance_of(rot_thirteen_step_class).to receive(:perform_step) { raise "oh noes!" }
+      end
+
+      it 'fires the chain start event' do
+        perform_execute_request(auth_headers, execution_params)
+
+        expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: chain.id } )
+      end
+
+      it 'fires the step start event' do
+        perform_execute_request(auth_headers, execution_params)
+
+        expect_event(channels: execution_channel, event: process_step_started_event, data: { recipe_id: recipe.id, chain_id: chain.id, position: 1, version: step.version } )
+      end
+
+      it 'fires the step completion event (even though it has an error)' do
+        perform_execute_request(auth_headers, execution_params)
+
+        expect_event(channels: execution_channel, event: process_step_finished_event, data: { chain_id: chain.id, position: step.position, successful: step.successful, notes: step.notes, execution_errors: step.execution_errors, recipe_id: recipe.id, output_file_manifest: step.output_file_manifest } )
+      end
+
+      it 'fires the chain completion event' do
+        perform_execute_request(auth_headers, execution_params)
+
+        expect_event(channels: execution_channel, event: process_chain_done_processing_event, data: { recipe_id: recipe.id, chain_id: chain.id, output_file_manifest: chain.output_file_manifest } )
       end
     end
 
@@ -47,10 +96,12 @@ describe "User executes a recipe and an event is triggered" do
       it 'sends the failed chain information back to the client' do
         perform_execute_request(auth_headers, execution_params)
 
+        chain = ProcessChain.last
+
         expect(response.status).to eq(200)
 
-        expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id})
-        expect_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: recipe.id, chain_id: ProcessChain.last.id})
+        expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: chain.id})
+        expect_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: recipe.id, chain_id: chain.id, output_file_manifest: []})
       end
     end
 
@@ -61,11 +112,6 @@ describe "User executes a recipe and an event is triggered" do
     def stub_event_request
       stub_request(:post, "#{Pusher.host}:#{Pusher.port}")
     end
-
-    def execution_channel
-      "process_chain_#{ProcessChain.last.id}"
-    end
-
   end
   
   def perform_execute_request(auth_headers, data)

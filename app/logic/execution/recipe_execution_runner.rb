@@ -25,7 +25,7 @@ module Execution
         next unless process_step
         step_class = process_step.step_class
         latest_in_chain = step_class.new(chain_file_location: chain_file_location, next_step: latest_in_chain, position: process_step.position)
-        add_event_triggers(latest_in_chain)
+        decorate_event_triggers(latest_in_chain)
         @step_array << latest_in_chain
       end
 
@@ -33,13 +33,13 @@ module Execution
       latest_in_chain
     end
 
-    def add_event_triggers(step_object)
+    def decorate_event_triggers(step_object)
       step_object.class.include(EventConstants)
       step_object.class.include(DirectoryMethods)
       step_object.instance_variable_set(:@chain_id, @chain_id)
       step_object.instance_variable_set(:@recipe_id, ProcessChain.find(@chain_id).recipe_id)
 
-      step_object.instance_variable_set(:@update_channel, process_chain_channel(@chain_id))
+      step_object.instance_variable_set(:@update_channel, execution_channel)
       step_object.instance_variable_set(:@process_step_started_event, process_step_started_event)
       step_object.instance_variable_set(:@process_step_finished_event, process_step_finished_event)
 
