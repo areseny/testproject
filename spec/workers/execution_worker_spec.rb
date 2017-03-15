@@ -17,13 +17,9 @@ describe ExecutionWorker do
     end
 
     it 'generates the hash properly' do
-      expected = { process_step1.position => process_step1,
-                   process_step2.position => process_step2,
-                   process_step3.position => process_step3,
-                   process_step4.position => process_step4,
-      }
+      expected = [ process_step1, process_step2, process_step3, process_step4]
 
-      expect(subject.process_step_hash).to eq expected
+      expect(subject.process_steps_in_order).to eq expected
     end
 
   end

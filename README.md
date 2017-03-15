@@ -24,7 +24,7 @@ Run `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
 Run the rake tasks for creating a user if you want, or use `rails console`.
 
-Run slanger (replace variables APP_KEY, SECRET, ADDRESS and PORT): `slanger --app_key APP_KEY --secret SECRET -w ADDRESS:PORT`
+Run slanger (replace variables APP_KEY, SECRET, ADDRESS and PORT): `slanger --app_key APP_KEY --secret SECRET -w ADDRESS:PORT`. For development, you can use the command `slanger --app_key 44332211ffeeddccbbaa --secret aabbccddeeff11223344 -a localhost:4567 -w localhost:4444 --verbose` (the `--verbose` tag will help you debug if you need it).
 
 ### Install 'slanger'
 

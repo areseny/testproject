@@ -55,7 +55,11 @@ class ProcessChain < ApplicationRecord
   end
 
   def step_classes
-    process_steps.sort_by(&:position).map(&:step_class)
+    process_steps_in_order.map(&:step_class)
+  end
+
+  def process_steps_in_order
+    process_steps.sort_by(&:position)
   end
 
   def write_input_files(input_files)
@@ -84,8 +88,8 @@ class ProcessChain < ApplicationRecord
   end
 
   def map_results(runner_steps)
-    runner_steps.each_with_index do |runner_step, index|
-      process_step = process_steps[index]
+    runner_steps.each do |runner_step|
+      process_step = process_steps[runner_step.position-1]
       process_step.execution_errors = [runner_step.errors].flatten
       process_step.notes = [runner_step.notes].flatten
       process_step.version = runner_step.version

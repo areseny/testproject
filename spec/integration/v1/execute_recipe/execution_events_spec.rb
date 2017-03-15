@@ -90,7 +90,7 @@ describe "User executes a recipe and an event is triggered" do
 
     context 'and execution fails' do
       before do
-        allow_any_instance_of(Execution::RecipeExecutionRunner).to receive(:build_pipeline) { raise "FRAMEWORK ERROR" }
+        allow_any_instance_of(Execution::RecipeExecutionRunner).to receive(:execute_process_steps) { raise "FRAMEWORK ERROR" }
       end
 
       it 'sends the failed chain information back to the client' do
@@ -101,7 +101,7 @@ describe "User executes a recipe and an event is triggered" do
         expect(response.status).to eq(200)
 
         expect_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: recipe.id, chain_id: chain.id})
-        expect_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: recipe.id, chain_id: chain.id, output_file_manifest: []})
+        expect_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: recipe.id, chain_id: chain.id, output_file_manifest: [], error: "FRAMEWORK ERROR"})
       end
     end
 

@@ -1,63 +1,74 @@
 module Execution
   class RecipeExecutionRunner
     include EventConstants
+    include DirectoryMethods
 
-    attr_accessor :step_array, :process_steps, :chain_file_location, :chain_id
+    attr_accessor :step_array, :process_steps, :chain_file_location, :chain_id, :recipe_id
 
-    def initialize(process_step_hash:, chain_file_location:, chain_id:)
-      @process_steps = process_step_hash
-      @chain_file_location = chain_file_location
+    def initialize(process_steps_in_order:, chain_file_location:, process_chain:)
       @step_array = []
-      @chain_id = chain_id
+      @process_steps = process_steps_in_order
+      @chain_file_location = chain_file_location
+      @process_chain = process_chain
+      @recipe_id = process_chain.recipe_id
+      @chain_id = @process_chain.id
     end
 
     def run!
       return nil if @process_steps.empty?
-      pipeline = build_pipeline
-      pipeline.execute
-      pipeline
+      trigger_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: @process_chain.recipe_id, chain_id: chain_id})
+      @process_chain.update_attribute(:executed_at, Time.zone.now)
+      @process_chain.save_input_file_manifest!
+
+      execute_process_steps
+      trigger_event(channels: execution_channel, event: process_chain_done_processing_event, data: { recipe_id: @process_chain.recipe_id, chain_id: chain_id, output_file_manifest: @process_chain.output_file_manifest })
+    rescue => e
+      trigger_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: @process_chain.recipe_id, chain_id: chain_id, output_file_manifest: @process_chain.output_file_manifest, error: e.message})
+    ensure
+      @process_chain.map_results(@step_array)
+      @process_chain.update_attribute(:finished_at, Time.now)
     end
 
-    def build_pipeline
-      latest_in_chain = nil
-      steps = @process_steps.sort.to_h.values
-      steps.reverse.each do |process_step|
-        next unless process_step
-        step_class = process_step.step_class
-        latest_in_chain = step_class.new(chain_file_location: chain_file_location, next_step: latest_in_chain, position: process_step.position)
-        decorate_event_triggers(latest_in_chain)
-        @step_array << latest_in_chain
+    def execute_process_steps
+      @process_steps.each do |process_step|
+        behaviour_step = process_step.step_class.new(chain_file_location: chain_file_location, position: process_step.position)
+        @step_array << behaviour_step
+        trigger_step_started_event(behaviour_step)
+        begin
+          behaviour_step.execute
+        ensure
+          trigger_step_finished_event(behaviour_step)
+        end
       end
-
-      @step_array.reverse!
-      latest_in_chain
     end
 
-    def decorate_event_triggers(step_object)
-      step_object.class.include(EventConstants)
-      step_object.class.include(DirectoryMethods)
-      step_object.instance_variable_set(:@chain_id, @chain_id)
-      step_object.instance_variable_set(:@recipe_id, ProcessChain.find(@chain_id).recipe_id)
+    def trigger_step_started_event(behaviour_step)
+      trigger_event(channels: execution_channel,
+                    event: process_step_started_event,
+                    data: { chain_id: @chain_id,
+                            position: behaviour_step.position,
+                            version: behaviour_step.version,
+                            recipe_id: @recipe_id })
+    end
 
-      step_object.instance_variable_set(:@update_channel, execution_channel)
-      step_object.instance_variable_set(:@process_step_started_event, process_step_started_event)
-      step_object.instance_variable_set(:@process_step_finished_event, process_step_finished_event)
-
-      step_object.define_singleton_method(:trigger_start_event!) do
-        trigger_event(channels: @update_channel, event: @process_step_started_event, data: { chain_id: @chain_id, position: position, version: version, recipe_id: @recipe_id })
-      end
-
-      step_object.define_singleton_method(:trigger_completion_event!) do
-        trigger_event(channels: @update_channel, event: @process_step_finished_event, data: { chain_id: @chain_id, position: position, successful: successful, notes: notes, execution_errors: errors, recipe_id: @recipe_id, output_file_manifest: assemble_manifest(working_directory) })
-      end
+    def trigger_step_finished_event(behaviour_step)
+      trigger_event(channels: execution_channel,
+                    event: process_step_finished_event,
+                    data: { chain_id: @chain_id,
+                            position: behaviour_step.position,
+                            successful: behaviour_step.successful,
+                            notes: behaviour_step.notes,
+                            execution_errors: behaviour_step.errors,
+                            recipe_id: @recipe_id,
+                            output_file_manifest: assemble_manifest(behaviour_step.working_directory) })
     end
   end
 end
 
 
-  class NilClass
-    def new
-      nil
-    end
+class NilClass
+  def new
+    nil
   end
+end
 

@@ -80,8 +80,8 @@ RSpec.describe ProcessChain, type: :model do
 
     let(:some_file)           { File.new(Rails.root.join('spec/fixtures/files/plaintext.txt')) }
 
-    let(:runner_step1)        { double(:process_object, successful: true, started_at: 10.seconds.ago, finished_at: 5.seconds.ago, notes: "OK", errors:[], version: "1.2.7") }
-    let(:runner_step2)        { double(:process_object, successful: false, started_at: 4.seconds.ago, finished_at: 2.seconds.ago, notes: "some notes", errors:["oh noes!"], version: "0.2.1") }
+    let(:runner_step1)        { double(:process_object, position: 1, successful: true, started_at: 10.seconds.ago, finished_at: 5.seconds.ago, notes: "OK", errors:[], version: "1.2.7") }
+    let(:runner_step2)        { double(:process_object, position: 2, successful: false, started_at: 4.seconds.ago, finished_at: 2.seconds.ago, notes: "some notes", errors:["oh noes!"], version: "0.2.1") }
     let(:runner)              { double(:recipe_process_runner, step_array: [runner_step1, runner_step2]) }
 
     before do
