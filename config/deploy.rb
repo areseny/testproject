@@ -14,6 +14,8 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', '
 
 set :bundle_binstubs, nil
 
+set :verbosity, :error
+
 desc "Check if agent forwarding is working"
 task :forwarding do
   on roles(:all) do |h|
@@ -68,6 +70,17 @@ namespace :deploy do
   #   end
   # end
 
+  desc 'Invoke a rake command on the remote server'
+  task :invoke, [:command] => 'deploy:set_rails_env' do |task, args|
+    on primary(:app) do
+      within current_path do
+        with :rails_env => fetch(:rails_env) do
+          rake args[:command]
+        end
+      end
+    end
+  end
+
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
@@ -75,21 +88,17 @@ namespace :deploy do
     end
   end
 
-  before :publishing do
-    puts "Checking secrets"
-
-    path_to_secrets = File.dirname(__FILE__) + '/../config/secrets.yml'
-    erb = ERB.new(File.read(path_to_secrets))
-    secrets = YAML.load(erb.result(binding))
-    environment = ENV['RAILS_ENV'].downcase
-
-    missing_keys = secrets[environment].select { |_, value| value.nil? }
-
-    if missing_keys.any?
-      raise "Please set the #{missing_keys.map { |k, v| k.upcase }.join(', ')} environment variable(s)."
+  task :check_secrets do
+    on roles(:app), in: :sequence do |host|
+      within current_path do
+        with :rails_env => fetch(:rails_env) do
+          rake :check_secrets
+        end
+      end
     end
   end
 
+  before :publishing, 'deploy:check_secrets'
   after :publishing, 'deploy:restart'
   # after :publishing, 'deploy:custom_symlinks'
   after :finishing, 'deploy:cleanup'
