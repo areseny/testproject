@@ -36,6 +36,9 @@ module Execution
         trigger_step_started_event(behaviour_step)
         begin
           behaviour_step.execute
+        # rescue => e
+        #   log(e.message)
+        #   log(e.backtrace)
         ensure
           trigger_step_finished_event(behaviour_step)
         end

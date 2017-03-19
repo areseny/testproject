@@ -47,6 +47,7 @@ class ProcessChain < ApplicationRecord
     raise ExecutionErrors::NoFileSuppliedError.new("No input files received") unless input_files.present?
     initialize_directories
     write_input_files(input_files)
+    save_input_file_manifest!
     ExecutionWorker.perform_async(self.id, callback_url)
   end
 

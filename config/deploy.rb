@@ -98,7 +98,7 @@ namespace :deploy do
     end
   end
 
-  before :publishing, 'deploy:check_secrets'
+  # before :publishing, 'deploy:check_secrets'
   after :publishing, 'deploy:restart'
   # after :publishing, 'deploy:custom_symlinks'
   after :finishing, 'deploy:cleanup'
