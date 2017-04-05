@@ -5,9 +5,19 @@
 development:
   environment: development
   file_location: /wherever/you/want/your/ink_api_files/
+
 test:
   environment: development
   file_location: /tmp/ink_api_files/test
+
 production:
-  environment: development
-  file_location: /tmp/ink_api_files/
+  environment: production
+  file_location: /tmp/ink_api_files/production
+
+staging:
+  environment: staging
+  file_location: /tmp/ink_api_files/staging
+
+demo:
+  environment: demo
+  file_location: /tmp/ink_api_files/demo

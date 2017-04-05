@@ -22,15 +22,15 @@ Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in t
 
 Run `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
 
-Run the rake tasks for creating a user if you want, or use `rails console`.
-
-Run slanger (replace variables APP_KEY, SECRET, ADDRESS and PORT): `slanger --app_key APP_KEY --secret SECRET -w ADDRESS:PORT`. For development, you can use the command `slanger --app_key 44332211ffeeddccbbaa --secret aabbccddeeff11223344 -a localhost:4567 -w localhost:4444 --verbose` (the `--verbose` tag will help you debug if you need it).
+Run the rake tasks for creating an account if you want, or use `rails console`.
 
 ### Install 'slanger'
 
 Go to [the Slanger homepage](https://github.com/stevegraham/slanger) and install it according to the 'server setup' directions.
 
 The Slanger web service uses localhost port 4444 by default, but this can be changed by setting the `SLANGER-PORT` and 'SLANGER-SERVER' env variables
+
+Run slanger (replace variables APP_KEY, SECRET, ADDRESS and PORT): `slanger --app_key APP_KEY --secret SECRET -w ADDRESS:PORT`. For development, you can use the command `slanger --app_key 44332211ffeeddccbbaa --secret aabbccddeeff11223344 -a localhost:4567 -w localhost:4444 --verbose` (the `--verbose` tag will help you debug if you need it).
 
 ## Setup (for production)
 
@@ -40,6 +40,8 @@ In addition to the above, on the server:
 - Set up nginx and passenger to act as web server.
 
 Copy the `env.sample` file into `.env`. Populate with the environment variables needed in the `deployable_settings` bit.
+
+Run slanger on the target server (replace APP_KEY, SECRET, ADDRESS and PORT): `slanger --app_key APP_KEY --secret SECRET -w ADDRESS:PORT`. For development, you can use the command `slanger --app_key 44332211ffeeddccbbaa --secret aabbccddeeff11223344 -a 0.0.0.0:4567 -w 0.0.0.0:4444 --verbose` (the `--verbose` tag will help you debug if you need it).
 
 ### Step Third-party Binary Dependencies
 

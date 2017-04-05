@@ -1,8 +1,8 @@
 require 'rake'
 
-namespace :check_secrets do
+namespace :secrets do
   desc "checks that all secrets are set3------"
-  task :create_user, [:name, :password] => [:environment] do |t, args|
+  task :check, [:name, :password] => [:environment] do |t, args|
     puts "Checking secrets"
 
     path_to_secrets = File.dirname(__FILE__) + '/../config/secrets.yml'
