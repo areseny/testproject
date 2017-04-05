@@ -1,3 +1,10 @@
+set :stage, :staging
+set :rails_env, 'staging'
+
+server '162.243.148.158', user: 'admin', roles: %w{web app}
+set :deploy_to, '/home/admin/ink-api/staging'
+set :branch,      fetch(:branch, 'staging')
+
 # server-based syntax
 # ======================
 # Defines a single server with a list of roles and multiple properties.
