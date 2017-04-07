@@ -12,9 +12,9 @@ Rails.application.routes.draw do
   Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
 
   # authenticate :user, lambda { |u| u.admin? } do
-  authenticate :user do
+  # authenticate :user do
     mount Sidekiq::Web => '/sidekiq'
-  end
+  # end
 
 
   namespace :api, defaults: {format: 'json'} do
