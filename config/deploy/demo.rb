@@ -1,5 +1,7 @@
+set :stage, :demo
 set :rails_env, 'demo'
-set :branch, fetch(:branch, 'demo')
+
+set :branch, 'demo'
 
 server '162.243.148.158', user: 'admin', roles: %w{web app}
 set :deploy_to, '/home/admin/ink-api/demo'
@@ -7,7 +9,6 @@ set :deploy_to, '/home/admin/ink-api/demo'
 set :default_environment, {
     'RAILS_ENV' => 'demo'
 }
-set :stage, :demo
 
 # server-based syntax
 # ======================

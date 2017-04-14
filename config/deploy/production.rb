@@ -1,8 +1,9 @@
 set :stage, :production
+set :rails_env, 'production'
 
 server '162.243.148.158', user: 'admin', roles: %w{web app}
 set :deploy_to, '/home/admin/ink-api/production'
-set :branch,      fetch(:branch, 'production')
+set :branch, 'production'
 
 # server-based syntax
 # ======================

@@ -3,7 +3,8 @@ set :rails_env, 'staging'
 
 server '162.243.148.158', user: 'admin', roles: %w{web app}
 set :deploy_to, '/home/admin/ink-api/staging'
-set :branch,      fetch(:branch, 'staging')
+# set :branch,      fetch(:branch, 'staging')
+set :branch, 'staging'
 
 # server-based syntax
 # ======================
