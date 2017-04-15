@@ -5,11 +5,11 @@ Sidekiq::Testing.inline!
 
 RSpec.describe ProcessChain, type: :model do
 
-  let!(:other_user)         { create(:user) }
+  let!(:other_account)      { create(:account) }
   let!(:demo_step)          { base_step_class.to_s }
   let!(:recipe)             { create(:recipe) }
   let(:recipe_step)         { recipe.recipe_steps.first }
-  let!(:process_chain)      { create(:process_chain, recipe: recipe, user: other_user) }
+  let!(:process_chain)      { create(:process_chain, recipe: recipe, account: other_account) }
   let!(:process_step)       { create(:process_step, step_class_name: demo_step, process_chain: process_chain) }
 
   let!(:target_file_name)   { "plaintext.txt" }
@@ -23,7 +23,7 @@ RSpec.describe ProcessChain, type: :model do
       expect(build(:process_chain)).to be_valid
     end
 
-    expects_to_be_invalid_without :process_chain, :user, :recipe
+    expects_to_be_invalid_without :process_chain, :account, :recipe
 
     it 'generates a slug automatically' do
       expect(create(:process_chain, slug: nil).slug).to_not be_nil

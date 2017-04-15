@@ -1,22 +1,22 @@
 require 'rails_helper'
 require_relative '../version'
 
-describe "User archives a single recipe" do
+describe "Account archives a single recipe" do
 
   # URL: /api/recipe/:id
   # Method: DELETE
   # Use this route to archive a recipe so it still exists, but can't be accessed by anyone but an administrator
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id
 
   describe "GET archive recipe" do
 
-    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+    let!(:auth_headers)     { account.create_new_auth_token }
 
-    let!(:recipe)         { create(:recipe, user: user) }
+    let!(:recipe)         { create(:recipe, account: account) }
 
-    context 'if user is signed in' do
+    context 'if account is signed in' do
 
       context 'and the recipe exists' do
 
@@ -24,7 +24,7 @@ describe "User archives a single recipe" do
           perform_archive_request(auth_headers, recipe.id)
         end
 
-        context 'and it belongs to the user' do
+        context 'and it belongs to the account' do
           it 'responds with success' do
             expect(response.status).to eq(200)
           end
@@ -36,11 +36,11 @@ describe "User archives a single recipe" do
           end
         end
 
-        context 'and it belongs to a different user' do
-          let!(:other_user)     { create(:user) }
+        context 'and it belongs to a different account' do
+          let!(:other_account)     { create(:account) }
 
           before do
-            recipe.update_attribute(:user_id, other_user.id)
+            recipe.update_attribute(:account_id, other_account.id)
           end
 
           it 'responds with failure' do
@@ -63,7 +63,7 @@ describe "User archives a single recipe" do
       end
     end
 
-    context 'if no user is signed in' do
+    context 'if no account is signed in' do
       before do
         perform_archive_request({}, recipe.id)
       end
@@ -79,7 +79,7 @@ describe "User archives a single recipe" do
 
     context 'if the token has expired' do
       before do
-        expire_token(user, auth_headers['client'])
+        expire_token(account, auth_headers['client'])
         perform_archive_request({}, recipe.id)
       end
 

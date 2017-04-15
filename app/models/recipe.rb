@@ -2,7 +2,7 @@ require 'execution_errors'
 require 'sidekiq/api'
 
 # create_table "recipes", force: :cascade do |t|
-#   t.integer  "user_id",                    null: false
+#   t.integer  "account_id",                    null: false
 #   t.string   "name",                       null: false
 #   t.text     "description"
 #   t.boolean  "active",      default: true, null: false
@@ -14,11 +14,11 @@ require 'sidekiq/api'
 class Recipe < ApplicationRecord
   include ExecutionErrors
 
-  belongs_to :user
+  belongs_to :account, inverse_of: :recipes
   has_many :recipe_steps, inverse_of: :recipe, dependent: :destroy
   has_many :process_chains, inverse_of: :recipe, dependent: :destroy
 
-  validates_presence_of :name, :user
+  validates_presence_of :name, :account
   validates_inclusion_of :active, :in => [true, false]
   validates_inclusion_of :public, :in => [true, false]
   validate :steps_have_unique_positions, :steps_contiguous?
@@ -28,7 +28,7 @@ class Recipe < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  scope :available_to_user, -> (user_id) { active.where("PUBLIC = ? OR USER_ID = ?", true, user_id) }
+  scope :available_to_account, -> (account_id) { active.where("PUBLIC = ? OR ACCOUNT_ID = ?", true, account_id) }
 
   def check_for_empty_steps
     raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
@@ -38,18 +38,18 @@ class Recipe < ApplicationRecord
     raise ExecutionErrors::NoFileSuppliedError.new unless input_file.present?
   end
 
-  def clone_and_execute(input_files:, user:, callback_url:"")
+  def clone_and_execute(input_files:, account:, callback_url:"")
     check_for_empty_steps
     check_for_input_file([input_files].flatten)
-    new_chain = clone_to_process_chain(user: user)
+    new_chain = clone_to_process_chain(account: account)
     new_chain.save!
 
     new_chain.execute_process!(callback_url: callback_url, input_files: [input_files].flatten)
     new_chain.reload
   end
 
-  def clone_to_process_chain(user:)
-    new_chain = process_chains.new(user: user)
+  def clone_to_process_chain(account:)
+    new_chain = process_chains.new(account: account)
     recipe_steps.each do |recipe_step|
       new_chain.process_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)
     end
@@ -61,9 +61,9 @@ class Recipe < ApplicationRecord
     generate_steps(data[:steps]) if data[:steps].present?
   end
 
-  def times_executed(user_id=nil)
-    return process_chains.count unless user_id
-    process_chains.belongs_to_user(user_id).count
+  def times_executed(account_id=nil)
+    return process_chains.count unless account_id
+    process_chains.belongs_to_account(account_id).count
   end
 
   def ensure_step_installation

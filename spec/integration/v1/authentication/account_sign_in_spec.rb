@@ -1,21 +1,21 @@
 require 'rails_helper'
 require_relative '../version'
 
-describe "User sign in" do
+describe "Account sign in" do
 
   # URL: /api/auth/sign_in
   # Method: POST
   # Email authentication. Requires email and password as params.
-  # This route will return a JSON representation of the User model on successful login along with the access-token and client in the header of the response.
+  # This route will return a JSON representation of the Account model on successful login along with the access-token and client in the header of the response.
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1" -X POST -d '{"email":"user@example.com","password":"password"}' http://localhost:3000/api/auth/sign_in
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1" -X POST -d '{"email":"account@example.com","password":"password"}' http://localhost:3000/api/auth/sign_in
 
   describe "POST sign in" do
     let!(:password)       { "password" }
-    let!(:user)           { create(:user, password: password, password_confirmation: password) }
+    let!(:account)           { create(:account, password: password, password_confirmation: password) }
     let!(:valid_params)   {
       {
-          email: user.email,
+          email: account.email,
           password: password
       }
     }
@@ -46,7 +46,7 @@ describe "User sign in" do
       end
     end
 
-    context 'references a nonexistent user' do
+    context 'references a nonexistent account' do
       it 'raises an error' do
         perform_sign_in_request(valid_params.merge(email: "nonsensical_rubbish@example.com"))
 
@@ -61,19 +61,6 @@ describe "User sign in" do
 
         expect(response.status).to eq(401)
         expect(body_as_json['errors']).to match(["Invalid login credentials. Please try again."])
-      end
-    end
-
-    context 'for an unconfirmed user' do
-      before do
-        user.update_attribute(:confirmed_at, nil)
-      end
-
-      it 'raises an error' do
-        perform_sign_in_request(valid_params)
-
-        expect(response.status).to eq(401)
-        expect(body_as_json['errors']).to match(["A confirmation email was sent to your account at '#{user.email}'. You must follow the instructions in the email before your account can be activated"])
       end
     end
   end

@@ -12,8 +12,8 @@ class ApplicationController < ActionController::API
   end
 
   def authorise_admin!
-    unless current_api_user.is_admin?
-      render_unauthorised_error("Sorry, this is not for you")
+    unless current_api_account.is_admin?
+      render_unauthorised_error("Authorised users only")
     end
   end
 
@@ -57,8 +57,8 @@ class ApplicationController < ActionController::API
   # protected
   #
   # def configure_permitted_parameters
-  #   devise_parameter_sanitizer.permit(:sign_up) do |user_params|
-  #     user_params.permit({ user: [:email, :password, :password_confirmation] })
+  #   devise_parameter_sanitizer.permit(:sign_up) do |account_params|
+  #     account_params.permit({ account: [:email, :password, :password_confirmation] })
   #   end
   # end
 

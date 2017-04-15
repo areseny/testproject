@@ -4,17 +4,17 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a recipe and an event is triggered" do
+describe "Account executes a recipe and an event is triggered" do
 
   describe "POST execute recipe" do
 
-    let!(:user)             { create(:user) }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account) }
+    let!(:auth_headers)     { account.create_new_auth_token }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
     let!(:rot13)            { rot_thirteen_step_class.to_s }
     let!(:base)             { base_step_class.to_s }
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot13]) }
+    let!(:recipe)           { create(:recipe, account: account, step_classes: [rot13]) }
 
     let!(:execution_params) {
       {

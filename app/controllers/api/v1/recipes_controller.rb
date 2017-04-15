@@ -1,13 +1,13 @@
 module Api
   module V1
     class RecipesController < ApplicationController
-      before_action :authenticate_api_user!, only: [:index, :show, :create, :update, :destroy, :execute]
+      before_action :authenticate_api_account!, only: [:index, :show, :create, :update, :destroy, :execute]
 
       respond_to :json
 
       def execute
         recipe.ensure_step_installation
-        @new_chain = recipe.clone_and_execute(input_files: input_file_param, callback_url: callback_url_param[:callback_url], user: current_api_user)
+        @new_chain = recipe.clone_and_execute(input_files: input_file_param, callback_url: callback_url_param[:callback_url], account: current_api_account)
         @new_chain.reload
         render json: @new_chain, status: 200
       rescue => e
@@ -27,11 +27,11 @@ module Api
       end
 
       def index
-        render json: recipes, user_id: current_api_user.id
+        render json: recipes, account_id: current_api_account.id
       end
 
       def show
-        render json: recipe, user_id: current_api_user.id
+        render json: recipe, account_id: current_api_account.id
       rescue => e
         # ap e.message
         # ap e.backtrace
@@ -77,15 +77,15 @@ module Api
       end
 
       def recipe
-        @recipe ||= Recipe.includes(:recipe_steps, {process_chains: :process_steps}).available_to_user(current_api_user.id).find(params[:id])
+        @recipe ||= Recipe.includes(:recipe_steps, {process_chains: :process_steps}).available_to_account(current_api_account.id).find(params[:id])
       end
 
       def new_recipe
-        @new_recipe ||= current_api_user.recipes.new(recipe_params)
+        @new_recipe ||= current_api_account.recipes.new(recipe_params)
       end
 
       def recipes
-        @recipes ||= Recipe.includes(:recipe_steps, :process_chains).available_to_user(current_api_user.id)
+        @recipes ||= Recipe.includes(:recipe_steps, :process_chains).available_to_account(current_api_account.id)
       end
     end
   end

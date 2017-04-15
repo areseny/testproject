@@ -1,4 +1,4 @@
-# create_table "users", force: :cascade do |t|
+# create_table "accounts", force: :cascade do |t|
 #   t.string   "provider",               default: "email", null: false
 #   t.string   "uid",                    default: "",      null: false
 #   t.string   "encrypted_password",     default: "",      null: false
@@ -26,24 +26,24 @@
 # needed as Devise uses this class before Rails has a chance to autoload it
 require 'rails/generators/rails/app/templates/app/models/application_record'
 
-class User < ApplicationRecord
+class Account < ApplicationRecord
   # Include default devise modules.
   devise :database_authenticatable, :registerable,
-          :recoverable, :rememberable, :trackable, :validatable,
-          :confirmable, :omniauthable
+          :recoverable, :rememberable, :trackable, :validatable
+          # :confirmable, :omniauthable
   include DeviseTokenAuth::Concerns::User
 
-  has_many :recipes, inverse_of: :user
-  has_many :process_chains, inverse_of: :user
-  has_many :user_roles, inverse_of: :user
+  has_many :recipes, inverse_of: :account
+  has_many :process_chains, inverse_of: :account
+  has_many :account_roles, inverse_of: :account
 
   def roles
-    user_roles.map(&:role).uniq
+    account_roles.map(&:role).uniq
   end
 
   def add_roles(roles_to_add)
     [roles_to_add].flatten.each do |role|
-      user_roles.create(role: role) unless roles.include?(role)
+      account_roles.create(role: role) unless roles.include?(role)
     end
   end
 

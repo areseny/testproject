@@ -4,18 +4,18 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User retrieves installed step classes" do
+describe "Account retrieves installed step classes" do
 
   # URL: /api/step_classes
   # Method: GET
   # Retrieve step classes installed on the server
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/step_classes
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/step_classes
 
   describe "GET index" do
 
-    let!(:user)             { create(:user) }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account) }
+    let!(:auth_headers)     { account.create_new_auth_token }
 
     context 'get step classes without error' do
       specify do

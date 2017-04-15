@@ -1,20 +1,20 @@
 require 'rails_helper'
 require_relative '../version'
 
-describe "User creates recipe" do
+describe "Account creates recipe" do
 
   # URL: /api/recipes
   # Method: POST
   # Use this route to create a recipe.
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST http://localhost:3000/api/recipes
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X POST http://localhost:3000/api/recipes
 
   describe "POST create new recipe" do
 
-    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
+    let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
     let!(:name)             { "My Splendiferous PNG to JPG transmogrifier" }
     let!(:description)      { "It transmogrifies! It transforms! It even goes across filetypes!" }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:auth_headers)     { account.create_new_auth_token }
     let(:public)            { true }
 
     let!(:recipe_params) {
@@ -22,15 +22,15 @@ describe "User creates recipe" do
           recipe: {
               name: name,
               description: description,
-              uid: user.email,
+              uid: account.email,
               public: public
           }
       }
     }
 
-    context 'if user is signed in' do
+    context 'if account is signed in' do
 
-      context 'and the user provides no step data' do
+      context 'and the account provides no step data' do
         before do
           perform_create_request(auth_headers, recipe_params)
         end
@@ -52,12 +52,12 @@ describe "User creates recipe" do
           context 'and they are valid' do
             before do
               recipe_params[:recipe][:steps_with_positions] = step_params
-              perform_create_request(user.create_new_auth_token, recipe_params)
+              perform_create_request(account.create_new_auth_token, recipe_params)
             end
 
             it "creates the recipe with recipe steps" do
               expect(response.status).to eq 200
-              new_recipe = user.recipes.first
+              new_recipe = account.recipes.first
               expect(new_recipe.recipe_steps.count).to eq 2
               expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [generic_step, rot13]
             end
@@ -70,10 +70,10 @@ describe "User creates recipe" do
             end
 
             it 'creates a new recipe with the parameters' do
-              expect(user.reload.recipes.count).to eq 1
+              expect(account.reload.recipes.count).to eq 1
 
-              recipe = user.recipes.first
-              expect(recipe.user).to eq user
+              recipe = account.recipes.first
+              expect(recipe.account).to eq account
               expect(recipe.name).to eq name
               expect(recipe.description).to eq description
               expect(recipe.active).to be_truthy
@@ -85,38 +85,38 @@ describe "User creates recipe" do
 
             it "does not create the recipe for nonexistent step classes" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: "rubbish"}, {position: 1, step_class_name: rot13 }]
-              perform_create_request(user.create_new_auth_token, recipe_params.to_json)
+              perform_create_request(account.create_new_auth_token, recipe_params.to_json)
 
               expect(response.status).to eq 422
             end
 
             it "does not create the recipe with duplicate numbers" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
-              perform_create_request(user.create_new_auth_token, recipe_params)
+              perform_create_request(account.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "does not create the recipe with incorrect numbers" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 0, step_class_name: generic_step}, {position: 1, step_class_name: rot13 }]
-              perform_create_request(user.create_new_auth_token, recipe_params)
+              perform_create_request(account.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "does not create the recipe with skipped steps" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: generic_step}, {position: 6, step_class_name: rot13 }]
-              perform_create_request(user.create_new_auth_token, recipe_params)
+              perform_create_request(account.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 422
             end
 
             it "does create the recipe with numbers out of order" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 2, step_class_name: rot13 }, {position: 1, step_class_name: generic_step}]
-              perform_create_request(user.create_new_auth_token, recipe_params)
+              perform_create_request(account.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
-              new_recipe = user.recipes.first
+              new_recipe = account.recipes.first
               expect(new_recipe.recipe_steps.count).to eq 2
               expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [generic_step, rot13]
             end
@@ -130,10 +130,10 @@ describe "User creates recipe" do
             end
 
             it "creates the recipe with recipe steps" do
-              perform_create_request(user.create_new_auth_token, recipe_params)
+              perform_create_request(account.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
-              new_recipe = user.recipes.first
+              new_recipe = account.recipes.first
               expect(new_recipe.recipe_steps.count).to eq 2
               expect(new_recipe.recipe_steps.sort_by(&:position).map(&:step_class_name)).to eq [generic_step, rot13]
             end
@@ -143,7 +143,7 @@ describe "User creates recipe" do
 
             it "creates the recipe for nonexistent step classes anyway" do
               recipe_params[:recipe][:steps] = ["NonexistentClass", rot_thirteen_step_class.to_s]
-              perform_create_request(user.create_new_auth_token, recipe_params)
+              perform_create_request(account.create_new_auth_token, recipe_params)
 
               expect(response.status).to eq 200
             end
@@ -154,7 +154,7 @@ describe "User creates recipe" do
 
     end
 
-    context 'if no user is signed in' do
+    context 'if no account is signed in' do
       before do
         perform_create_request({}, recipe_params)
       end
@@ -170,7 +170,7 @@ describe "User creates recipe" do
 
     context 'if the token has expired' do
       before do
-        expire_token(user, auth_headers['client'])
+        expire_token(account, auth_headers['client'])
         perform_create_request({}, recipe_params)
       end
 

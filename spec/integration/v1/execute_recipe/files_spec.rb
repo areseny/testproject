@@ -6,9 +6,9 @@ Sidekiq::Testing.inline!
 
 describe "Executing a recipe and making sure all the files get put in the right place" do
 
-  let!(:user)             { create(:user) }
+  let!(:account)             { create(:account) }
   let!(:demo_step)        { base_step_class.to_s }
-  let!(:recipe)           { create(:recipe, user: user, step_classes: [demo_step]) }
+  let!(:recipe)           { create(:recipe, account: account, step_classes: [demo_step]) }
 
   let!(:file_path)        { Rails.root.join("spec", "fixtures", "files", "test_file.xml") }
   let!(:file_contents)    { File.open(file_path) }
@@ -16,7 +16,7 @@ describe "Executing a recipe and making sure all the files get put in the right 
 
   before do
     recipe.reload
-    recipe.clone_and_execute(input_files: file, user: user, callback_url: "")
+    recipe.clone_and_execute(input_files: file, account: account, callback_url: "")
   end
 
   it 'creates the proper folder in the filesystem for the chain' do

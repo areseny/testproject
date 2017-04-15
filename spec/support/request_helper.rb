@@ -9,18 +9,18 @@ module RequestHelper
     end
   end
 
-  def create_logged_in_user
-    user = create(:user)
-    login(user)
-    user
+  def create_logged_in_account
+    account = create(:account)
+    login(account)
+    account
   end
 
   def login(t)
-    login_as t, scope: :user
+    login_as t, scope: :account
   end
 
-  def login_user(user = create(:user))
-    @request.env["devise.mapping"] = Devise.mappings[:user]
-    sign_in user
+  def login_account(account = create(:account))
+    @request.env["devise.mapping"] = Devise.mappings[:account]
+    sign_in account
   end
 end

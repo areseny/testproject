@@ -1,26 +1,26 @@
 require 'rails_helper'
 require_relative '../version'
 
-describe "User finds a single recipe" do
+describe "Account finds a single recipe" do
 
   # URL: /api/recipe/:id
   # Method: GET
-  # Get a specific recipe belonging to the current user
+  # Get a specific recipe belonging to the current account
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id
 
   describe "GET show recipe" do
 
-    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+    let!(:auth_headers)     { account.create_new_auth_token }
 
-    let!(:recipe)         { create(:recipe, user: user) }
+    let!(:recipe)         { create(:recipe, account: account) }
 
-    context 'if user is signed in' do
+    context 'if account is signed in' do
 
       context 'and the recipe exists' do
 
-        context 'and it belongs to the user' do
+        context 'and it belongs to the account' do
           it 'responds with success' do
             perform_show_request(auth_headers, recipe.id)
 
@@ -51,7 +51,7 @@ describe "User finds a single recipe" do
 
           context 'and it has process chains' do
             let!(:step1)             { recipe.recipe_steps.first }
-            let!(:process_chain)     { create(:process_chain, recipe: recipe, user: user, executed_at: 2.minutes.ago) }
+            let!(:process_chain)     { create(:process_chain, recipe: recipe, account: account, executed_at: 2.minutes.ago) }
             let!(:process_step)      { create(:executed_process_step_success, process_chain: process_chain) }
 
             before do
@@ -68,12 +68,12 @@ describe "User finds a single recipe" do
           end
         end
 
-        context 'and it belongs to a different user' do
+        context 'and it belongs to a different account' do
 
-          let!(:other_user)     { create(:user) }
+          let!(:other_account)     { create(:account) }
 
           before do
-            recipe.update_attribute(:user_id, other_user.id)
+            recipe.update_attribute(:account_id, other_account.id)
           end
 
           it 'responds with failure' do
@@ -96,7 +96,7 @@ describe "User finds a single recipe" do
       end
     end
 
-    context 'if no user is signed in' do
+    context 'if no account is signed in' do
       before do
         perform_show_request({}, recipe.id)
       end
@@ -112,7 +112,7 @@ describe "User finds a single recipe" do
 
     context 'if the token has expired' do
       before do
-        expire_token(user, auth_headers['client'])
+        expire_token(account, auth_headers['client'])
         perform_show_request({}, recipe.id)
       end
 

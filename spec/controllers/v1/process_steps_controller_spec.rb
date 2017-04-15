@@ -3,7 +3,7 @@ require_relative 'version'
 describe Api::V1::ProcessStepsController, type: :controller do
   include Devise::Test::ControllerHelpers
 
-  let!(:user)           { create(:user, password: "password", password_confirmation: "password") }
+  let!(:account)           { create(:account, password: "password", password_confirmation: "password") }
 
   describe "GET download_output_zip" do
     let!(:process_step)        { create(:process_step) }
@@ -18,14 +18,14 @@ describe Api::V1::ProcessStepsController, type: :controller do
     before do
       create_directory_if_needed(process_step.working_directory)
       copy_fixture_file('some_text.txt', process_step.working_directory)
-      process_step.process_chain.update_attribute(:user_id, user.id)
-      process_step.process_chain.recipe.update_attribute(:user_id, user.id)
+      process_step.process_chain.update_attribute(:account_id, account.id)
+      process_step.process_chain.recipe.update_attribute(:account_id, account.id)
     end
 
     context 'if a valid token is supplied' do
-      context 'and the chain belongs to that user' do
+      context 'and the chain belongs to that account' do
         it 'serves the file successfully' do
-          request_with_auth(user.create_new_auth_token) do
+          request_with_auth(account.create_new_auth_token) do
             perform_download_output_zip_request(download_params)
           end
 
@@ -50,15 +50,15 @@ describe Api::V1::ProcessStepsController, type: :controller do
     before do
       create_directory_if_needed(process_step.working_directory)
       copy_fixture_file('some_text.txt', process_step.working_directory)
-      process_step.process_chain.update_attribute(:user_id, user.id)
-      process_step.process_chain.recipe.update_attribute(:user_id, user.id)
+      process_step.process_chain.update_attribute(:account_id, account.id)
+      process_step.process_chain.recipe.update_attribute(:account_id, account.id)
     end
 
     context 'if a valid token is supplied' do
 
-      context 'and the file belongs to that user' do
+      context 'and the file belongs to that account' do
         it 'serves the file successfully' do
-          request_with_auth(user.create_new_auth_token) do
+          request_with_auth(account.create_new_auth_token) do
             perform_download_output_file_request(download_params)
           end
 
@@ -67,14 +67,14 @@ describe Api::V1::ProcessStepsController, type: :controller do
         end
       end
 
-      context 'and the file belongs to a different user' do
+      context 'and the file belongs to a different account' do
         before do
-          other_user = create(:user)
-          process_step.process_chain.update_attribute(:user_id, other_user.id)
+          other_account = create(:account)
+          process_step.process_chain.update_attribute(:account_id, other_account.id)
         end
 
         it 'tries to download the file' do
-          request_with_auth(user.create_new_auth_token) do
+          request_with_auth(account.create_new_auth_token) do
             perform_download_output_file_request(download_params)
           end
 

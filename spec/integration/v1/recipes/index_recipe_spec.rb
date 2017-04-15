@@ -1,27 +1,27 @@
 require 'rails_helper'
 require_relative '../version'
 
-describe "User lists all their recipes" do
+describe "Account lists all their recipes" do
 
   # URL: /api/recipes/
   # Method: GET
-  # Get all the recipes belonging to the current user, serialised with steps and process chains/process steps.
+  # Get all the recipes belonging to the current account, serialised with steps and process chains/process steps.
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes
 
   describe "GET index recipe" do
 
-    let!(:user)               { create(:user, password: "password", password_confirmation: "password") }
-    let!(:other_user)         { create(:user) }
+    let!(:account)               { create(:account, password: "password", password_confirmation: "password") }
+    let!(:other_account)         { create(:account) }
 
-    let!(:auth_headers)       { user.create_new_auth_token }
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot_thirteen_step_class.to_s]) }
-    let!(:inactive_recipe)  { create(:recipe, user: user, active: false) }
-    let!(:other_recipe)     { create(:recipe, user: other_user) }
+    let!(:auth_headers)       { account.create_new_auth_token }
+    let!(:recipe)           { create(:recipe, account: account, step_classes: [rot_thirteen_step_class.to_s]) }
+    let!(:inactive_recipe)  { create(:recipe, account: account, active: false) }
+    let!(:other_recipe)     { create(:recipe, account: other_account) }
 
-    context 'if user is signed in' do
+    context 'if account is signed in' do
 
-      context 'and there are some active recipes that belong to the user' do
+      context 'and there are some active recipes that belong to the account' do
 
         before do
           perform_index_request(auth_headers)
@@ -36,7 +36,7 @@ describe "User lists all their recipes" do
 
           expect(body_as_json['recipes'][0]['name']).to eq recipe.name
           expect(body_as_json['recipes'][0]['description']).to eq recipe.description
-          expect(body_as_json['recipes'][0]['user_id']).to eq recipe.user.id
+          expect(body_as_json['recipes'][0]['account_id']).to eq recipe.account.id
           expect(body_as_json['recipes'][0]['active']).to eq recipe.active
           expect(body_as_json['recipes'][0]['public']).to eq recipe.public
         end
@@ -44,10 +44,10 @@ describe "User lists all their recipes" do
         context 'and there are some steps and process chains' do
           let!(:step1)             { recipe.recipe_steps.first }
           let!(:step2)             { create(:recipe_step, recipe: recipe, position: 2, step_class_name: epub_calibre_step_class.to_s) }
-          let!(:process_chain1)    { create(:process_chain, recipe: recipe, user: user, executed_at: 5.minutes.ago) }
+          let!(:process_chain1)    { create(:process_chain, recipe: recipe, account: account, executed_at: 5.minutes.ago) }
           let!(:process_step1a)    { create(:executed_process_step_success, process_chain: process_chain1, position: 1, step_class_name: rot_thirteen_step_class.to_s) }
           let!(:process_step1b)    { create(:executed_process_step_success, process_chain: process_chain1, position: 2, step_class_name: epub_calibre_step_class.to_s) }
-          let!(:process_chain2)    { create(:process_chain, recipe: recipe, user: user, executed_at: 2.minutes.ago) }
+          let!(:process_chain2)    { create(:process_chain, recipe: recipe, account: account, executed_at: 2.minutes.ago) }
           let!(:process_step2a)    { create(:executed_process_step_success, process_chain: process_chain2, position: 1, step_class_name: rot_thirteen_step_class.to_s) }
           let!(:process_step2b)    { create(:executed_process_step_success, process_chain: process_chain2, position: 2, step_class_name: epub_calibre_step_class.to_s) }
 
@@ -61,9 +61,9 @@ describe "User lists all their recipes" do
             end
           end
 
-          context 'and some chains belong to other users' do
+          context 'and some chains belong to other accounts' do
             before do
-              process_chain2.update_attribute(:user, create(:user))
+              process_chain2.update_attribute(:account, create(:account))
             end
 
             it 'does not show them' do
@@ -101,7 +101,7 @@ describe "User lists all their recipes" do
         end
       end
 
-      context 'and there are no active recipes that belong to the current user' do
+      context 'and there are no active recipes that belong to the current account' do
 
         before do
           recipe.destroy
@@ -118,7 +118,7 @@ describe "User lists all their recipes" do
       end
     end
 
-    context 'if no user is signed in' do
+    context 'if no account is signed in' do
       before do
         perform_index_request({})
       end
@@ -134,7 +134,7 @@ describe "User lists all their recipes" do
 
     context 'if the token has expired' do
       before do
-        expire_token(user, auth_headers['client'])
+        expire_token(account, auth_headers['client'])
         perform_index_request({})
       end
 

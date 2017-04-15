@@ -4,18 +4,18 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a recipe" do
+describe "Account executes a recipe" do
 
   # URL: /api/recipes/:id/execute
   # Method: POST
-  # Execute a specific recipe belonging to the current user, providing a callback URL
+  # Execute a specific recipe belonging to the current account, providing a callback URL
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 
-    let!(:user)             { create(:user) }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account) }
+    let!(:auth_headers)     { account.create_new_auth_token }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
     let!(:execution_params) {
@@ -26,7 +26,7 @@ describe "User executes a recipe" do
     }
 
     context 'and execution is successful' do
-      let(:recipe)                   { create(:recipe, user: user, step_classes: [rot_thirteen_step_class.to_s]) }
+      let(:recipe)                   { create(:recipe, account: account, step_classes: [rot_thirteen_step_class.to_s]) }
       specify do
         perform_execute_request(auth_headers, execution_params)
 
@@ -35,7 +35,7 @@ describe "User executes a recipe" do
     end
 
     context 'and execution fails due to an error outside of the step' do
-      let(:recipe)                   { create(:recipe, user: user, step_classes: [rot_thirteen_step_class.to_s]) }
+      let(:recipe)                   { create(:recipe, account: account, step_classes: [rot_thirteen_step_class.to_s]) }
 
       specify do
         perform_execute_request(auth_headers, execution_params.except(:input_files))
@@ -49,7 +49,7 @@ describe "User executes a recipe" do
       let(:nonexistent_step_class1)   { "NonExistentStepClass::NonsenseStep" }
       let(:nonexistent_step_class2)   { "NonExistentStepClass::RubbishStep" }
 
-      let(:recipe)                   { create(:recipe, user: user, step_classes: [nonexistent_step_class1, nonexistent_step_class2]) }
+      let(:recipe)                   { create(:recipe, account: account, step_classes: [nonexistent_step_class1, nonexistent_step_class2]) }
       it 'sends back a meaningful error' do
         perform_execute_request(auth_headers, execution_params)
 

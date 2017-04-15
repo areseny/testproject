@@ -4,21 +4,21 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a single recipe" do
+describe "Account executes a single recipe" do
 
   # URL: /api/recipes/:id/execute
   # Method: GET
-  # Execute a specific recipe belonging to the current user
+  # Execute a specific recipe belonging to the current account
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 
-    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+    let!(:auth_headers)     { account.create_new_auth_token }
     let!(:docx_file)        { fixture_file_upload('files/basic_doc.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [step_class]) }
+    let!(:recipe)           { create(:recipe, account: account, step_classes: [step_class]) }
 
     let!(:execution_params) {
       {
@@ -27,7 +27,7 @@ describe "User executes a single recipe" do
       }
     }
 
-    context 'if user is signed in' do
+    context 'if account is signed in' do
       let!(:step_class)  { base_step_class.to_s }
       let!(:step1)       { recipe.recipe_steps.first }
 

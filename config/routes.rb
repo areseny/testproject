@@ -1,13 +1,9 @@
 require 'api_constraints'
+require 'sidekiq/api'
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-
-  # mount Sidekiq::Web, at: "/sidekiq"
-  # authenticate :user do
-  # mount Sidekiq::Web => '/sidekiq'
-  # end
 
   Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
 
@@ -18,12 +14,16 @@ Rails.application.routes.draw do
   # end
 
 
+  match "queue-latency" => proc { [200, {"Content-Type" => "text/plain"}, [Sidekiq::Queue.new.latency < 30 ? "OK" : "UHOH" ]] }, via: :get
+
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
-      mount_devise_token_auth_for 'User', at: 'auth'
+      mount_devise_token_auth_for 'Account', at: 'auth', controllers: {
+          sessions: 'api/v1/overrides/sessions'
+      }
 
       namespace :admin do
-        get 'users' => 'accounts#users'
+        get 'accounts' => 'accounts#index'
         get 'service_accounts' => 'accounts#service_accounts'
       end
 

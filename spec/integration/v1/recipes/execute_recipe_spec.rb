@@ -4,28 +4,28 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a single recipe" do
+describe "Account executes a single recipe" do
 
   let!(:rot13)      { rot_thirteen_step_class.to_s }
 
   # URL: /api/recipes/:id/execute
   # Method: GET
-  # Execute a specific recipe belonging to the current user
+  # Execute a specific recipe belonging to the current account
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 
-    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+    let!(:auth_headers)     { account.create_new_auth_token }
     let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plaintext') }
     let!(:image_file)        { fixture_file_upload('files/kitty.jpeg', 'image/jpeg') }
 
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot13, rot13]) }
+    let!(:recipe)           { create(:recipe, account: account, step_classes: [rot13, rot13]) }
 
-    context 'if user is signed in' do
+    context 'if account is signed in' do
       context 'and the recipe exists' do
-        context 'and it belongs to the user' do
+        context 'and it belongs to the account' do
           context 'and a single file is supplied' do
             context 'and it has steps' do
               let!(:step1)      { recipe.recipe_steps[0] }
@@ -136,16 +136,16 @@ describe "User executes a single recipe" do
           end
         end
 
-        context 'and it belongs to a different user' do
+        context 'and it belongs to a different account' do
 
-          let!(:other_user)     { create(:user) }
+          let!(:other_account)     { create(:account) }
           let(:params) {{
               input_files: [text_file],
               id: recipe.id
           }}
 
           before do
-            recipe.update_attribute(:user_id, other_user.id)
+            recipe.update_attribute(:account_id, other_account.id)
           end
 
           it 'responds with failure' do
@@ -172,7 +172,7 @@ describe "User executes a single recipe" do
       end
     end
 
-    context 'if no user is signed in' do
+    context 'if no account is signed in' do
       let(:params) {{
           input_files: [text_file],
           id: recipe.id
@@ -198,7 +198,7 @@ describe "User executes a single recipe" do
       }}
 
       before do
-        expire_token(user, auth_headers['client'])
+        expire_token(account, auth_headers['client'])
         perform_execute_request({}, params)
       end
 

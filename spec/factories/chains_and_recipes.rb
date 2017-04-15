@@ -6,7 +6,7 @@ FactoryGirl.define do
   factory :recipe do
     name "PNG to JPG transmogrifier"
     description "This will allow me to input a PNG and get out a JPG! It's magic!"
-    user
+    account
     active true
     factory :archived_recipe do
       active false
@@ -15,10 +15,10 @@ FactoryGirl.define do
       step_classes { [base_step_class.to_s] }
     end
 
-    # the after(:create) yields two values; the user instance itself and the
+    # the after(:create) yields two values; the account instance itself and the
     # evaluator, which stores all values from the factory, including transient
     # attributes; `create_list`'s second argument is the number of records
-    # to create and we make sure the user is associated properly to the post
+    # to create and we make sure the account is associated properly to the post
     after(:build) do |recipe, evaluator|
       evaluator.step_classes.each_with_index do |klass, index|
         recipe.recipe_steps.new(step_class_name: klass, position: index+1)
@@ -28,7 +28,7 @@ FactoryGirl.define do
 
   factory :process_chain do
     recipe
-    user
+    account
   end
 
   factory :process_step do

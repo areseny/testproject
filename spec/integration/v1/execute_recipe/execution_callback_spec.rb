@@ -4,21 +4,21 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a recipe and provides a callback URL" do
+describe "Account executes a recipe and provides a callback URL" do
 
   # URL: /api/recipes/:id/execute
   # Method: POST
-  # Execute a specific recipe belonging to the current user, providing a callback URL
+  # Execute a specific recipe belonging to the current account, providing a callback URL
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 
-    let!(:user)             { create(:user) }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account) }
+    let!(:auth_headers)     { account.create_new_auth_token }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [rot13]) }
+    let!(:recipe)           { create(:recipe, account: account, step_classes: [rot13]) }
 
     let(:callback_url)     { "http://example.com/call_me_back" }
 

@@ -4,21 +4,21 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a recipe xsweet pipeline" do
+describe "Account executes a recipe xsweet pipeline" do
 
   # URL: /api/recipes/:id/execute
   # Method: POST
-  # Execute a specific recipe belonging to the current user
+  # Execute a specific recipe belonging to the current account
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X POST --form "input_files=[@my-file.txt], callback_url=mysite.com/callback" http://localhost:3000/api/recipes/:id/execute
 
   describe "POST execute recipe" do
 
-    let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-    let!(:auth_headers)     { user.create_new_auth_token }
+    let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+    let!(:auth_headers)     { account.create_new_auth_token }
     let!(:docx_file)        { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
-    let!(:recipe)           { create(:recipe, user: user, step_classes: [extract1, notes2, scrub3, join4, collapse5]) }
+    let!(:recipe)           { create(:recipe, account: account, step_classes: [extract1, notes2, scrub3, join4, collapse5]) }
 
     let!(:execution_params) {
       {

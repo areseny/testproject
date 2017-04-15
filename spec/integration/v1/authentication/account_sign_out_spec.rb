@@ -1,19 +1,19 @@
 require 'rails_helper'
 require_relative '../version'
 
-describe "User sign out" do
+describe "Account sign out" do
 
   # URL: /api/auth/sign_out
   # Method: DELETE
-  # Use this route to end the user's current session. This route will invalidate the user's authentication token.
+  # Use this route to end the account's current session. This route will invalidate the account's authentication token.
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X DELETE http://localhost:3000/api/auth/sign_out
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X DELETE http://localhost:3000/api/auth/sign_out
 
   describe "DELETE sign out" do
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:user)           { create(:user, password: "password", password_confirmation: "password") }
+    let!(:auth_headers) { account.create_new_auth_token }
+    let!(:account)           { create(:account, password: "password", password_confirmation: "password") }
 
-    context 'if user is signed in' do
+    context 'if account is signed in' do
 
       # {"access-token"=>"QQWgZPLpF8o9jNxdibLKPQ", "token-type"=>"Bearer", "client"=>"wWxg-wuhTmdgPu3hgoTrhA", "expiry"=>"1458632683", "uid"=>"person6@example.com"}
 
@@ -30,7 +30,7 @@ describe "User sign out" do
       end
     end
 
-    context 'if no user is supplied' do
+    context 'if no account is supplied' do
       before do
         perform_sign_out_request(auth_headers.except('uid'))
       end
@@ -44,7 +44,7 @@ describe "User sign out" do
       end
     end
 
-    context 'if user has already signed out' do
+    context 'if account has already signed out' do
       before do
         perform_sign_out_request(auth_headers)
       end
@@ -78,7 +78,7 @@ describe "User sign out" do
 
     context 'if the token has expired' do
       before do
-        expire_token(user, auth_headers['client'])
+        expire_token(account, auth_headers['client'])
         perform_sign_out_request(auth_headers)
       end
 

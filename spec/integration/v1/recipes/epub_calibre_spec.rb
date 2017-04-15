@@ -4,21 +4,21 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.inline!
 
-describe "User executes a single-step epub calibre recipe" do
+describe "Account executes a single-step epub calibre recipe" do
 
   # URL: /api/recipes/:id/execute
   # Method: GET
-  # Execute a specific recipe belonging to the current user
+  # Execute a specific recipe belonging to the current account
 
-  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: user@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
+  # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
   let!(:step_class)  { epub_calibre_step_class.to_s }
 
-  let!(:user)             { create(:user, password: "password", password_confirmation: "password") }
-  let!(:auth_headers)     { user.create_new_auth_token }
+  let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+  let!(:auth_headers)     { account.create_new_auth_token }
   let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
-  let!(:recipe)           { create(:recipe, user: user, step_classes: [step_class]) }
+  let!(:recipe)           { create(:recipe, account: account, step_classes: [step_class]) }
 
   let!(:execution_params) {
     {

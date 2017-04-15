@@ -4,7 +4,7 @@ require 'ink_step/mixins/helper_methods'
 require 'constants'
 
 # create_table "process_chains", force: :cascade do |t|
-  # t.integer  "user_id",     null: false
+  # t.integer  "account_id",     null: false
   # t.datetime "executed_at"
   # t.string   "input_file"
   # t.integer  "recipe_id",   null: false
@@ -23,7 +23,7 @@ class ProcessChain < ApplicationRecord
 
   serialize :input_file_list
 
-  belongs_to :user
+  belongs_to :account
   belongs_to :recipe, inverse_of: :process_chains
   has_many :process_steps, inverse_of: :process_chain, dependent: :destroy
 
@@ -34,12 +34,12 @@ class ProcessChain < ApplicationRecord
 
   before_save :generate_unique_slug
 
-  validates_presence_of :user, :recipe
+  validates_presence_of :account, :recipe
 
-  scope :belongs_to_user, -> (user_id) { where(user_id: user_id) }
+  scope :belongs_to_account, -> (account_id) { where(account_id: account_id) }
 
-  def retry_execution!(current_api_user:)
-    recipe.clone_and_execute(user: current_api_user, input_files: open_input_files)
+  def retry_execution!(current_api_account:)
+    recipe.clone_and_execute(account: current_api_account, input_files: open_input_files)
   end
 
   def execute_process!(input_files:, callback_url: "")

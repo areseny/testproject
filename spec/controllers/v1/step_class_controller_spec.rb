@@ -4,7 +4,7 @@ require_relative 'version'
 RSpec.describe Api::V1::StepClassController do
   include Devise::Test::ControllerHelpers
 
-  let(:user)    { create(:user) }
+  let(:account)    { create(:account) }
 
   describe 'GET index' do
     before do
@@ -12,7 +12,7 @@ RSpec.describe Api::V1::StepClassController do
     end
 
     specify do
-      request_with_auth(user.create_new_auth_token) do
+      request_with_auth(account.create_new_auth_token) do
         perform_step_class_index_request
       end
 

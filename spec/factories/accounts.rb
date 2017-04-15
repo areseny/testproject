@@ -3,19 +3,19 @@ FactoryGirl.define do
     "person#{n}@example.com"
   end
 
-  factory :user do
-    name "User McFabulous"
+  factory :account, aliases: [:user] do
+    name "Fabulous Person or Organisation"
     password "password!"
     password_confirmation "password!"
     email
     confirmed_at Date.today
-    factory :unconfirmed_user do
+    factory :unconfirmed_account do
       confirmed_at nil
     end
   end
 
-  factory :user_role do
-    user
+  factory :account_role, aliases: [:user_role] do
+    account
     role "admin"
   end
 

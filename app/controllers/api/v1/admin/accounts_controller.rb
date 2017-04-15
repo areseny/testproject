@@ -2,7 +2,7 @@ module Api
   module V1
     module Admin
       class AccountsController < ApplicationController
-        before_action :authenticate_api_user!
+        before_action :authenticate_api_account!
         before_action :authorise_admin!
 
         respond_to :json
@@ -11,8 +11,8 @@ module Api
           render json: Service.all, status: 200
         end
 
-        def users
-          render json: User.all, status: 200
+        def index
+          render json: Account.all, status: 200
         end
       end
     end

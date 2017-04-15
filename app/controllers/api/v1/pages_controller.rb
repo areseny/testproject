@@ -1,14 +1,14 @@
 module Api
   module V1
     class PagesController < ApplicationController
-      before_action :authenticate_api_user!, only: [:members_only]
+      before_action :authenticate_api_account!, only: [:members_only]
 
       respond_to :json
 
       def anyone
         render json: {
                    data: {
-                       message: "Welcome to api version 1, guest!"
+                       message: "Welcome to INK api version 1, guest!"
                    }
                }, status: 200
       end
@@ -16,8 +16,8 @@ module Api
       def members_only
         render json: {
                    data: {
-                       message: "Welcome to api version 1, #{current_api_user.name}",
-                       user: current_api_user
+                       message: "Welcome to INK api version 1, #{current_api_account.name}",
+                       user: current_api_account
                    }
                }, status: 200
       end
