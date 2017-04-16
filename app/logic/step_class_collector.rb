@@ -18,13 +18,12 @@ class StepClassCollector
     # OR could do?
     # Dir["app/models/foo/*.rb"].each {|file| load file}
 
-    @step_classes = [
+    classes = [
         InkStep::ShoutifierStep,
         InkStep::RotThirteenStep,
         InkStep::CalibreToEpubStep,
         InkStep::VivliostyleToPdfStep,
         InkStep::WkHtmlToPdfStep,
-        InkStep::CalibreToEpubStep,
         InkStep::PandocToHtmlStep,
         InkStep::XsweetPipeline::DocxExtract::DocxToHtmlExtractStep,
         InkStep::XsweetPipeline::DocxExtract::HandleNotesStep,
@@ -34,8 +33,9 @@ class StepClassCollector
         InkStep::XsweetPipeline::HeaderPromote::HeaderPromotionStep,
         InkStep::XsweetPipeline::FinaliseTypescript::FinalRinseStep,
         InkStep::XsweetPipeline::PrepareForEditoria::EditoriaPrepareStep
+    ].uniq
 
-    ]
+    @step_classes = classes.map{|klass| { name: klass.name, description: klass.description } }
   end
 
 end

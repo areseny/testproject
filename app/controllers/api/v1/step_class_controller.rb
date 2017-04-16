@@ -7,7 +7,7 @@ module Api
 
       def index
         @step_classes = StepClassCollector.step_classes
-        render json: {available_step_classes: @step_classes.map(&:name)}, status: 200
+        render json: {available_step_classes: @step_classes}, status: 200
       rescue => e
         ap e.message
         ap e.backtrace

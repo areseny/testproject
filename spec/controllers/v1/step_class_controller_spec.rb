@@ -8,7 +8,7 @@ RSpec.describe Api::V1::StepClassController do
 
   describe 'GET index' do
     before do
-      allow(StepClassCollector).to receive(:step_classes).and_return(sample_step_classes)
+      allow(StepClassCollector).to receive(:step_classes).and_return(sample_step_json)
     end
 
     specify do
@@ -16,7 +16,7 @@ RSpec.describe Api::V1::StepClassController do
         perform_step_class_index_request
       end
 
-      expect(assigns(:step_classes)).to eq sample_step_classes
+      expect(assigns(:step_classes)).to eq sample_step_classes.map{|klass| { name: klass.name, description: klass.description } }
     end
   end
 
@@ -24,6 +24,13 @@ RSpec.describe Api::V1::StepClassController do
     [
       InkStep::ShoutifierStep,
       InkStep::RotThirteenStep
+    ]
+  end
+
+  def sample_step_json
+    [
+        { name: InkStep::ShoutifierStep.name, description: InkStep::ShoutifierStep.description },
+        { name: InkStep::RotThirteenStep.name, description: InkStep::RotThirteenStep.description }
     ]
   end
 
