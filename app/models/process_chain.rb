@@ -75,8 +75,6 @@ class ProcessChain < ApplicationRecord
       target_file = File.join(input_files_directory, uploaded_file.original_filename)
       FileUtils.cp(uploaded_file.tempfile, target_file)
     end
-
-    self.input_file = input_files.map(&:original_filename)
   end
 
   def initialize_directories

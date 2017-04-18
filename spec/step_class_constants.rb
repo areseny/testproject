@@ -16,11 +16,15 @@ module StepClassConstants
   end
 
   def epub_calibre_step_class
-    InkStep::CalibreToEpubStep
+    InkStep::CalibreHtmlToEpubStep
   end
 
-  def pandoc_to_html_step_class
-    InkStep::PandocToHtmlStep
+  def pandoc_docx_to_html_step_class
+    InkStep::PandocDocxToHtmlStep
+  end
+
+  def pandoc_epub_to_icml_step_class
+    InkStep::PandocEpubToIcmlStep
   end
 
   # xsweet pipeline

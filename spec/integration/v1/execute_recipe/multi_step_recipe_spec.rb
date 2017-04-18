@@ -28,7 +28,7 @@ describe "Account executes a recipe with multiple real steps" do
       }
     }
 
-    let!(:pandoc)     { pandoc_to_html_step_class.to_s }
+    let!(:pandoc)     { pandoc_docx_to_html_step_class.to_s }
     let!(:rot13)      { rot_thirteen_step_class.to_s }
     let!(:epub)       { epub_calibre_step_class.to_s }
 

@@ -41,7 +41,7 @@ FactoryGirl.define do
     end
     factory :executed_process_step_fail do
       executed_at 2.minutes.ago
-      output_file nil
+      output_file_manifest []
       execution_errors ["Very Serious Error"].to_yaml
     end
     version "0.1"

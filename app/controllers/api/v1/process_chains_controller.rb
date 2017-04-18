@@ -19,6 +19,7 @@ module Api
       end
 
       def download_input_file
+        ap "Downloading #{params[:relative_path]}..."
         file_path = assemble_file_path(location: process_chain.input_files_directory, relative_path: params[:relative_path])
 
         send_file(file_path,
@@ -35,7 +36,7 @@ module Api
       end
 
       def download_output_file
-        ap "Downloading #{params[:relative_path]} from #{process_chain.last_step.working_directory} (last step #{process_chain.last_step.id})"
+        ap "Downloading #{params[:relative_path]} from #{process_chain.last_step.working_directory} (last step #{process_chain.last_step.id})..."
         file_path = assemble_file_path(location: process_chain.last_step.working_directory, relative_path: params[:relative_path])
         send_file(file_path,
                   :disposition => 'attachment',
@@ -51,10 +52,6 @@ module Api
       end
 
       private
-
-      def process_chain_params
-        params.require(:input_file)
-      end
 
       def process_chain
         @process_chain ||= current_api_account.process_chains.find(params[:id])

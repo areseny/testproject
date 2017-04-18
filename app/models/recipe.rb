@@ -34,8 +34,8 @@ class Recipe < ApplicationRecord
     raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
   end
 
-  def check_for_input_file(input_file)
-    raise ExecutionErrors::NoFileSuppliedError.new unless input_file.present?
+  def check_for_input_file(input_files)
+    raise ExecutionErrors::NoFileSuppliedError.new unless input_files.present?
   end
 
   def clone_and_execute(input_files:, account:, callback_url:"")
