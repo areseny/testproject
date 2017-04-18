@@ -1,5 +1,9 @@
 class StepClassCollector
 
+  def self.step_class_hash
+    step_classes.map{|klass| { name: klass.name, description: klass.description } }
+  end
+
   def self.step_classes
     # get all directories under gems that match ink_step
     # grab all the class names under those directories
@@ -35,8 +39,6 @@ class StepClassCollector
         InkStep::XsweetPipeline::FinaliseTypescript::FinalRinseStep,
         InkStep::XsweetPipeline::PrepareForEditoria::EditoriaPrepareStep
     ].uniq
-
-    @step_classes = classes.map{|klass| { name: klass.name, description: klass.description } }
   end
 
 end

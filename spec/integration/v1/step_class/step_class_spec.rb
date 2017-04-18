@@ -34,7 +34,7 @@ describe "Account retrieves installed step classes" do
         perform_index_request(auth_headers)
 
         expect(response.status).to eq(200)
-        expect(body_as_json['available_step_classes']).to match_array sample_step_classes.map(&:to_s)
+        expect(body_as_json['available_step_classes']).to match_array sample_step_json
       end
     end
   end
@@ -43,6 +43,13 @@ describe "Account retrieves installed step classes" do
     [
         InkStep::ShoutifierStep,
         InkStep::RotThirteenStep
+    ]
+  end
+
+  def sample_step_json
+    [
+        { "name" => InkStep::ShoutifierStep.name, "description" => InkStep::ShoutifierStep.description },
+        { "name" => InkStep::RotThirteenStep.name, "description" => InkStep::RotThirteenStep.description }
     ]
   end
   
