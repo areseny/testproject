@@ -37,6 +37,10 @@ module Api
 
       def download_output_file
         ap "Downloading #{params[:relative_path]} from #{process_chain.last_step.working_directory} (last step #{process_chain.last_step.id})..."
+        unless process_chain.finished?
+          render_not_found_error("Not finished processing yet")
+          return
+        end
         file_path = assemble_file_path(location: process_chain.last_step.working_directory, relative_path: params[:relative_path])
         send_file(file_path,
                   :disposition => 'attachment',
@@ -44,6 +48,10 @@ module Api
       end
 
       def download_output_zip
+        unless process_chain.finished?
+          render_not_found_error("Not finished processing yet")
+          return
+        end
         zip_path = process_chain.assemble_output_file_zip
 
         send_file(zip_path,

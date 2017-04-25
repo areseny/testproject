@@ -9,6 +9,10 @@ module Api
       respond_to :json
 
       def download_output_file
+        unless process_step.finished?
+          render_not_found_error("Not finished processing yet")
+          return
+        end
         file_path = assemble_file_path(location: process_step.working_directory, relative_path: params[:relative_path])
 
         send_file(file_path,
@@ -17,6 +21,10 @@ module Api
       end
 
       def download_output_zip
+        unless process_step.finished?
+          render_not_found_error("Not finished processing yet")
+          return
+        end
         zip_path = process_step.assemble_output_file_zip
 
         send_file(zip_path,

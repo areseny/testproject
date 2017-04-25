@@ -24,6 +24,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
   before do
     process_chain.update_attribute(:recipe_id, recipe.id)
     process_chain.update_attribute(:account_id, account.id)
+    process_chain.update_attribute(:finished_at, 4.hours.ago)
     process_chain.recipe.update_attribute(:account_id, account.id)
     process_chain.initialize_directories
     copy_fixture_file("plaintext.txt", process_chain.input_files_directory)
@@ -66,13 +67,28 @@ describe Api::V1::ProcessChainsController, type: :controller do
 
     context 'if a valid token is supplied' do
       context 'and the chain belongs to that account' do
-        it 'serves the file successfully' do
-          request_with_auth(account.create_new_auth_token) do
-            perform_download_output_zip_request(download_params)
+        context 'and exeuction is finished' do
+          it 'serves the file successfully' do
+            request_with_auth(account.create_new_auth_token) do
+              perform_download_output_zip_request(download_params)
+            end
+
+            expect(response.status).to eq 200
+            expect(response.stream.to_path).to eq "/tmp/step_#{process_chain.last_step.id}_output.zip"
+          end
+        end
+        context 'and the execution is not finished' do
+          before do
+            process_chain.update_attribute(:finished_at, nil)
           end
 
-          expect(response.status).to eq 200
-          expect(response.stream.to_path).to eq "/tmp/step_#{process_chain.last_step.id}_output.zip"
+          it 'returns 404' do
+            request_with_auth(account.create_new_auth_token) do
+              perform_download_output_zip_request(download_params)
+            end
+
+            expect(response.status).to eq 404
+          end
         end
       end
     end
@@ -93,9 +109,26 @@ describe Api::V1::ProcessChainsController, type: :controller do
         }
       }
 
-      specify do
-        request_with_auth(account.create_new_auth_token) do
-          perform_download_output_file_request(download_params)
+      context 'when execution is finished' do
+        it 'downloads the file' do
+          request_with_auth(account.create_new_auth_token) do
+            perform_download_output_file_request(download_params)
+          end
+
+          expect(response.status).to eq 200
+        end
+      end
+      context 'and the execution is not finished' do
+        before do
+          process_chain.update_attribute(:finished_at, nil)
+        end
+
+        it 'returns 404' do
+          request_with_auth(account.create_new_auth_token) do
+            perform_download_output_zip_request(download_params)
+          end
+
+          expect(response.status).to eq 404
         end
       end
     end

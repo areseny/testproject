@@ -24,13 +24,32 @@ describe Api::V1::ProcessStepsController, type: :controller do
 
     context 'if a valid token is supplied' do
       context 'and the chain belongs to that account' do
-        it 'serves the file successfully' do
-          request_with_auth(account.create_new_auth_token) do
-            perform_download_output_zip_request(download_params)
+        context 'and if the execution is finished' do
+          before do
+            process_step.update_attribute(:finished_at, 3.minutes.ago)
           end
 
-          expect(response.status).to eq 200
-          expect(response.stream.to_path).to eq "/tmp/step_#{process_step.id}_output.zip"
+          it 'serves the file successfully' do
+            request_with_auth(account.create_new_auth_token) do
+              perform_download_output_zip_request(download_params)
+            end
+
+            expect(response.status).to eq 200
+            expect(response.stream.to_path).to eq "/tmp/step_#{process_step.id}_output.zip"
+          end
+        end
+        context 'and the execution is not finished' do
+          before do
+            process_step.update_attribute(:finished_at, nil)
+          end
+
+          it 'returns 404' do
+            request_with_auth(account.create_new_auth_token) do
+              perform_download_output_zip_request(download_params)
+            end
+
+            expect(response.status).to eq 404
+          end
         end
       end
     end
@@ -38,7 +57,7 @@ describe Api::V1::ProcessStepsController, type: :controller do
 
   describe "GET download_output_file" do
 
-    let!(:process_step)        { create(:process_step) }
+    let!(:process_step)        { create(:process_step, finished_at: 2.minutes.ago) }
 
     let!(:download_params) {
       {

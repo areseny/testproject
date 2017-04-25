@@ -55,6 +55,14 @@ class ProcessChain < ApplicationRecord
     process_steps.sort_by(&:position).last
   end
 
+  def finished?
+    !!finished_at
+  end
+
+  def started?
+    !!started_at
+  end
+
   def step_classes
     process_steps_in_order.map(&:step_class)
   end
