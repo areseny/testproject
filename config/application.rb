@@ -40,13 +40,14 @@ module Ink
     config.debug_exception_response_format = :default
 
     config.middleware.use ::CatchJsonParseErrors
-    config.middleware.use Rack::Cors do
+    config.middleware.insert_after Rails::Rack::Logger, Rack::Cors, logger: Rails.logger do
       allow do
         origins '*'#/\Alocalhost(:\d+)?\z/, /\A(.*)\.coko\.foundation(:\d+)?\z/
         resource '*',
-                 :headers => :any,
-                 :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
-                 :methods => [:get, :post, :options, :delete, :put]
+                 headers: :any,
+                 methods: %i[get post patch put delete options],
+                 expose: ['access-token', 'expiry', 'token-type', 'uid', 'client']
+
       end
     end
   end
