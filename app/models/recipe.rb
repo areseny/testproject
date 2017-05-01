@@ -15,8 +15,8 @@ class Recipe < ApplicationRecord
   include ExecutionErrors
 
   belongs_to :account, inverse_of: :recipes
-  has_many :recipe_steps, inverse_of: :recipe, dependent: :destroy
-  has_many :process_chains, inverse_of: :recipe, dependent: :destroy
+  has_many :recipe_steps, -> { order(:position) }, inverse_of: :recipe, dependent: :destroy
+  has_many :process_chains, -> { order(created_at: :desc) }, inverse_of: :recipe, dependent: :destroy
 
   validates_presence_of :name, :account
   validates_inclusion_of :active, :in => [true, false]
