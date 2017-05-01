@@ -116,6 +116,8 @@ describe "Account lists all their recipes" do
         end
 
         it 'responds with an empty set' do
+          ap body_as_json
+
           expect(body_as_json.to_a).to eq [['recipes', []]]
         end
       end

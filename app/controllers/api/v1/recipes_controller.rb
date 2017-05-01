@@ -85,7 +85,11 @@ module Api
       end
 
       def recipes
-        @recipes ||= Recipe.includes(:recipe_steps, :process_chains).available_to_account(current_api_account.id)
+        @recipes ||= Recipe.includes(:recipe_steps, process_chains: :process_steps).available_to_account(current_api_account.id)
+        @recipes.each do |r|
+          r.process_chains = r.process_chains.select{|pc| pc.account_id == current_api_account.id }
+        end
+        @recipes
       end
     end
   end
