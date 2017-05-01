@@ -43,7 +43,7 @@ RSpec.describe Account, type: :model do
 
     context 'if the account is not an admin' do
       specify do
-        expect(account.is_admin?).to be_falsey
+        expect(account.admin?).to be_falsey
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Account, type: :model do
       end
 
       specify do
-        expect(account.is_admin?).to be_truthy
+        expect(account.admin?).to be_truthy
       end
     end
   end

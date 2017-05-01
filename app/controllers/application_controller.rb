@@ -12,7 +12,7 @@ class ApplicationController < ActionController::API
   end
 
   def authorise_admin!
-    unless current_api_account.is_admin?
+    unless current_api_account.admin?
       render_unauthorised_error("Authorised users only")
     end
   end

@@ -47,7 +47,7 @@ class Account < ApplicationRecord
     end
   end
 
-  def is_admin?
+  def admin?
     roles.include?("admin")
   end
 end
