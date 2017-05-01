@@ -446,9 +446,12 @@ RSpec.describe Api::V1::RecipesController do
 
       context 'there are recipes' do
         let!(:other_account)    { create(:account) }
-        let!(:recipe_1)      { create(:recipe, account: account) }
-        let!(:recipe_2)      { create(:recipe, account: account, active: false) }
-        let!(:recipe_3)      { create(:recipe, account: other_account) }
+        let!(:recipe_1)      { create(:recipe, name: "recipe1", account: account) }
+        let!(:recipe_2)      { create(:recipe, name: "recipe2", account: account, active: false) }
+        let!(:recipe_3)      { create(:recipe, name: "recipe3", account: other_account) }
+        let!(:chain1)        { create(:process_chain, recipe: recipe_3, account: other_account) }
+        let!(:recipe_4)      { create(:recipe, name: "recipe4", account: account, public: false) }
+        let!(:chain2)        { create(:process_chain, recipe: recipe_4, account: other_account) }
 
         it "finds the account's recipes" do
           request_with_auth(account.create_new_auth_token) do
@@ -456,7 +459,7 @@ RSpec.describe Api::V1::RecipesController do
           end
 
           expect(response.status).to eq 200
-          expect(assigns[:recipes].to_a).to eq [recipe_1]
+          expect(assigns[:recipes].to_a).to eq [recipe_1, recipe_4]
         end
       end
     end
