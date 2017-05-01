@@ -29,6 +29,7 @@ FactoryGirl.define do
   factory :process_chain do
     recipe
     account
+    input_file_list ["asdf.html" => "123kb"]
   end
 
   factory :process_step do
@@ -45,6 +46,7 @@ FactoryGirl.define do
       execution_errors ["Very Serious Error"].to_yaml
     end
     version "0.1"
+    output_file_list ["asdf.html" => "123kb"]
   end
 
   factory :recipe_step do
