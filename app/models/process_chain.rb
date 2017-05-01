@@ -25,12 +25,7 @@ class ProcessChain < ApplicationRecord
 
   belongs_to :account
   belongs_to :recipe, inverse_of: :process_chains
-  has_many :process_steps, inverse_of: :process_chain, dependent: :destroy
-
-  # after_initialize do
-    # sheesh
-    # generate_unique_slug
-  # end
+  has_many :process_steps, -> { order(:position) }, inverse_of: :process_chain, dependent: :destroy
 
   before_save :generate_unique_slug
 
