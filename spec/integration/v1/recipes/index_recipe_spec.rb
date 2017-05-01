@@ -52,7 +52,6 @@ describe "Account lists all their recipes" do
           let!(:process_step2b)    { create(:executed_process_step_success, process_chain: process_chain2, position: 2, step_class_name: epub_calibre_step_class.to_s) }
 
           before do
-            # step1.update_attribute(:step_class_name, rot_thirteen_step_class.to_s)
             process_chain1.initialize_directories
             process_chain2.initialize_directories
 
@@ -68,6 +67,10 @@ describe "Account lists all their recipes" do
 
             it 'does not show them' do
               perform_index_request(auth_headers)
+
+              ap "ACCOUNT OWNS PROCESS CHAIN ID #{process_chain1.id}"
+              ap "ACCOUNT DOES NOT OWN PROCESS CHAIN ID #{process_chain2.id}"
+              ap body_as_json['recipes'][0]['process_chains']
 
               expect(body_as_json['recipes'][0]['process_chains'].count).to eq 1
               expect(body_as_json['recipes'][0]['process_chains'][0]['id']).to eq process_chain1.id
