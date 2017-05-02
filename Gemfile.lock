@@ -17,15 +17,15 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
-  revision: 42faef7a90cca87023de3afc49486569e05d3ace
+  revision: 630184bc4803fbb103f8992d9b6b24027f5dcb48
   specs:
-    inkstep_coko_conversion (0.2.13)
+    inkstep_coko_conversion (0.2.14)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
-  revision: 9d99984fd8208a09ffae34ef6a361443771c6c31
+  revision: eef98c718db4e85e985262e0df58c1f6861da425
   specs:
-    inkstep_coko_demo_steps (0.1.6)
+    inkstep_coko_demo_steps (0.1.7)
 
 GEM
   remote: https://rubygems.org/
