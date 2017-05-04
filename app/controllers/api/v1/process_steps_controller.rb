@@ -3,7 +3,7 @@ module Api
     class ProcessStepsController < ApplicationController
       include DirectoryMethods
 
-      before_action :authenticate_api_account!
+      before_action :authenticate!
       before_action :authorise_account!
 
       respond_to :json
@@ -39,7 +39,7 @@ module Api
       end
 
       def authorise_account!
-        if process_step.process_chain.account != current_api_account
+        if process_step.process_chain.account != current_entity.account
           e = ExecutionErrors::NotAuthorisedError.new("That file is not accessible to you.")
           render_error(e)
         end

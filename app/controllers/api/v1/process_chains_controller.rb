@@ -4,13 +4,13 @@ module Api
       include ExecutionErrors
       include DirectoryMethods
 
-      before_action :authenticate_api_account!, only: [:retry, :download_file]
+      before_action :authenticate!, only: [:retry, :download_file]
       before_action :authorise_account!
 
       respond_to :json
 
       def retry
-        @new_chain = process_chain.retry_execution!(current_api_account: current_api_account)
+        @new_chain = process_chain.retry_execution!(current_entity: current_entity)
         render json: @new_chain, status: 200
       rescue => e
         puts e.message
@@ -62,11 +62,11 @@ module Api
       private
 
       def process_chain
-        @process_chain ||= current_api_account.process_chains.find(params[:id])
+        @process_chain ||= current_entity.account.process_chains.find(params[:id])
       end
 
       def authorise_account!
-        if process_chain.account != current_api_account
+        if process_chain.account != current_entity.account
           e = ExecutionErrors::NotAuthorisedError.new("That recipe is not accessible to you.")
           render_error(e)
         end
