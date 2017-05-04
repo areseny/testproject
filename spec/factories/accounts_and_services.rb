@@ -14,6 +14,13 @@ FactoryGirl.define do
     end
   end
 
+  factory :service do
+    name "Editoria"
+    description "Editoria"
+    auth_key "ABC123"
+    account
+  end
+
   factory :account_role, aliases: [:user_role] do
     account
     role "admin"

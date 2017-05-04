@@ -1,9 +1,20 @@
 require 'execution_errors'
 
 class ApplicationController < ActionController::API
+
+  include ActionController::HttpAuthentication::Token::ControllerMethods
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::Serialization
   include ExecutionErrors
+
+  helper_method :service_authenticated?, :current_service
+
+  def authenticate!
+    authenticate_service
+    unless current_service
+      authenticate_api_account!
+    end
+  end
 
   def default_serializer_options
     # remove if you want the root element to serialise as well
@@ -11,8 +22,25 @@ class ApplicationController < ActionController::API
     # {}
   end
 
+  def authenticate_service
+    token = request.headers["service_key"]
+    Service.find_by(auth_key: token)
+  end
+
+  def service_authenticated?
+    current_service.present?
+  end
+
+  def current_entity
+    current_service || current_api_account
+  end
+
+  def current_service
+    @_current_service ||= authenticate_service
+  end
+
   def authorise_admin!
-    unless current_api_account.admin?
+    unless current_entity.admin?
       render_unauthorised_error("Authorised users only")
     end
   end

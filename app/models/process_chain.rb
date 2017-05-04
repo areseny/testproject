@@ -33,8 +33,8 @@ class ProcessChain < ApplicationRecord
 
   scope :belongs_to_account, -> (account_id) { where(account_id: account_id) }
 
-  def retry_execution!(current_api_account:)
-    recipe.clone_and_execute(account: current_api_account, input_files: open_input_files)
+  def retry_execution!(current_entity:)
+    recipe.clone_and_execute(account: current_entity.account, input_files: open_input_files)
   end
 
   def execute_process!(input_files:, callback_url: "")

@@ -28,7 +28,9 @@ class Recipe < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  scope :available_to_account, -> (account_id) { active.where("PUBLIC = ? OR ACCOUNT_ID = ?", true, account_id) }
+  scope :available_to_account, -> (account_id) {
+    active.where("PUBLIC = ? OR ACCOUNT_ID = ?", true, account_id)
+  }
 
   def check_for_empty_steps
     raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
