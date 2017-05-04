@@ -50,4 +50,8 @@ class Account < ApplicationRecord
   def admin?
     roles.include?("admin")
   end
+
+  def account
+    self
+  end
 end

@@ -9,8 +9,8 @@ Rails.application.routes.draw do
 
   # authenticate :user, lambda { |u| u.admin? } do
   # authenticate :user do
-    mount Sidekiq::Web => '/sidekiq'
-    mount HealthMonitor::Engine, at: '/'
+  mount Sidekiq::Web => '/sidekiq'
+  mount HealthMonitor::Engine, at: '/'
   # end
 
 
@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       mount_devise_token_auth_for 'Account', at: 'auth', controllers: {
           sessions: 'api/v1/overrides/sessions'
       }
+      mount_devise_token_auth_for 'Service', at: 'service_auth'
 
       namespace :admin do
         get 'accounts' => 'accounts#index'
