@@ -22,6 +22,9 @@ Rails.application.routes.draw do
           sessions: 'api/v1/overrides/sessions'
       }
       mount_devise_token_auth_for 'Service', at: 'service_auth'
+      # namespace :auth do
+        post 'sign_in' => 'authentication#sign_in'
+      # end
 
       namespace :admin do
         get 'accounts' => 'accounts#index'
@@ -30,6 +33,7 @@ Rails.application.routes.draw do
 
       get 'members_only' => 'pages#members_only'
       get 'anyone' => 'pages#anyone'
+      get 'jwt_test' => 'pages#json_web_token_test'
 
       get 'available_step_classes' => 'step_class#index'
 
