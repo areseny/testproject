@@ -5,6 +5,10 @@ class Service < ApplicationRecord
   validates :account, presence: true
   validates :name, presence: true
 
+  def admin?
+    false
+  end
+
   delegate :provider, :email, :uid, to: :account
 
   # def generate_auth_token
