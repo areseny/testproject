@@ -63,3 +63,9 @@ end
 def service_accounts_request(version, data = {}.to_json)
   get :service_accounts, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
+
+# jwt auth authentication_controller requests
+
+def post_sign_in_request(version, data = {}.to_json)
+  post :sign_in, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end

@@ -14,7 +14,7 @@ describe Api::V1::Admin::AccountsController, type: :controller do
           create(:account_role, account: account, role: "admin")
         end
 
-        it 'serves the file successfully' do
+        specify do
           request_with_auth(account.create_new_auth_token) do
             perform_get_index_request({})
           end

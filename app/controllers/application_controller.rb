@@ -9,6 +9,22 @@ class ApplicationController < ActionController::API
 
   helper_method :service_authenticated?, :current_service
 
+  attr_reader :current_account
+
+  ########### jwt ###############
+
+  def authenticate_request!
+    unless account_id_in_token?
+      render json: { errors: ['Authorised users only'] }, status: :unauthorized
+      return
+    end
+    @current_account = Account.find(auth_token[:account_id])
+  rescue JWT::VerificationError, JWT::DecodeError
+    render json: { errors: ['Authorised users only'] }, status: :unauthorized
+  end
+
+  ########## jwt end ############
+
   def authenticate!
     authenticate_service
     unless current_service
@@ -74,6 +90,22 @@ class ApplicationController < ActionController::API
 
   def render_not_found_error(message)
     render json: {errors: [message].flatten}, status: 404
+  end
+
+  private # more jwt
+
+  def http_token
+    @http_token ||= if request.headers['Authorization'].present?
+                      request.headers['Authorization'].split(' ').last
+                    end
+  end
+
+  def auth_token
+    @auth_token ||= JsonWebToken.decode(http_token)
+  end
+
+  def account_id_in_token?
+    http_token && auth_token && auth_token[:account_id].to_i
   end
 
   # Prevent CSRF attacks by raising an exception.

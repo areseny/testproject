@@ -12,7 +12,7 @@ describe "Account sign in" do
 
   describe "POST sign in" do
     let!(:password)       { "password" }
-    let!(:account)           { create(:account, password: password, password_confirmation: password) }
+    let!(:account)        { create(:account, password: password, password_confirmation: password) }
     let!(:valid_params)   {
       {
           email: account.email,
