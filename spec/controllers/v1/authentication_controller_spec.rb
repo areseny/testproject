@@ -1,7 +1,7 @@
 require 'rails_helper'
 require_relative 'version'
 
-describe Api::V1::AuthenticationController, type: :controller do
+describe Api::V1::Auth::AuthenticationController, type: :controller do
 
   let!(:account)             { create(:account) }
 

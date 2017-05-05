@@ -22,9 +22,9 @@ Rails.application.routes.draw do
           sessions: 'api/v1/overrides/sessions'
       }
       mount_devise_token_auth_for 'Service', at: 'service_auth'
-      # namespace :auth do
+      namespace :auth do
         post 'sign_in' => 'authentication#sign_in'
-      # end
+      end
 
       namespace :admin do
         get 'accounts' => 'accounts#index'

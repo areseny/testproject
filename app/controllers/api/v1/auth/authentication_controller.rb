@@ -1,4 +1,4 @@
-module Api::V1
+module Api::V1::Auth
   class AuthenticationController < ApplicationController
     def sign_in
       account = Account.find_for_database_authentication(email: params[:email])
