@@ -164,6 +164,7 @@ GEM
       jsonapi-renderer (= 0.1.1.beta1)
     jsonapi-parser (0.1.1.beta3)
     jsonapi-renderer (0.1.1.beta1)
+    jwt (1.5.6)
     libv8 (3.16.14.15)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -337,6 +338,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   json_spec
+  jwt
   omniauth
   pg (~> 0.15)
   pry
