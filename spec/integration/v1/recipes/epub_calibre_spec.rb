@@ -12,10 +12,10 @@ describe "Account executes a single-step epub calibre recipe" do
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
-  let!(:step_class)  { epub_calibre_step_class.to_s }
+  let!(:step_class)       { epub_calibre_step_class.to_s }
 
-  let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
-  let!(:auth_headers)     { account.create_new_auth_token }
+  let!(:account)          { create(:account, password: "password", password_confirmation: "password") }
+  let!(:auth_headers)     { account.new_jwt }
   let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
   let!(:recipe)           { create(:recipe, account: account, step_classes: [step_class]) }

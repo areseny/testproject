@@ -12,8 +12,8 @@ describe "Account executes a ROT13 recipe" do
 
   # curl -H "Content-Type: application/json, Accept: application/vnd.ink.v1, uid: account@example.com, auth_token: asdf" -X GET http://localhost:3000/api/recipes/:id/execute
 
-  let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
-  let!(:auth_headers)     { account.create_new_auth_token }
+  let!(:account)          { create(:account, password: "password", password_confirmation: "password") }
+  let!(:auth_headers)     { account.new_jwt }
   let!(:text_file)        { fixture_file_upload('files/plaintext.txt', 'text/plain') }
 
   let!(:step_class)       { rot_thirteen_step_class.to_s }

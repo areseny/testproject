@@ -29,7 +29,8 @@ require 'rails/generators/rails/app/templates/app/models/application_record'
 class Account < ApplicationRecord
   # Include default devise modules.
   devise :database_authenticatable, :registerable,
-          :recoverable, :rememberable, :trackable, :validatable
+          :recoverable, :rememberable,
+         :trackable, :validatable
           # :confirmable, :omniauthable
   include DeviseTokenAuth::Concerns::User
 
@@ -53,5 +54,17 @@ class Account < ApplicationRecord
 
   def account
     self
+  end
+
+  def new_jwt
+    {'access-token' => generate_token}
+  end
+
+  def uid
+    email
+  end
+
+  def generate_token
+    JsonWebToken.encode({account_id: account.id})
   end
 end

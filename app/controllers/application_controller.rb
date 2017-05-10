@@ -11,24 +11,20 @@ class ApplicationController < ActionController::API
 
   attr_reader :current_account
 
-  ########### jwt ###############
-
-  def authenticate_request!
+  def authenticate_account!
     unless account_id_in_token?
-      render json: { errors: ['Authorised users only'] }, status: :unauthorized
+      render json: { errors: ['Authorized users only'] }, status: :unauthorized
       return
     end
     @current_account = Account.find(auth_token[:account_id])
   rescue JWT::VerificationError, JWT::DecodeError
-    render json: { errors: ['Authorised users only'] }, status: :unauthorized
+    render json: { errors: ['Authorized users only'] }, status: :unauthorized
   end
-
-  ########## jwt end ############
 
   def authenticate!
     authenticate_service
-    unless current_service
-      authenticate_api_account!
+    unless service_authenticated?
+      authenticate_account!
     end
   end
 
@@ -48,7 +44,7 @@ class ApplicationController < ActionController::API
   end
 
   def current_entity
-    current_service || current_api_account
+    current_service || current_account
   end
 
   def current_service
@@ -56,8 +52,8 @@ class ApplicationController < ActionController::API
   end
 
   def authorise_admin!
-    unless current_entity.admin?
-      render_unauthorised_error("Authorised users only")
+    unless current_entity && current_entity.admin?
+      render_unauthorised_error("Authorized users only")
     end
   end
 
@@ -95,8 +91,8 @@ class ApplicationController < ActionController::API
   private # more jwt
 
   def http_token
-    @http_token ||= if request.headers['Authorization'].present?
-                      request.headers['Authorization'].split(' ').last
+    @http_token ||= if request.headers['access-token'].present?
+                      request.headers['access-token'].split(' ').last
                     end
   end
 

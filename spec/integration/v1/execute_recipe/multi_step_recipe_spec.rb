@@ -15,7 +15,7 @@ describe "Account executes a recipe with multiple real steps" do
   describe "POST execute recipe" do
 
     let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
-    let!(:auth_headers)     { account.create_new_auth_token }
+    let!(:auth_headers)     { account.new_jwt }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
     let!(:docx_file)        { fixture_file_upload('files/SampleStyles.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 

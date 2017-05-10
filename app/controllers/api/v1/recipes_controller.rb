@@ -1,7 +1,7 @@
 module Api
   module V1
     class RecipesController < ApplicationController
-      before_action :authenticate_api_account!, only: [:create, :update, :destroy]
+      before_action :authenticate_account!, only: [:create, :update, :destroy]
       before_action :authenticate!, only: [:index, :show, :execute]
 
       respond_to :json

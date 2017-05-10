@@ -2,7 +2,6 @@ require 'rails_helper'
 require_relative 'version'
 
 RSpec.describe Api::V1::RecipesController do
-  include Devise::Test::ControllerHelpers
 
   let!(:account)           { create(:account) }
   let!(:other_account)     { create(:account) }
@@ -53,7 +52,7 @@ RSpec.describe Api::V1::RecipesController do
             end
 
             it 'tries to execute the process chain' do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_execute_request(execution_params)
               end
 
@@ -68,7 +67,7 @@ RSpec.describe Api::V1::RecipesController do
             end
 
             it 'tries to execute the process chain' do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_execute_request(execution_params)
               end
 
@@ -83,7 +82,7 @@ RSpec.describe Api::V1::RecipesController do
             end
 
             it 'fails' do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_execute_request(execution_params)
               end
 
@@ -100,7 +99,7 @@ RSpec.describe Api::V1::RecipesController do
 
           context 'if the recipe belongs to that account' do
             it 'tries to execute the process chain' do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_execute_request(execution_params)
               end
 
@@ -115,7 +114,7 @@ RSpec.describe Api::V1::RecipesController do
             end
 
             it 'fails' do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_execute_request(execution_params)
               end
 
@@ -132,7 +131,7 @@ RSpec.describe Api::V1::RecipesController do
         end
 
         it 'fails' do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_execute_request(execution_params)
           end
 
@@ -170,7 +169,7 @@ RSpec.describe Api::V1::RecipesController do
     let(:recipe)            { create(:recipe, account: account, public: true) }
 
     it 'updates the values' do
-      request_with_auth(account.create_new_auth_token) do
+      request_with_auth(account.new_jwt) do
         perform_update_request(recipe_params)
       end
 
@@ -196,7 +195,7 @@ RSpec.describe Api::V1::RecipesController do
             end
 
             it "creates the recipe with recipe steps" do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -213,7 +212,7 @@ RSpec.describe Api::V1::RecipesController do
             it "creates the recipe for nonexistent step classes" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: "NonexistentStep"}, {position: 2, step_class_name: rot_thirteen }]
 
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -225,7 +224,7 @@ RSpec.describe Api::V1::RecipesController do
             it "does not create the recipe with duplicate numbers" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
 
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -235,7 +234,7 @@ RSpec.describe Api::V1::RecipesController do
             it "does not create the recipe with incorrect numbers" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 0, step_class_name: step}, {position: 1, step_class_name: rot_thirteen }]
 
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -245,7 +244,7 @@ RSpec.describe Api::V1::RecipesController do
             it "does not create the recipe with skipped steps" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 1, step_class_name: step}, {position: 6, step_class_name: rot_thirteen }]
 
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -255,7 +254,7 @@ RSpec.describe Api::V1::RecipesController do
             it "creates the recipe with nonsequential numbers" do
               recipe_params[:recipe][:steps_with_positions] = [{position: 2, step_class_name: step }, {position: 1, step_class_name: rot_thirteen}]
 
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -277,7 +276,7 @@ RSpec.describe Api::V1::RecipesController do
             end
 
             it "creates the recipe with recipe steps" do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -294,7 +293,7 @@ RSpec.describe Api::V1::RecipesController do
             it "creates the recipe for nonexistent step classes" do
               recipe_params[:recipe][:steps] = ["NonexistentStep", rot_thirteen]
 
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_create_request(recipe_params)
               end
 
@@ -314,7 +313,7 @@ RSpec.describe Api::V1::RecipesController do
               }
 
               specify do
-                request_with_auth(account.create_new_auth_token) do
+                request_with_auth(account.new_jwt) do
                   perform_create_request(recipe_params)
                 end
 
@@ -337,7 +336,7 @@ RSpec.describe Api::V1::RecipesController do
               }
 
               specify do
-                request_with_auth(account.create_new_auth_token) do
+                request_with_auth(account.new_jwt) do
                   perform_create_request(recipe_params)
                 end
 
@@ -354,7 +353,7 @@ RSpec.describe Api::V1::RecipesController do
 
         context 'if there are no steps supplied' do
           it "assigns" do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_create_request(recipe_params)
             end
 
@@ -370,7 +369,7 @@ RSpec.describe Api::V1::RecipesController do
           end
 
           it "is not successful" do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_create_request(recipe_params)
             end
 
@@ -401,7 +400,7 @@ RSpec.describe Api::V1::RecipesController do
     context 'if a valid token is supplied' do
 
       it "assigns" do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           perform_update_request(recipe_params.merge(id: recipe.id))
         end
 
@@ -434,7 +433,7 @@ RSpec.describe Api::V1::RecipesController do
       context 'there are no recipes' do
 
         it "finds no recipes" do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_index_request
           end
 
@@ -454,7 +453,7 @@ RSpec.describe Api::V1::RecipesController do
         let!(:chain2)        { create(:process_chain, recipe: recipe_4, account: other_account) }
 
         it "finds the account's recipes" do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_index_request
           end
 
@@ -484,7 +483,7 @@ RSpec.describe Api::V1::RecipesController do
       context 'if the recipe does not exist' do
 
         it "returns an error" do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_show_request({id: "nonsense"})
           end
 
@@ -500,7 +499,7 @@ RSpec.describe Api::V1::RecipesController do
           let!(:recipe)      { create(:recipe, account: account) }
 
           it "finds the recipe" do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_show_request({id: recipe.id})
             end
 
@@ -515,7 +514,7 @@ RSpec.describe Api::V1::RecipesController do
             before { recipe.reload }
 
             it "finds the recipe" do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_show_request({id: recipe.id})
               end
 
@@ -530,7 +529,7 @@ RSpec.describe Api::V1::RecipesController do
           let!(:recipe)       { create(:recipe, account: other_account) }
 
           it "does not find the recipe" do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_show_request({id: recipe.id})
             end
 
@@ -561,7 +560,7 @@ RSpec.describe Api::V1::RecipesController do
       context 'if the recipe does not exist' do
 
         it "returns an error" do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_destroy_request({id: "nonsense"})
           end
 
@@ -577,7 +576,7 @@ RSpec.describe Api::V1::RecipesController do
           let!(:recipe)      { create(:recipe, account: account) }
 
           it "finds the recipe" do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_destroy_request({id: recipe.id})
             end
 
@@ -591,7 +590,7 @@ RSpec.describe Api::V1::RecipesController do
           let!(:recipe)       { create(:recipe, account: other_account) }
 
           it "does not find the recipe" do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_destroy_request({id: recipe.id})
             end
 
