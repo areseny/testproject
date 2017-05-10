@@ -30,9 +30,9 @@ gem 'pg', '~> 0.15'
 
 # gem 'ink_step', path: "~/projects/coko/ink-step"
 
-gem 'ink_step', git: 'git@gitlab.coko.foundation:INK/ink-step.git'
-gem 'inkstep_coko_demo_steps', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git'
-gem 'inkstep_coko_conversion', git: 'git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git'
+gem 'ink_step', git: 'https://gitlab.coko.foundation/INK/ink-step.git'
+gem 'inkstep_coko_demo_steps', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_demo_steps.git'
+gem 'inkstep_coko_conversion', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_conversion.git'
 
 ################### javascript ###############
 
