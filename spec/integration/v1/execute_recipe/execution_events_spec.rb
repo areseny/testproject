@@ -9,7 +9,7 @@ describe "Account executes a recipe and an event is triggered" do
   describe "POST execute recipe" do
 
     let!(:account)             { create(:account) }
-    let!(:auth_headers)     { account.create_new_auth_token }
+    let!(:auth_headers)     { account.new_jwt }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
     let!(:rot13)            { rot_thirteen_step_class.to_s }

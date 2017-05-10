@@ -4,7 +4,7 @@ module Api
       include ExecutionErrors
       include DirectoryMethods
 
-      before_action :authenticate!, only: [:retry, :download_file]
+      before_action :authenticate!, only: [:retry, :download_input_file, :download_input_zip, :download_output_file, :download_output_zip]
       before_action :authorise_account!
 
       respond_to :json

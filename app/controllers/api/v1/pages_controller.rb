@@ -2,7 +2,7 @@ module Api
   module V1
     class PagesController < ApplicationController
       before_action :authenticate!, only: [:members_only]
-      before_action :authenticate_request!, only: [:json_web_token_test]
+      before_action :authenticate_account!, only: [:json_web_token_test]
 
       respond_to :json
 

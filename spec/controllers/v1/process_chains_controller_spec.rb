@@ -5,9 +5,8 @@ require 'sidekiq/testing'
 Sidekiq::Testing.inline!
 
 describe Api::V1::ProcessChainsController, type: :controller do
-  include Devise::Test::ControllerHelpers
 
-  let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+  let!(:account)          { create(:account, password: "password", password_confirmation: "password") }
   let!(:demo_step)        { rot_thirteen_step_class.to_s }
   let!(:text_file)        { File.new('spec/fixtures/files/plaintext.txt', 'r') }
   let!(:recipe)           { create(:recipe) }
@@ -40,7 +39,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
     context 'if a valid token is supplied' do
       context 'and the chain belongs to that account' do
         it 'serves the file successfully' do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_download_input_zip_request(download_params)
           end
 
@@ -69,7 +68,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       context 'and the chain belongs to that account' do
         context 'and exeuction is finished' do
           it 'serves the file successfully' do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_download_output_zip_request(download_params)
             end
 
@@ -83,7 +82,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
           end
 
           it 'returns 404' do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_download_output_zip_request(download_params)
             end
 
@@ -111,7 +110,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
 
       context 'when execution is finished' do
         it 'downloads the file' do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_download_output_file_request(download_params)
           end
 
@@ -124,7 +123,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
         end
 
         it 'returns 404' do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_download_output_zip_request(download_params)
           end
 
@@ -142,7 +141,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       }
 
       it 'fails' do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           expect{perform_download_output_file_request(download_params)}.to raise_error("Please provide a relative file path")
         end
       end
@@ -157,7 +156,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       }
 
       it 'fails' do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           expect{perform_download_output_file_request(download_params)}.to raise_error("Cannot find /")
         end
       end
@@ -173,7 +172,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
         }
 
         it "doesn't allow access" do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             expect{perform_download_output_file_request(download_params)}.to raise_error("Cannot find /etc/important.config.file")
           end
         end
@@ -187,7 +186,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
           }
         }
         it "doesn't allow access" do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             expect{perform_download_output_file_request(download_params)}.to raise_error("Cannot find ../../important.config.file")
           end
         end
@@ -203,7 +202,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       }
 
       it 'fails' do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           expect{perform_download_output_file_request(download_params)}.to raise_error("Cannot find rubbish.whatever")
         end
       end
@@ -222,7 +221,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       }
 
       specify do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           perform_download_input_file_request(download_params)
         end
       end
@@ -237,7 +236,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       }
 
       it 'fails' do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           expect{perform_download_input_file_request(download_params)}.to raise_error("Please provide a relative file path")
         end
       end
@@ -252,7 +251,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       }
 
       it 'fails' do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           expect{perform_download_input_file_request(download_params)}.to raise_error("Cannot find /")
         end
       end
@@ -267,7 +266,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
       }
 
       it 'fails' do
-        request_with_auth(account.create_new_auth_token) do
+        request_with_auth(account.new_jwt) do
           expect{perform_download_input_file_request(download_params)}.to raise_error("Cannot find rubbish.whatever")
         end
       end
@@ -285,7 +284,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
             end
 
             it 'fails' do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_retry_request(params)
               end
 
@@ -295,7 +294,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
 
           context 'if the recipe has steps' do
            specify do
-              request_with_auth(account.create_new_auth_token) do
+              request_with_auth(account.new_jwt) do
                 perform_retry_request(params)
               end
 

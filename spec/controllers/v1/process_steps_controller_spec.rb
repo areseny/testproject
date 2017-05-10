@@ -1,7 +1,6 @@
 require_relative 'version'
 
 describe Api::V1::ProcessStepsController, type: :controller do
-  include Devise::Test::ControllerHelpers
 
   let!(:account)           { create(:account, password: "password", password_confirmation: "password") }
 
@@ -30,7 +29,7 @@ describe Api::V1::ProcessStepsController, type: :controller do
           end
 
           it 'serves the file successfully' do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_download_output_zip_request(download_params)
             end
 
@@ -44,7 +43,7 @@ describe Api::V1::ProcessStepsController, type: :controller do
           end
 
           it 'returns 404' do
-            request_with_auth(account.create_new_auth_token) do
+            request_with_auth(account.new_jwt) do
               perform_download_output_zip_request(download_params)
             end
 
@@ -77,7 +76,7 @@ describe Api::V1::ProcessStepsController, type: :controller do
 
       context 'and the file belongs to that account' do
         it 'serves the file successfully' do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_download_output_file_request(download_params)
           end
 
@@ -93,7 +92,7 @@ describe Api::V1::ProcessStepsController, type: :controller do
         end
 
         it 'tries to download the file' do
-          request_with_auth(account.create_new_auth_token) do
+          request_with_auth(account.new_jwt) do
             perform_download_output_file_request(download_params)
           end
 

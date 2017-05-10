@@ -11,8 +11,7 @@ describe Api::V1::Auth::AuthenticationController, type: :controller do
         perform_sign_in_request({email: account.email, password: account.password})
 
         expect(response.status).to eq 200
-        expect(body_as_json['account']).to eq({"id" => account.id, "email" => account.email, "admin" => account.admin?})
-        expect(body_as_json['auth_token']).to_not be_nil
+        expect(body_as_json['data']['account']).to eq({"id" => account.id, "email" => account.email, "admin" => account.admin?, "uid" => account.uid, "name" => account.name})
       end
     end
 

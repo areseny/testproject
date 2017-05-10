@@ -1,6 +1,6 @@
 module Api::V1::Admin
   class AccountsController < ApplicationController
-    before_action :authenticate_api_account!
+    before_action :authenticate_account!
     before_action :authorise_admin!
 
     respond_to :json
