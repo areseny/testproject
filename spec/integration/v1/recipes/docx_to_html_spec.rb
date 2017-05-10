@@ -14,8 +14,8 @@ describe "Account executes a single recipe" do
 
   describe "POST execute recipe" do
 
-    let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
-    let!(:auth_headers)     { account.create_new_auth_token }
+    let!(:account)          { create(:account, password: "password", password_confirmation: "password") }
+    let!(:auth_headers)     { account.new_jwt }
     let!(:docx_file)        { fixture_file_upload('files/basic_doc.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') }
 
     let!(:recipe)           { create(:recipe, account: account, step_classes: [step_class]) }

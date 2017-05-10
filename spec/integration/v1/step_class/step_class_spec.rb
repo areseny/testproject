@@ -14,8 +14,8 @@ describe "Account retrieves installed step classes" do
 
   describe "GET index" do
 
-    let!(:account)             { create(:account) }
-    let!(:auth_headers)     { account.create_new_auth_token }
+    let!(:account)          { create(:account) }
+    let!(:auth_headers)     { account.new_jwt }
 
     context 'get step classes without error' do
       specify do

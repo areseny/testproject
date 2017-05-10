@@ -2,8 +2,6 @@ require 'rails_helper'
 require_relative 'version'
 
 describe Api::V1::Admin::AccountsController, type: :controller do
-  include Devise::Test::ControllerHelpers
-
   let!(:account)             { create(:account) }
 
   describe "GET index" do
@@ -15,8 +13,8 @@ describe Api::V1::Admin::AccountsController, type: :controller do
         end
 
         specify do
-          request_with_auth(account.create_new_auth_token) do
-            perform_get_index_request({})
+          request_with_auth(account.new_jwt) do
+            perform_get_index_request
           end
 
           expect(response.status).to eq 200
@@ -30,8 +28,8 @@ describe Api::V1::Admin::AccountsController, type: :controller do
         end
 
         it 'rejects the request as unauthorised' do
-          request_with_auth(account.create_new_auth_token) do
-            perform_get_index_request({})
+          request_with_auth(account.new_jwt) do
+            perform_get_index_request
           end
 
           expect(response.status).to eq 401
@@ -42,7 +40,7 @@ describe Api::V1::Admin::AccountsController, type: :controller do
     context 'if no valid token is supplied' do
       it 'fails' do
         request_with_auth do
-          perform_get_index_request({})
+          perform_get_index_request
         end
 
         expect(response.status).to eq 401

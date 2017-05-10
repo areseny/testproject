@@ -15,7 +15,7 @@ describe "Account executes a recipe and provides a callback URL" do
   describe "POST execute recipe" do
 
     let!(:account)             { create(:account) }
-    let!(:auth_headers)     { account.create_new_auth_token }
+    let!(:auth_headers)     { account.new_jwt }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
     let!(:recipe)           { create(:recipe, account: account, step_classes: [rot13]) }

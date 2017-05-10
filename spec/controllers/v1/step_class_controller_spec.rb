@@ -2,7 +2,6 @@ require 'rails_helper'
 require_relative 'version'
 
 RSpec.describe Api::V1::StepClassController do
-  include Devise::Test::ControllerHelpers
 
   let(:account)    { create(:account) }
 
@@ -12,7 +11,7 @@ RSpec.describe Api::V1::StepClassController do
     end
 
     specify do
-      request_with_auth(account.create_new_auth_token) do
+      request_with_auth(account.new_jwt) do
         perform_step_class_index_request
       end
 

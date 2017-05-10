@@ -14,8 +14,8 @@ describe "Account executes a recipe" do
 
   describe "POST execute recipe" do
 
-    let!(:account)             { create(:account) }
-    let!(:auth_headers)     { account.create_new_auth_token }
+    let!(:account)          { create(:account) }
+    let!(:auth_headers)     { account.new_jwt }
     let!(:html_file)        { fixture_file_upload('files/test.html', 'text/html') }
 
     let!(:execution_params) {
