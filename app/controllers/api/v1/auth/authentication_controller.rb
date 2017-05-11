@@ -2,11 +2,11 @@ module Api::V1::Auth
   class AuthenticationController < ApplicationController
     def sign_in
       @account = Account.find_for_database_authentication(email: params[:email])
-      if @account.valid_password?(params[:password])
+      if @account.present? && @account.valid_password?(params[:password])
         set_response_headers
         render json: {data: account_payload}
       else
-        render json: {errors: ['Invalid credentials']}, status: :unauthorized
+        render json: {errors: ["Invalid login credentials. Please try again."]}, status: :unauthorized
       end
     end
 

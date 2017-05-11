@@ -52,6 +52,8 @@ class Account < ApplicationRecord
     roles.include?("admin")
   end
 
+  # jwt
+
   def account
     self
   end
