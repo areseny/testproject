@@ -23,9 +23,6 @@ Rails.application.routes.draw do
       end
       mount_devise_token_auth_for 'Account', at: 'auth'
       mount_devise_token_auth_for 'Service', at: 'service_auth'
-      namespace :auth do
-        post 'sign_in' => 'authentication#sign_in'
-      end
 
       namespace :admin do
         get 'accounts' => 'accounts#index'

@@ -1,7 +1,7 @@
 require 'rake'
 
 # To run:
-# $> rake setup:create_account[mystery_person@example.com,secretpassword123]
+# $> bundle exec rake setup:create_account[mystery_person@example.com,secretpassword123]
 
 # Don't use quotes around anything.
 # Also, there shouldn't be a space between the email and the password - only a comma.

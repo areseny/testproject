@@ -12,6 +12,8 @@ This project is an API, and therefore is using the `rails-api` gem.
 
 ## Setup (for developers)
 
+Linux (debian/ubuntu)
+
 Install `rbenv` (recommended) or `rvm` and install the required ruby version (see `.ruby-version.rb`)
 
 Make sure postgres is installed (recommended 9.1+, minimum 8.2)
@@ -20,9 +22,13 @@ Copy the `config/database.yml.sample` file into `config/database.yml` and change
 
 Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.
 
-Run `bundle` and usual rake db restoration procedure. Use `db:schema:load`.
+In the project directory (e.g. `/usr/you/ink-api`), run `gem install bundler` and `gem install rake` if you need to
 
-Run the rake tasks for creating an account if you want, or use `rails console`.
+Run `bundle install` to install the required gems.
+
+Run `bundle exec rake db:create` to create the database, then `bundle exec rake db:schema:load` to create all the tables. If you have any issues, check `config/database.yml` to ensure the credentials are correct.
+
+Run the rake tasks for creating an account (see `lib/tasks/setup.rake`) if you want, or use `bundle exec rails console`.
 
 ### Install 'slanger'
 
