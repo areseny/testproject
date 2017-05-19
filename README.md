@@ -9,6 +9,30 @@ Ink is an API. It provides an extensible step-based framework for file conversio
 ## Rails version
 
 This project is an API, and therefore is using the `rails-api` gem.
+## Setup with docker
+Follow the instructions here https://docs.docker.com/compose/install/ to install docker and docker-compose
+To run the stack:
+
+    docker-compose build
+    docker-compose up
+
+## Setup gitlab CI
+
+Go to /admin/runners on gitlab and copy the ci token.
+
+Go to an accessible server and install a gitlab runner https://docs.gitlab.com/runner/
+
+Make sure the runner's host has docker-engine installed
+
+Register the runner with the ci token
+
+  Choose docker+machine as executor type and docker:latest as the image
+
+  You can do this with this command
+  `gitlab-runner register -n -u $GITLAB_CI_URL --docker-image docker:latest -r $GITLAB_TOKEN --executor docker+machine --docker-privileged`
+
+Now whenever you push to the repo the rspec tests will run.
+
 
 ## Setup (for developers)
 
@@ -18,9 +42,15 @@ Install `rbenv` (recommended) or `rvm` and install the required ruby version (se
 
 Make sure postgres is installed (recommended 9.1+, minimum 8.2)
 
-Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.
+Copy the .env.sample file to .env
 
-Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.
+Fill the .env file variables with your values
+
+Run `eval $(cat .env | sed 's/^/export /')` to export the variables to the environment
+
+~~Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.~~
+
+~~Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.~~
 
 In the project directory (e.g. `/usr/you/ink-api`), run `gem install bundler` and `gem install rake` if you need to
 
@@ -51,7 +81,7 @@ Run slanger on the target server (replace APP_KEY, SECRET, ADDRESS and PORT): `s
 
 ### Step Third-party Binary Dependencies
 
-These are listed under the gem readme files for the appropriate step gems. 
+These are listed under the gem readme files for the appropriate step gems.
 
 ### Run it
 
@@ -70,8 +100,8 @@ Once it is up and running, run the rake task in `lib/setup.rake` to create some 
 ### Adding a new step
 
 To write a new step, create a gem (you can host it under RubyGems). I've included code so that the step files get autoloaded when Rails is present.
- 
-The example I'll use here is `InkStep::RotThirteen` included in the gem `coko_demo_steps`. 
+
+The example I'll use here is `InkStep::RotThirteen` included in the gem `coko_demo_steps`.
 
 You can install in a few ways:
 

@@ -13,8 +13,7 @@
 /tmp
 
 .idea/
-config/database.yml
-config/ink_api.yml
+.env
 public/uploads/*
 public/test/*
 
