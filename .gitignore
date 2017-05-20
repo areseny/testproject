@@ -18,3 +18,5 @@ public/uploads/*
 public/test/*
 
 .env
+.env.test
+.env.development
