@@ -17,6 +17,7 @@ class ExecutionWorker
     rescue => e
       ap e.message
       ap e.backtrace
+      raise e
     ensure
       post_to_callback(callback_url)
     end
