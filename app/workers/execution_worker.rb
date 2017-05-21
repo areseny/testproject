@@ -8,6 +8,7 @@ class ExecutionWorker
   sidekiq_options retry: false
 
   def perform(chain_id, callback_url)
+    ap "Perform - chain id#{chain_id}"
     sleep(5) unless Rails.env.test? # icky hack to solve race condition - not final solution
 
     @process_chain = ProcessChain.includes(:process_steps).find(chain_id)
