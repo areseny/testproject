@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://gitlab.coko.foundation/INK/ink-step.git
-  revision: cb8ad965047889c3b7cff2919c59a3c04d9ef7e1
+  revision: c445a0dc6f7c05819b136e08309a5b4d76875e4f
   specs:
     ink_step (0.1.14)
       awesome_print
