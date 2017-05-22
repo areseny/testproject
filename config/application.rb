@@ -39,6 +39,8 @@ module Ink
 
     config.debug_exception_response_format = :default
 
+   # config.active_job.queue_adapter = :sidekiq
+
     config.middleware.use ::CatchJsonParseErrors
     config.middleware.insert_after Rails::Rack::Logger, Rack::Cors, logger: Rails.logger do
       allow do
