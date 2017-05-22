@@ -22,6 +22,10 @@ task :enqueue_jobs => :environment do
   if nonstarted_chains.count > 0
     puts "Found #{nonstarted_chains.count} chains that were not started. IDs: #{nonstarted_chains.map(&:id)}"
     nonstarted_chains.each do |chain|
+      if chain.created_at < 20.seconds.ago
+        puts "Chain is too new"
+        return
+      end
       puts "Starting chain ID #{chain.id}"
       jobid = ExecutionWorker.perform_async(chain.id, "")
       puts "Ran perform_async. Job ID #{jobid}"
