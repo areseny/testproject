@@ -54,6 +54,7 @@ gem 'jbuilder', '~> 2.0'
 
 ######################## aux ########################
 
+gem 'whenever'
 gem 'awesome_print'
 
 # we're actually using slanger
