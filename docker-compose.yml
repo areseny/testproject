@@ -12,7 +12,7 @@ services:
       - "6379:6379"
     volumes:
       - ./redis:/var/lib/redis/data
-  web:
+  ink:
     build: .
     links:
       - postgres
@@ -21,8 +21,6 @@ services:
       - ./:/ink-api
     env_file:
       - '.env'
-    ports:
-      - "3000:3000"
     depends_on:
       - postgres
   sidekiq:
@@ -36,4 +34,36 @@ services:
     volumes:
       - ./:/ink-api
     depends_on:
-      - web
+      - ink
+  slanger:
+    image: antillion/slanger
+    ports:
+      - 4567:4567
+      - 8080:8080
+    links:
+      - redis:redis
+    env_file:
+      - '.env'
+  # editoria:
+  #   image: inkmap/editoria
+  #   volumes:
+  #     - ./editoria/api/db/production:/editoria/api/db/production
+  #   environment:
+  #     PUBSWEET_SECRET: 5046a3dd-d178-41ac-bd87-cac327cdf23a
+  #     INK_ENDPOINT: http://ink:3000
+  #     INK_USERNAME: admin@admin.com
+  #     INK_PASSWORD: abc12345
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - setupdb
+  # setupdb:
+  #   image: inkmap/editoria
+  #   volumes:
+  #     - ./editoria/api/db/production:/editoria/api/db/production
+  #   environment:
+  #     PUB_USER: admin
+  #     PUB_MAIL: admin@inkmap.com
+  #     PUB_PASS: 12345
+  #     PUB_COL: Collection
+  #   command: sh docker/setupdb
