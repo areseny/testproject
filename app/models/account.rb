@@ -37,6 +37,7 @@ class Account < ApplicationRecord
   has_many :recipes, inverse_of: :account
   has_many :process_chains, inverse_of: :account
   has_many :account_roles, inverse_of: :account
+  has_one :service
 
   def roles
     account_roles.map(&:role).uniq

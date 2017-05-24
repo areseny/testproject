@@ -54,7 +54,9 @@ Run `bundle install` to install the required gems.
 
 Run `bundle exec rake db:create` to create the database, then `bundle exec rake db:schema:load` to create all the tables. If you have any issues, check `config/database.yml` to ensure the credentials are correct.
 
-Run the rake tasks for creating an account (see `lib/tasks/setup.rake`) if you want, or use `bundle exec rails console`.
+Run the seeds `bundle exec rake db:seed` for some sample recipes and a sample account and service.
+
+If you want to add some custom accounts, run the rake task for creating an account (see `lib/tasks/setup.rake`). You can always use `bundle exec rails console`.
 
 ### Install 'slanger'
 
