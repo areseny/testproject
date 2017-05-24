@@ -48,10 +48,6 @@ Fill the .env file variables with your values
 
 Run `eval $(cat .env | sed 's/^/export /')` to export the variables to the environment
 
-~~Copy the `config/database.yml.sample` file into `config/database.yml` and change the credentials to match whatever postgres setup you have.~~
-
-~~Copy the `config/ink_api.yml.sample` file into `config/ink_api.yml` and put in the storage directory you'd like to use for files.~~
-
 In the project directory (e.g. `/usr/you/ink-api`), run `gem install bundler` and `gem install rake` if you need to
 
 Run `bundle install` to install the required gems.
@@ -91,7 +87,7 @@ Run redis in another terminal - `redis-server`
 
 Run sidekiq in another terminal - `bundle exec sidekiq`
 
-Check `localhost:3000/anyone` to see if it's up.
+Check `localhost:3000/api/anyone` to see if it's up.
 
 Once it is up and running, run the rake task in `lib/setup.rake` to create some users.
 
