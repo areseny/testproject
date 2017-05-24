@@ -9,7 +9,7 @@ require 'rake'
 
 namespace :setup do
   desc "it creates a new account"
-  task :create_account, [:name, :password] => [:environment] do |t, args|
+  task :create_account, [:email, :password] => [:environment] do |t, args|
     puts "Creating account with arguments: #{args}"
     Account.create(email: args[:email], password: args[:password], password_confirmation: args[:password])
   end
