@@ -299,8 +299,7 @@ describe Api::V1::ProcessChainsController, type: :controller do
               end
 
               expect(response.status).to eq 200
-              expect(assigns(:new_chain)).to_not eq process_chain
-              expect(assigns(:new_chain).executed_at).to_not be_nil
+              expect(assigns(:new_chain).executed_at).to be_nil
             end
           end
         end

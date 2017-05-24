@@ -60,16 +60,19 @@ class ApplicationController < ActionController::API
   def render_error(e)
     if e.is_a? StepNotInstalledError
       render_step_not_installed_error(e)
-      return
-    end
-
-    if e.is_a? ActiveRecord::RecordNotFound
+    elsif e.is_a? ActiveRecord::RecordNotFound
       render_not_found_error(e.message)
     elsif e.is_a? ExecutionErrors::NotAuthorisedError
       render_unauthorised_error(e.message)
+    elsif e.is_a? EmptyChainError
+      render_empty_chain_error(e.message)
     else
       render_unprocessable_error(e.message)
     end
+  end
+
+  def render_empty_chain_error(e)
+    render json: {errors: "The chain you supplied has no steps"}, status: 422
   end
 
   def render_step_not_installed_error(e)

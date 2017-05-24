@@ -8,7 +8,7 @@ describe Execution::RecipeExecutionRunner do
 
   let(:step1)         { create(:process_step, process_chain: chain, position: 1, step_class_name: base_step_class.to_s) }
   let(:step2)         { create(:process_step, process_chain: chain, position: 2, step_class_name: rot_thirteen_step_class.to_s) }
-
+  let(:error_message) { /Process steps are empty for chain \d+/ }
 
   before do
     chain.initialize_directories
@@ -16,16 +16,12 @@ describe Execution::RecipeExecutionRunner do
   end
 
   describe '#run!' do
-
     context 'for a successful execution' do
-
       context 'if there are no steps' do
         subject         { Execution::RecipeExecutionRunner.new(process_steps_in_order: [], chain_file_location: chain.working_directory, process_chain: chain) }
 
         it 'returns nil - no change was made' do
-          result = subject.run!
-
-          expect(result).to eq nil
+          expect{subject.run!}.to raise_error(ExecutionErrors::EmptyChainError, error_message)
         end
       end
 
@@ -72,16 +68,14 @@ describe Execution::RecipeExecutionRunner do
         chain.reload
       end
 
-      it 'has the original files copied but not modified' do
-        subject.run!
-
-        expect(chain.reload.output_file_manifest).to eq [{:path=>"plaintext.txt", :size=>"18 bytes"}]
-      end
-
       it 'logs the error' do
-        subject.run!
+        expect{subject.run!}.to raise_error
 
         expect(subject.step_array[0].errors).to eq ["Oh noes! Error!"]
+      end
+
+      it 'raises the exception' do
+        expect{subject.run!}.to raise_error
       end
 
     end

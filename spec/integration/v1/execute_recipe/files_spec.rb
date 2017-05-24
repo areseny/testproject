@@ -16,7 +16,8 @@ describe "Executing a recipe and making sure all the files get put in the right 
 
   before do
     recipe.reload
-    recipe.clone_and_execute(input_files: file, account: account, callback_url: "")
+    new_chain = recipe.prepare_for_execution(input_files: file, account: account)
+    new_chain.execute_process!(callback_url: "", input_files: [file].flatten)
   end
 
   it 'creates the proper folder in the filesystem for the chain' do

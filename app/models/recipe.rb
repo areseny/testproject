@@ -40,14 +40,12 @@ class Recipe < ApplicationRecord
     raise ExecutionErrors::NoFileSuppliedError.new unless input_files.present?
   end
 
-  def clone_and_execute(input_files:, account:, callback_url:"")
+  def prepare_for_execution(input_files:, account:)
     check_for_empty_steps
     check_for_input_file([input_files].flatten)
     new_chain = clone_to_process_chain(account: account)
     new_chain.save!
-
-    new_chain.execute_process!(callback_url: callback_url, input_files: [input_files].flatten)
-    new_chain.reload
+    new_chain
   end
 
   def clone_to_process_chain(account:)

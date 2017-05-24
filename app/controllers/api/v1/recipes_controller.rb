@@ -8,13 +8,19 @@ module Api
 
       def execute
         recipe.ensure_step_installation
-        @new_chain = recipe.clone_and_execute(input_files: input_file_param, callback_url: callback_url_param[:callback_url], account: current_entity.account)
-        @new_chain.reload
-        render json: @new_chain, status: 200
+        @new_chain = recipe.prepare_for_execution(input_files: input_file_param, account: current_entity.account)
+        @new_chain.execute_process!(callback_url: callback_url_param[:callback_url], input_files: [input_file_param].flatten)
       rescue => e
+        error = e
         ap e.message
         ap e.backtrace
-        render_error(e)
+      ensure
+        if @new_chain
+          @new_chain.reload
+          render json: @new_chain, status: 200
+        else
+          render_error(error)
+        end
       end
 
       def create

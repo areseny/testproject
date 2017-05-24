@@ -2,6 +2,7 @@ module Execution
   class RecipeExecutionRunner
     include EventConstants
     include DirectoryMethods
+    include ExecutionErrors
 
     attr_accessor :step_array, :process_steps, :chain_file_location, :chain_id, :recipe_id
 
@@ -15,7 +16,7 @@ module Execution
     end
 
     def run!
-      return nil if @process_steps.empty?
+      raise EmptyChainError.new("Process steps are empty for chain #{@chain_id}") if @process_steps.empty?
       trigger_event(channels: execution_channel, event: process_chain_started_processing_event, data: { recipe_id: @process_chain.recipe_id, chain_id: chain_id})
       @process_chain.update_attribute(:executed_at, Time.zone.now)
       @process_chain.save_input_file_manifest!
@@ -23,10 +24,14 @@ module Execution
       execute_process_steps
       trigger_event(channels: execution_channel, event: process_chain_done_processing_event, data: { recipe_id: @process_chain.recipe_id, chain_id: chain_id, output_file_manifest: @process_chain.output_file_manifest })
     rescue => e
+      error = e
       trigger_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: @process_chain.recipe_id, chain_id: chain_id, output_file_manifest: @process_chain.output_file_manifest, error: e.message})
     ensure
       @process_chain.map_results(@step_array)
       @process_chain.update_attribute(:finished_at, Time.now)
+      if error
+        raise error
+      end
     end
 
     def execute_process_steps
