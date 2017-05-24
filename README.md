@@ -61,7 +61,7 @@ Run redis in another terminal - `redis-server`
 
 Run sidekiq in another terminal - `bundle exec sidekiq`
 
-Check `localhost:3000/anyone` to see if it's up.
+Check `localhost:3000/api/anyone` to see if it's up.
 
 Once it is up and running, run the rake task in `lib/setup.rake` to create some users.
 
