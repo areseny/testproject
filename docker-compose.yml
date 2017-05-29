@@ -45,7 +45,7 @@ services:
     env_file:
       - '.env'
   # editoria:
-  #   image: inkmap/editoria
+  #   image: inkmap/editoria:0.1.2
   #   volumes:
   #     - ./editoria/api/db/production:/editoria/api/db/production
   #   environment:
@@ -53,12 +53,14 @@ services:
   #     INK_ENDPOINT: http://ink:3000
   #     INK_USERNAME: admin@admin.com
   #     INK_PASSWORD: abc12345
+  #   links:
+  #     - ink:ink
   #   ports:
   #     - "3000:3000"
-  #   depends_on:
-  #     - setupdb
+    # depends_on:
+    #   - setupdb
   # setupdb:
-  #   image: inkmap/editoria
+  #   image: inkmap/editoria:0.1.2
   #   volumes:
   #     - ./editoria/api/db/production:/editoria/api/db/production
   #   environment:
