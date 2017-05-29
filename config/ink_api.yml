@@ -1,13 +1,26 @@
 # If you are going to change this,
 # you should move the contents of the old storage directory to the new one
 # so that process chains and steps can still find their files!
+from_environment: &deployable_settings
+  secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
+  slanger_app_id: <%= ENV["SLANGER_APP_ID"] %>
+  slanger_id: <%= ENV["SLANGER_ID"] %>
+  slanger_key: <%= ENV['SLANGER_KEY'] %>
+  slanger_secret: <%= ENV['SLANGER_SECRET'] %>
+  slanger_host: <%= ENV['SLANGER_HOST'] || "localhost" %>
+  slanger_port: <%= ENV['SLANGER_PORT'] || 4567 %>
+  devise_secret_key: <%= ENV['DEVISE_SECRET_KEY'] %>
 
 development:
+  <<: *deployable_settings
   environment: development
   file_location: <%= ENV.fetch('DEVELOPMENT_FILE_LOCATION', '') %>
+
 test:
   environment: test
   file_location: <%= ENV.fetch('TEST_FILE_LOCATION', '') %>
+
 production:
+  <<: *deployable_settings
   environment: production
   file_location: <%= ENV.fetch('PRODUCTION_FILE_LOCATION', '') %>
