@@ -28,9 +28,9 @@ PATH
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
-  revision: 630184bc4803fbb103f8992d9b6b24027f5dcb48
+  revision: d9fb28fdc88af45e83cad4e2639eae39f01ad982
   specs:
-    inkstep_coko_conversion (0.2.14)
+    inkstep_coko_conversion (0.2.16)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
