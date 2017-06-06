@@ -17,9 +17,9 @@ GIT
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
-  revision: 12a4cc1a5e42f1032393646c6a7edd4005f5ec94
+  revision: d9fb28fdc88af45e83cad4e2639eae39f01ad982
   specs:
-    inkstep_coko_conversion (0.2.15)
+    inkstep_coko_conversion (0.2.16)
 
 GIT
   remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
