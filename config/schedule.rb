@@ -1,6 +1,6 @@
-every 30.seconds do
-  rake "enqueue_jobs"
-end
+# every 30.seconds do
+#   rake "enqueue_jobs"
+# end
 
 # Use this file to easily define all of your cron jobs.
 #
