@@ -103,6 +103,7 @@ class ProcessChain < ApplicationRecord
       process_step.successful = runner_step.successful
       process_step.output_file_list = assemble_manifest(process_step.working_directory)
       process_step.save!
+      process_step.save_process_log(runner_step.process_log)
     end
   end
 

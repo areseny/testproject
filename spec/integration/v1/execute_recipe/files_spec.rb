@@ -51,6 +51,6 @@ describe "Executing a recipe and making sure all the files get put in the right 
     Dir.chdir(process_step.working_directory)
     step_file_list = Dir.glob('*').select {|f| File.file? f}
 
-    expect(step_file_list).to contain_exactly("test_file.xml")
+    expect(step_file_list).to match_array(["test_file.xml", process_step.process_log_file_name])
   end
 end

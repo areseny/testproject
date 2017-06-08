@@ -26,6 +26,18 @@ class ProcessStep < ApplicationRecord
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
   validates_uniqueness_of :position, { scope: :process_chain, message: "Only one step can be in this position for this chain" }
 
+  def save_process_log(message_array)
+    new_file = File.new(process_log_path, "w")
+    message_array.each do |line|
+      new_file.write(line)
+    end
+    new_file.close
+  end
+
+  def process_log_path
+    File.join(working_directory, process_log_file_name)
+  end
+
   def step_class
     class_from_string(step_class_name)
   end
@@ -61,5 +73,9 @@ class ProcessStep < ApplicationRecord
       `zip -rj "#{zip_path}" "#{working_directory}"`
     end
     zip_path
+  end
+
+  def process_log_file_name
+    "process_step_#{self.id}.log"
   end
 end

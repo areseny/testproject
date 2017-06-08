@@ -2,10 +2,89 @@ require_relative 'version'
 
 describe Api::V1::ProcessStepsController, type: :controller do
 
-  let!(:account)           { create(:account, password: "password", password_confirmation: "password") }
+  let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
+  let!(:process_step)        { create(:process_step) }
+  let(:process_chain)       { process_step.process_chain }
+  let!(:working_directory)   { process_step.working_directory }
+
+  before do
+    process_chain.update_attribute(:account_id, account.id)
+    process_step.update_attribute(:finished_at, 5.minutes.ago)
+
+  end
+
+  describe "GET download_log" do
+
+    context 'when processing is finished' do
+      let!(:download_params) {
+        {
+            id: process_step.id
+        }
+      }
+
+      before do
+        copy_fixture_file('process_step.log', working_directory)
+        FileUtils.move(File.join(working_directory, 'process_step.log'), process_step.process_log_path)
+      end
+
+      it 'allows download of the log' do
+        request_with_auth(account.new_jwt) do
+          perform_download_log_request(download_params)
+        end
+
+        expect(response.status).to eq 200
+      end
+
+      context 'when the chain does not belong to that user' do
+
+        before { process_chain.update_attribute(:account_id, create(:account).id) }
+
+        it 'does not allow download of the log' do
+          request_with_auth(account.new_jwt) do
+            perform_download_log_request(download_params)
+          end
+
+          expect(response.status).to eq 401
+        end
+      end
+    end
+
+    context 'when processing is not finished' do
+      before { process_step.update_attribute(:finished_at, nil) }
+
+      let!(:download_params) {
+        {
+            id: process_step.id
+        }
+      }
+
+      it 'does not allow download of the log' do
+        request_with_auth(account.new_jwt) do
+          perform_download_log_request(download_params)
+        end
+
+        expect(response.status).to eq 404
+      end
+    end
+
+    context 'if no valid token is supplied' do
+      let!(:download_params) {
+        {
+            id: process_step.id
+        }
+      }
+
+      it 'does not allow download of the log' do
+        request_with_auth do
+          perform_download_log_request(download_params)
+        end
+
+        expect(response.status).to eq 401
+      end
+    end
+  end
 
   describe "GET download_output_zip" do
-    let!(:process_step)        { create(:process_step) }
 
     let!(:download_params) {
       {
@@ -15,8 +94,8 @@ describe Api::V1::ProcessStepsController, type: :controller do
     }
 
     before do
-      create_directory_if_needed(process_step.working_directory)
-      copy_fixture_file('some_text.txt', process_step.working_directory)
+      create_directory_if_needed(working_directory)
+      copy_fixture_file('some_text.txt', working_directory)
       process_step.process_chain.update_attribute(:account_id, account.id)
       process_step.process_chain.recipe.update_attribute(:account_id, account.id)
     end
@@ -56,8 +135,6 @@ describe Api::V1::ProcessStepsController, type: :controller do
 
   describe "GET download_output_file" do
 
-    let!(:process_step)        { create(:process_step, finished_at: 2.minutes.ago) }
-
     let!(:download_params) {
       {
           id: process_step.id,
@@ -66,8 +143,9 @@ describe Api::V1::ProcessStepsController, type: :controller do
     }
 
     before do
-      create_directory_if_needed(process_step.working_directory)
-      copy_fixture_file('some_text.txt', process_step.working_directory)
+      process_step.update_attribute(:finished_at, 2.minutes.ago)
+      create_directory_if_needed(working_directory)
+      copy_fixture_file('some_text.txt', working_directory)
       process_step.process_chain.update_attribute(:account_id, account.id)
       process_step.process_chain.recipe.update_attribute(:account_id, account.id)
     end
@@ -120,6 +198,10 @@ describe Api::V1::ProcessStepsController, type: :controller do
 
   def perform_download_output_zip_request(data = {})
     download_output_zip(version, data)
+  end
+
+  def perform_download_log_request(data = {})
+    download_process_log(version, data)
   end
 
 end

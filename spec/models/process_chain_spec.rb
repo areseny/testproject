@@ -67,7 +67,7 @@ RSpec.describe ProcessChain, type: :model do
         process_chain.execute_process!(input_files: [input_file])
 
         expect(process_chain.reload.executed_at).to_not be_nil
-        expect(recursive_file_list(working_directory)).to match_array(["input_files/plaintext.txt", "1/plaintext.txt"])
+        expect(recursive_file_list(working_directory)).to match_array(["input_files/plaintext.txt", "1/plaintext.txt", "1/#{process_step.process_log_file_name}"])
       end
     end
   end
@@ -80,8 +80,8 @@ RSpec.describe ProcessChain, type: :model do
 
     let(:some_file)           { File.new(Rails.root.join('spec/fixtures/files/plaintext.txt')) }
 
-    let(:runner_step1)        { double(:process_object, position: 1, successful: true, started_at: 10.seconds.ago, finished_at: 5.seconds.ago, notes: "OK", errors:[], version: "1.2.7") }
-    let(:runner_step2)        { double(:process_object, position: 2, successful: false, started_at: 4.seconds.ago, finished_at: 2.seconds.ago, notes: "some notes", errors:["oh noes!"], version: "0.2.1") }
+    let(:runner_step1)        { double(:process_object, position: 1, successful: true, started_at: 10.seconds.ago, finished_at: 5.seconds.ago, notes: "OK", errors:[], version: "1.2.7", process_log: ["some messages", "in this log"]) }
+    let(:runner_step2)        { double(:process_object, position: 2, successful: false, started_at: 4.seconds.ago, finished_at: 2.seconds.ago, notes: "some notes", errors:["oh noes!"], version: "0.2.1", process_log: ["some messages", "in this log"]) }
     let(:runner)              { double(:recipe_process_runner, step_array: [runner_step1, runner_step2]) }
 
     before do
@@ -118,6 +118,10 @@ RSpec.describe ProcessChain, type: :model do
 
       expect(process_step2.started_at.beginning_of_minute).to eq runner_step2.started_at.beginning_of_minute
       expect(process_step2.finished_at.beginning_of_minute).to eq runner_step2.started_at.beginning_of_minute
+    end
+
+    it 'writes the log file' do
+
     end
   end
 end
