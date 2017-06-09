@@ -35,7 +35,8 @@ RSpec.describe Api::V1::RecipesController do
     let(:execution_params) {
         {
             id: recipe.id,
-            input_files: photo_file
+            input_files: photo_file,
+            execution_parameters: {}
         }
     }
 
@@ -51,13 +52,43 @@ RSpec.describe Api::V1::RecipesController do
               recipe.update_attribute(:account_id, account.id)
             end
 
-            it 'tries to execute the process chain' do
-              request_with_auth(account.new_jwt) do
-                perform_execute_request(execution_params)
+            context 'with parameters' do
+              let!(:parameters) { { "animal" => "honey badger", "abc" => "2.5" } }
+              let(:execution_params) {
+                {
+                    id: recipe.id,
+                    execution_parameters: { "1" => {data: parameters} },
+                    input_files: photo_file
+                }
+              }
+
+              before do
+                request_with_auth(account.new_jwt) do
+                  perform_execute_request(execution_params)
+                end
               end
 
-              expect(response.status).to eq 200
-              expect(assigns(:new_chain)).to_not be_nil
+              it 'executes the process chain' do
+                expect(response.status).to eq 200
+                expect(assigns(:new_chain)).to be_a ProcessChain
+              end
+
+              it 'saves the execution parameters to the process steps' do
+                chain = assigns(:new_chain)
+                first_process_step = chain.process_steps.first
+                expect(first_process_step.execution_parameters).to eq parameters
+              end
+            end
+
+            context 'with no parameters' do
+              it 'executes the process chain' do
+                request_with_auth(account.new_jwt) do
+                  perform_execute_request(execution_params)
+                end
+
+                expect(response.status).to eq 200
+                expect(assigns(:new_chain)).to_not be_nil
+              end
             end
           end
 

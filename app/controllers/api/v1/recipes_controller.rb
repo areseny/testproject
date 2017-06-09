@@ -8,7 +8,7 @@ module Api
 
       def execute
         recipe.ensure_step_installation
-        @new_chain = recipe.prepare_for_execution(input_files: input_file_param, account: current_entity.account)
+        @new_chain = recipe.prepare_for_execution(input_files: input_file_param, account: current_entity.account, execution_parameters: execution_params)
         @new_chain.execute_process!(callback_url: callback_url_param[:callback_url], input_files: [input_file_param].flatten)
       rescue => e
         error = e
@@ -77,6 +77,10 @@ module Api
 
       def input_file_param
         params.require(:input_files)
+      end
+
+      def execution_params
+        params[:execution_parameters] || {}
       end
 
       def callback_url_param

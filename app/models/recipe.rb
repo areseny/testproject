@@ -40,18 +40,22 @@ class Recipe < ApplicationRecord
     raise ExecutionErrors::NoFileSuppliedError.new unless input_files.present?
   end
 
-  def prepare_for_execution(input_files:, account:)
+  def prepare_for_execution(input_files:, account:, execution_parameters: {})
     check_for_empty_steps
     check_for_input_file([input_files].flatten)
-    new_chain = clone_to_process_chain(account: account)
+    new_chain = clone_to_process_chain(account: account, execution_parameters: execution_parameters)
     new_chain.save!
     new_chain
   end
 
-  def clone_to_process_chain(account:)
+  def clone_to_process_chain(account:, execution_parameters:)
     new_chain = process_chains.new(account: account)
     recipe_steps.each do |recipe_step|
-      new_chain.process_steps.new(position: recipe_step.position, step_class_name: recipe_step.step_class_name)
+      raw_params = execution_parameters[recipe_step.position.to_s] || {}
+      parameters = raw_params[:data]
+      new_chain.process_steps.new(position: recipe_step.position,
+                                  step_class_name: recipe_step.step_class_name,
+                                  execution_parameters: parameters)
     end
     new_chain
   end
