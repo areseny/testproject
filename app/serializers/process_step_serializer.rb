@@ -2,7 +2,8 @@ require "yaml"
 
 class ProcessStepSerializer < ActiveModel::Serializer
   attributes :id, :position, :process_chain_id, :step_class_name, :notes, :execution_errors,
-             :output_file_manifest, :version, :started_at, :finished_at, :successful, :process_log_location
+             :output_file_manifest, :version, :started_at, :finished_at, :successful, :process_log_location,
+             :execution_parameters
 
   def process_log_location
     if object.process_log_path.present? && File.exists?(object.process_log_path)

@@ -36,7 +36,9 @@ module Execution
 
     def execute_process_steps
       @process_steps.each do |process_step|
-        behaviour_step = process_step.step_class.new(chain_file_location: chain_file_location, position: process_step.position, execution_parameters: process_step.execution_parameters)
+        behaviour_step = process_step.step_class.new(chain_file_location: chain_file_location,
+                                                     position: process_step.position,
+                                                     execution_parameters: process_step.execution_parameters)
         @step_array << behaviour_step
         trigger_step_started_event(behaviour_step)
         begin

@@ -81,6 +81,24 @@ describe "Account executes a single recipe" do
                 end
               end
 
+              context 'and execution parameters were supplied' do
+                let(:exec_params1) { { "animal" => "honey badger", "abc" => "2.5" } }
+                let(:exec_params2) { { "animal" => "hammerhead shark", "abc" => "9.214" } }
+                let(:params) {{
+                    input_files: [text_file],
+                    execution_parameters: { "1" => {data: exec_params1}, "2" => {data: exec_params2} },
+                    id: recipe.id
+                }}
+
+                before do
+                  perform_execute_request(auth_headers, params)
+                end
+
+                specify do
+                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_parameters']}).to eq [exec_params1, exec_params2]
+                end
+              end
+
               context 'and execution fails' do
                 let(:params) {{
                     id: recipe.id,
