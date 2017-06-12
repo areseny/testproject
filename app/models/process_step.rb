@@ -28,10 +28,17 @@ class ProcessStep < ApplicationRecord
 
   def save_process_log(message_array)
     new_file = File.new(process_log_path, "w")
+    new_file.puts "# FYI - The process chain working directory has been replaced with \"$process_chain_working_directory\"."
     message_array.each do |line|
-      new_file.write(line)
+      new_line = line.gsub(process_chain.working_directory, "$process_chain_working_directory")
+      new_file.puts(new_line)
     end
+    ap "Log file saved to #{process_log_path}"
     new_file.close
+  end
+
+  def process_log_relative_path
+    process_log_path.gsub(File.join(working_directory, File::SEPARATOR), "")
   end
 
   def process_log_path
@@ -44,10 +51,13 @@ class ProcessStep < ApplicationRecord
 
   def output_file_manifest
     if output_file_list.present?
-      # YAML.load(output_file_list)
       output_file_list
-    else
+    elsif File.exists?(working_directory)
       assemble_manifest(working_directory)
+    else
+      # @TODO flag an error to admin!
+      ap "Cannot find file location for process step id '#{self.id}', chain id '#{process_chain_id}' and recipe id '#{process_chain.recipe_id}'"
+      ap "Looking in #{working_directory}"
     end
   end
 

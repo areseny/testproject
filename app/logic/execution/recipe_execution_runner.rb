@@ -45,7 +45,7 @@ module Execution
         #   log(e.message)
         #   log(e.backtrace)
         ensure
-          trigger_step_finished_event(behaviour_step)
+          trigger_step_finished_event(behaviour_step, process_step)
         end
       end
     end
@@ -59,7 +59,7 @@ module Execution
                             recipe_id: @recipe_id })
     end
 
-    def trigger_step_finished_event(behaviour_step)
+    def trigger_step_finished_event(behaviour_step, process_step)
       trigger_event(channels: execution_channel,
                     event: process_step_finished_event,
                     data: { chain_id: @chain_id,
@@ -67,6 +67,7 @@ module Execution
                             successful: behaviour_step.successful,
                             notes: behaviour_step.notes,
                             execution_errors: behaviour_step.errors,
+                            process_log_location: process_step.process_log_relative_path,
                             recipe_id: @recipe_id,
                             output_file_manifest: assemble_manifest(behaviour_step.working_directory) })
     end

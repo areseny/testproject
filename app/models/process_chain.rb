@@ -144,6 +144,8 @@ class ProcessChain < ApplicationRecord
 
   def output_file_manifest
     last_step.output_file_manifest
+  rescue => e
+    nil
   end
 
   def assemble_output_file_zip
