@@ -48,14 +48,16 @@ class Recipe < ApplicationRecord
     new_chain
   end
 
-  def clone_to_process_chain(account:, execution_parameters:)
-    new_chain = process_chains.new(account: account)
+  def clone_to_process_chain(account:, execution_parameters: {})
+    new_chain = process_chains.new(account: account, execution_parameters: execution_parameters)
     recipe_steps.each do |recipe_step|
       raw_params = execution_parameters[recipe_step.position.to_s] || {}
-      parameters = raw_params[:data]
+      parameters = raw_params["data"] || {}
+
+      combined_parameters = recipe_step.execution_parameters.merge(parameters)
       new_chain.process_steps.new(position: recipe_step.position,
                                   step_class_name: recipe_step.step_class_name,
-                                  execution_parameters: parameters)
+                                  execution_parameters: combined_parameters)
     end
     new_chain
   end

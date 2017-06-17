@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170609041559) do
+ActiveRecord::Schema.define(version: 20170616111427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,14 +50,15 @@ ActiveRecord::Schema.define(version: 20170609041559) do
   end
 
   create_table "process_chains", force: :cascade do |t|
-    t.integer  "account_id",      null: false
+    t.integer  "account_id",                        null: false
     t.datetime "executed_at"
-    t.integer  "recipe_id",       null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.integer  "recipe_id",                         null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.datetime "finished_at"
     t.string   "slug"
     t.text     "input_file_list"
+    t.json     "execution_parameters", default: {}, null: false
   end
 
   create_table "process_steps", force: :cascade do |t|
@@ -79,11 +80,12 @@ ActiveRecord::Schema.define(version: 20170609041559) do
   end
 
   create_table "recipe_steps", force: :cascade do |t|
-    t.integer  "recipe_id",       null: false
-    t.integer  "position",        null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.string   "step_class_name", null: false
+    t.integer  "recipe_id",                         null: false
+    t.integer  "position",                          null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.string   "step_class_name",                   null: false
+    t.json     "execution_parameters", default: {}, null: false
     t.index ["recipe_id", "position"], name: "chain_step_position_index", unique: true, using: :btree
   end
 

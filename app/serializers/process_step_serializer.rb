@@ -5,6 +5,10 @@ class ProcessStepSerializer < ActiveModel::Serializer
              :output_file_manifest, :version, :started_at, :finished_at, :successful, :process_log_location,
              :execution_parameters
 
+  def execution_parameters
+    object.execution_parameters || {}
+  end
+
   def process_log_location
     if object.process_log_path.present? && File.exists?(object.process_log_path)
       object.process_log_relative_path

@@ -5,7 +5,12 @@ class ProcessChainSerializer < ActiveModel::Serializer
 
   has_many :process_steps, serializer: ProcessStepSerializer
 
-  attributes :id, :recipe_id, :executed_at, :finished_at, :process_steps, :created_at, :input_file_manifest, :output_file_manifest
+  attributes :id, :recipe_id, :executed_at, :finished_at, :process_steps, :created_at, :input_file_manifest, :output_file_manifest,
+             :execution_parameters
+
+  def execution_parameters
+    object.execution_parameters || {}
+  end
 
   def executed_at
     object.executed_at.nil? ? nil : object.executed_at.iso8601

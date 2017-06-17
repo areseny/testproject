@@ -86,7 +86,7 @@ describe "Account executes a single recipe" do
                 let(:exec_params2) { { "animal" => "hammerhead shark", "abc" => "9.214" } }
                 let(:params) {{
                     input_files: [text_file],
-                    execution_parameters: { "1" => {data: exec_params1}, "2" => {data: exec_params2} },
+                    execution_parameters: { "1" => {"data" => exec_params1}, "2" => {"data" => exec_params2} },
                     id: recipe.id
                 }}
 
