@@ -73,7 +73,7 @@ describe "Account archives a single recipe" do
       end
 
       it 'provides a message' do
-        expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
+        expect_to_contain_string(body_as_json['errors'], /You need to sign in or sign up before continuing/)
       end
     end
 
@@ -88,7 +88,7 @@ describe "Account archives a single recipe" do
       end
 
       it 'provides a message' do
-        expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
+        expect_to_contain_string(body_as_json['errors'], /You need to sign in or sign up before continuing./)
       end
     end
 
