@@ -26,18 +26,6 @@ PATH
       httparty
       rubyzip
 
-GIT
-  remote: git@gitlab.coko.foundation:INK/inkstep_coko_conversion.git
-  revision: d9fb28fdc88af45e83cad4e2639eae39f01ad982
-  specs:
-    inkstep_coko_conversion (0.2.16)
-
-GIT
-  remote: git@gitlab.coko.foundation:INK/inkstep_coko_demo_steps.git
-  revision: eef98c718db4e85e985262e0df58c1f6861da425
-  specs:
-    inkstep_coko_demo_steps (0.1.7)
-
 GEM
   remote: https://rubygems.org/
   specs:

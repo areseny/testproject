@@ -164,7 +164,8 @@ describe "Account creates recipe" do
       end
 
       it 'provides a message' do
-        expect_to_contain_string(body_as_json['errors'], /You need to sign in or sign up before continuing./)
+        ap body_as_json['errors']
+        expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end
 
@@ -179,7 +180,7 @@ describe "Account creates recipe" do
       end
 
       it 'provides a message' do
-        expect_to_contain_string(body_as_json['errors'], /You need to sign in or sign up before continuing./)
+        expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
       end
     end
 
