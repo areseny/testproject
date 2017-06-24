@@ -101,7 +101,7 @@ class ProcessChain < ApplicationRecord
       process_step.started_at = runner_step.started_at
       process_step.finished_at = runner_step.finished_at
       process_step.successful = runner_step.successful
-      process_step.output_file_list = assemble_manifest(process_step.working_directory)
+      process_step.output_file_list = assemble_manifest(directory: process_step.working_directory)
       process_step.save!
       process_step.save_process_log(runner_step.process_log)
     end
@@ -130,7 +130,7 @@ class ProcessChain < ApplicationRecord
   end
 
   def save_input_file_manifest!
-    self.input_file_list = assemble_manifest(input_files_directory)
+    self.input_file_list = assemble_manifest(directory: input_files_directory)
     save!
   end
 

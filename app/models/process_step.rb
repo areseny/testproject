@@ -1,17 +1,18 @@
 # create_table "process_steps", force: :cascade do |t|
-#   t.integer  "process_chain_id",     null: false
-#   t.integer  "position",             null: false
+#   t.integer  "process_chain_id",                  null: false
+#   t.integer  "position",                          null: false
 #   t.text     "notes"
 #   t.datetime "executed_at"
-#   t.string   "output_file"
 #   t.text     "execution_errors"
-#   t.datetime "created_at",           null: false
-#   t.datetime "updated_at",           null: false
-#   t.string   "step_class_name",      null: false
+#   t.datetime "created_at",                        null: false
+#   t.datetime "updated_at",                        null: false
+#   t.string   "step_class_name",                   null: false
 #   t.string   "version"
 #   t.datetime "started_at"
 #   t.datetime "finished_at"
-#   t.text     "output_file_manifest"
+#   t.text     "output_file_list"
+#   t.boolean  "successful"
+#   t.json     "execution_parameters", default: {}, null: false
 # end
 
 class ProcessStep < ApplicationRecord
@@ -53,7 +54,7 @@ class ProcessStep < ApplicationRecord
     if output_file_list.present?
       output_file_list
     elsif File.exists?(working_directory)
-      assemble_manifest(working_directory)
+      assemble_manifest(directory: working_directory)
     else
       # @TODO flag an error to admin!
       ap "Cannot find file location for process step id '#{self.id}', chain id '#{process_chain_id}' and recipe id '#{process_chain.recipe_id}'"

@@ -39,10 +39,18 @@ module Execution
         behaviour_step = process_step.step_class.new(chain_file_location: chain_file_location,
                                                      position: process_step.position,
                                                      execution_parameters: process_step.execution_parameters)
+        file_manifest_at_start = {}
         @step_array << behaviour_step
         trigger_step_started_event(behaviour_step)
         begin
-          behaviour_step.execute
+          create_directory_if_needed(behaviour_step.working_directory)
+          # behaviour_step.get_input_files
+          # behaviour_step.combined_parameters = process_step.execution_parameters
+          # behaviour_step.check_parameters(behaviour_step.combined_parameters)
+          file_manifest_at_start = assemble_manifest(directory: behaviour_step.working_directory)
+
+          behaviour_step.execute(options: behaviour_step.combined_parameters)
+          process_step.update_attribute(:output_file_list, semantically_tagged_manifest(behaviour_step.working_directory, file_manifest_at_start))
         # rescue => e
         #   log(e.message)
         #   log(e.backtrace)
@@ -50,6 +58,25 @@ module Execution
           trigger_step_finished_event(behaviour_step, process_step)
         end
       end
+    end
+
+    def semantically_tagged_manifest(working_directory, file_manifest_at_start)
+      file_manifest_at_end = assemble_manifest(directory: working_directory)
+      file_manifest_at_end.each do |file_hash|
+        start_file_hash = find_start_file(file_hash, file_manifest_at_start)
+        if start_file_hash.nil?
+          file_hash[:tag] = :new
+        elsif file_hash[:checksum] == start_file_hash[:checksum]
+            file_hash[:tag] = :identical
+        else
+          file_hash[:tag] = :modified
+        end
+      end
+      # file_manifest_at_end
+    end
+
+    def find_start_file(current_file_hash, file_manifest_at_start)
+      file_manifest_at_start.collect{|f| return f if f[:path] == current_file_hash[:path]}.first
     end
 
     def trigger_step_started_event(behaviour_step)
@@ -71,7 +98,7 @@ module Execution
                             execution_errors: behaviour_step.errors,
                             process_log_location: process_step.process_log_relative_path,
                             recipe_id: @recipe_id,
-                            output_file_manifest: assemble_manifest(behaviour_step.working_directory) })
+                            output_file_manifest: process_step.output_file_manifest })
     end
   end
 end
