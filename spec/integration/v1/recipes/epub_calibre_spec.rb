@@ -46,7 +46,7 @@ describe "Account executes a single-step epub calibre recipe" do
 
     it 'has an expected output file' do
       result = ProcessChain.last.output_file_manifest
-      expect(result).to match([{:path=>"test.html", :size=>"84 bytes"}, {:path=>"test.epub", :size=>anything}])
+      expect(result).to match([{path: "test.html", size: "84 bytes", checksum: anything}, {path: "test.epub", size: anything, checksum: anything}])
     end
   end
 

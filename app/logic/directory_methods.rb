@@ -6,13 +6,14 @@ module DirectoryMethods
     FileUtils.mkdir_p(path) unless File.directory?(path)
   end
 
-  def assemble_manifest(directory_path)
-    files = recursive_file_list(directory_path)
+  def assemble_manifest(directory:)
+    files = recursive_file_list(directory)
     files.inject([]) do |result, file_relative_path|
       file_info_hash = {}
       file_info_hash[:path] = file_relative_path
-      absolute_file_path = File.join(directory_path, file_relative_path)
+      absolute_file_path = File.join(directory, file_relative_path)
       file_info_hash[:size] = file_size_for_humans(absolute_file_path)
+      file_info_hash[:checksum] = Digest::MD5.hexdigest(File.read(absolute_file_path))
       result << file_info_hash
       result
     end
@@ -45,6 +46,22 @@ module DirectoryMethods
     raise "Cannot find #{relative_path}" unless located_in?(location, file_path) && File.file?(Pathname.new(file_path))
     # raise "Cannot find #{relative_path}" unless File.exists?(file_path) && File.file?(file_path)
     file_path
+  end
+
+  def file_tag(file_path:, start_benchmark:)
+    :created
+    :modified
+    # if created after start time
+    #   it was created by the step
+    #   set to :created
+    # if modified and changed
+    #   it had been modified by that step
+    #   set to :modified
+    # else if changed but not modified
+    #   set to :unchanged
+
+    change_time = File.ctime(file_path)
+    modified_time = File.mtime(file_path)
   end
 
   def file_size_for_humans(path)

@@ -63,8 +63,8 @@ describe "Account executes a single recipe" do
 
                   expect(body_as_json['process_chain']['recipe_id']).to eq process_chain.recipe_id
                   expect(body_as_json['process_chain']['executed_at']).to eq process_chain.executed_at.iso8601
-                  expect(body_as_json['process_chain']['input_file_manifest']).to match([{"path"=>"plaintext.txt", "size"=>"18 bytes"}])
-                  expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}])
+                  expect(body_as_json['process_chain']['input_file_manifest']).to match([{"path"=>"plaintext.txt", "size"=>"18 bytes", 'checksum' => anything}])
+                  expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes", 'checksum' => anything}])
                 end
 
                 it 'also returns the steps' do
@@ -73,11 +73,11 @@ describe "Account executes a single recipe" do
                 end
 
                 it 'returns an input file manifest' do
-                  expect(body_as_json['process_chain']['input_file_manifest']).to match([{'size' => "18 bytes", 'path' => "plaintext.txt"}])
+                  expect(body_as_json['process_chain']['input_file_manifest']).to match([{'size' => "18 bytes", 'path' => "plaintext.txt", 'checksum' => anything}])
                 end
 
                 it 'returns an output file manifest' do
-                  expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}])
+                  expect(body_as_json['process_chain']['output_file_manifest']).to match([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes", 'checksum' => anything}])
                 end
               end
 
@@ -135,8 +135,8 @@ describe "Account executes a single recipe" do
               end
               expect(body_as_json['process_chain']['executed_at']).to_not be_nil
               expect(body_as_json['process_chain']['finished_at']).to_not be_nil
-              expect(body_as_json['process_chain']['input_file_manifest']).to match_array([{"path"=>"plaintext.txt", "size"=>"18 bytes"}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB"}])
-              expect(body_as_json['process_chain']['output_file_manifest']).to match_array([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes"}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB"}])
+              expect(body_as_json['process_chain']['input_file_manifest']).to match_array([{"path"=>"plaintext.txt", "size"=>"18 bytes", 'checksum' => anything}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB", 'checksum' => anything}])
+              expect(body_as_json['process_chain']['output_file_manifest']).to match_array([{"path"=>"plaintext_rot13_rot13.txt", "size"=>"18 bytes", 'checksum' => anything}, {"path"=>"kitty.jpeg", "size"=>"21.6 kB", 'checksum' => anything}])
             end
           end
 

@@ -120,7 +120,7 @@ RSpec.describe ProcessChain, type: :model do
       expect(process_step2.finished_at.beginning_of_minute).to eq runner_step2.started_at.beginning_of_minute
     end
 
-    it 'writes the log file' do
+    xit 'writes the log file' do
 
     end
   end
