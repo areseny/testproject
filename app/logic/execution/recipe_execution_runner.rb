@@ -44,11 +44,8 @@ module Execution
         trigger_step_started_event(behaviour_step)
         begin
           create_directory_if_needed(behaviour_step.working_directory)
-          # behaviour_step.get_input_files
-          # behaviour_step.combined_parameters = process_step.execution_parameters
-          # behaviour_step.check_parameters(behaviour_step.combined_parameters)
+          behaviour_step.combined_parameters = process_step.execution_parameters
           file_manifest_at_start = assemble_manifest(directory: behaviour_step.working_directory)
-
           behaviour_step.execute(options: behaviour_step.combined_parameters)
           process_step.update_attribute(:output_file_list, semantically_tagged_manifest(behaviour_step.working_directory, file_manifest_at_start))
         # rescue => e
