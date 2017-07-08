@@ -1,0 +1,8 @@
+# Put step gems that you wish to include in your INK instance here.
+
+# If you remove a step gem from this file, and so it's no longer available to the INK API,
+# recipes using an unavailable step will not execute, though users can still see the results
+# from previous executions.
+
+# gem 'inkstep_coko_demo_steps', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_demo_steps.git'
+gem 'inkstep_coko_conversion', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_conversion.git'

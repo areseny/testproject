@@ -64,8 +64,17 @@ class StepClassCollector
               klass = class_name.constantize
               step_classes << klass if klass.ancestors.include? InkStep::Base
             rescue => e
-              ap "Couldn't load the class #{class_name} in gem #{gem_spec.name} located in #{pathname}"
-              ap "Message: #{e.message}"
+              # ap "Tried to constantise #{class_name}, didn't work. Trying autoloading..."
+              # begin
+              #   # name = class_name.split("::").last
+              #   require File.join gem_spec.name, "engine"
+              #   # autoload name, pathname
+              #   ap "Success - #{class_name} autoloaded"
+              #   class_name.constantize
+              # rescue => e2
+                ap "Couldn't load the class #{class_name} in gem #{gem_spec.name} located in #{pathname}"
+                ap e2.message
+              # end
             end
           end
         end
@@ -77,5 +86,4 @@ class StepClassCollector
       step_classes
     end
   end
-
 end

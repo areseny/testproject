@@ -1,7 +1,7 @@
 require 'rake'
 
 namespace :secrets do
-  desc "checks that all secrets are set3------"
+  desc "checks that all secrets are set------"
   task :check, [:name, :password] => [:environment] do |t, args|
     puts "Checking secrets"
 
