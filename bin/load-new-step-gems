@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+echo
+echo "== Bundling =="
+bundle install
+echo "== Restarting rails =="
+touch tmp/restart.txt
+echo "== Stopping sidekiq =="
+bundle exec sidekiqctl stop tmp/sidekiq.pid 0
+echo "== Restarting sidekiq =="
+bundle exec sidekiq -d -P tmp/sidekiq.pid -L log/sidekiq.log
