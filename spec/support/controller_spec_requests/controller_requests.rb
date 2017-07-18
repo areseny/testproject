@@ -68,6 +68,12 @@ def service_accounts_request(version, data = {}.to_json)
   get :service_accounts, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
+# step class controller requests
+
+def get_index_by_gems_request(version, data = {}.to_json)
+  get :index_by_gems, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
 # jwt auth authentication_controller requests
 
 def post_sign_in_request(version, data = {}.to_json)

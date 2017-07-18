@@ -8,7 +8,8 @@ Ink is an API. It provides an extensible step-based framework for file conversio
 
 ## Rails version
 
-This project is an API, and therefore is using the `rails-api` gem.
+It uses Rails 5 in API version.
+
 ## Setup with docker
 Follow the instructions here https://docs.docker.com/compose/install/ to install docker and docker-compose
 To run the stack:
@@ -54,6 +55,8 @@ Run `eval $(cat .env | sed 's/^/export /')` to export the variables to the envir
 
 In the project directory (e.g. `/usr/you/ink-api`), run `gem install bundler` and `gem install rake` if you need to
 
+Copy `StepGemfile.sample` and name the copy `StepGemfile`.
+
 Run `bundle install` to install the required gems.
 
 Run `bundle exec rake db:create` to create the database, then `bundle exec rake db:schema:load` to create all the tables. If you have any issues, check `config/database.yml` to ensure the credentials are correct.
@@ -79,6 +82,8 @@ In addition to the above, on the server:
 
 Copy the `env.sample` file into `.env`. Populate with the environment variables needed in the `deployable_settings` bit.
 
+Copy the `StepGemfile.sample` file into `StepGemfile`. Add any step gems you'd like to include (there are some there to get you started)
+
 Run slanger on the target server (replace APP_KEY, SECRET, ADDRESS and PORT): `slanger --app_key APP_KEY --secret SECRET -w ADDRESS:PORT`. For development, you can use the command `slanger --app_key 44332211ffeeddccbbaa --secret aabbccddeeff11223344 -a 0.0.0.0:4567 -w 0.0.0.0:4444 --verbose` (the `--verbose` tag will help you debug if you need it).
 
 ### Step Third-party Binary Dependencies
@@ -97,6 +102,16 @@ Check `localhost:3000/api/anyone` to see if it's up.
 
 Once it is up and running, run the rake task in `lib/setup.rake` to create some users.
 
+### Adding a new step gem to the server
+
+Modify the `StepGemfile` (or make one if you don't have one already - there's a `StepGemfile.sample` to copy)
+The dependencies are handled by Bundler, so be aware that there may be version incompatibilities if ink-api and a step gem require different versions of the same dependency. 
+In most cases, Bundler cna handle this by itself, but it may take some fiddling by you to get it right.
+
+Run `bundle install`
+
+Restart the server on production by running `touch $rails_root/tmp/restart.txt`. Replace `$rails_root` with your Rails root directory (where the Gemfile is)
+
 ## Further development
 
 ### Adding a new step
@@ -107,11 +122,7 @@ The example I'll use here is `InkStep::RotThirteen` included in the gem `coko_de
 
 You can install in a few ways:
 
-Manually: `gem specific_install -l https://gitlab.coko.foundation/INK/coko_demo_steps`. You'll have to update manually whenever there is an update.
-
-Via gemfile, you can edit the gemfile to include the line `gem 'coko_demo_steps', git: 'git@gitlab.coko.foundation:INK/coko_demo_steps.git` and run `bundle install`. However, with this method, when you pull the latest changes to INK, your gemfile will be removed.
-
-I'm working on a separate custom `StepGemfile` that gets installed as well, so that an instance's installed steps will be preserved. Stay tuned!
+Via StepGemfile. Include the line `gem 'coko_demo_steps', git: 'git@gitlab.coko.foundation:INK/coko_demo_steps.git` and run `bundle install`.
 
 ### Upgrading API version
 

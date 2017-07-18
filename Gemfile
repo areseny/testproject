@@ -1,13 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'dotenv-rails', require: 'dotenv/rails-now', groups: [:development, :test]
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '5.0.0.1'
-
 gem 'active_model_serializers'
 
 gem 'rack-cors', :require => 'rack/cors'
+gem 'dotenv-rails', require: 'dotenv/rails-now', groups: [:development, :test]
 
 ################### authentication ####################
 
@@ -34,8 +31,12 @@ gem 'pg', '~> 0.15'
 # gem 'ink_step', path: "~/projects/coko/ink-step"
 
 gem 'ink_step', git: 'https://gitlab.coko.foundation/INK/ink-step.git'
-gem 'inkstep_coko_demo_steps', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_demo_steps.git'
-gem 'inkstep_coko_conversion', git: 'https://gitlab.coko.foundation/INK/inkstep_coko_conversion.git'
+
+# Load StepGemfile
+if File.exists?(File.join(File.dirname(__FILE__), "StepGemfile"))
+  puts "Folding contents of StepGemfile into Gemfile"
+  eval_gemfile File.join(File.dirname(__FILE__), "StepGemfile")
+end
 
 ################### javascript ###############
 
@@ -54,7 +55,6 @@ gem 'jbuilder', '~> 2.0'
 
 ######################## aux ########################
 
-gem 'whenever'
 gem 'awesome_print'
 
 # we're actually using slanger

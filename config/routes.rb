@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       get 'jwt_test' => 'pages#json_web_token_test'
 
       get 'available_step_classes' => 'step_class#index'
+      get 'available_step_gems' => 'step_class#index_by_gems'
 
       resources :recipes, only: [:index, :show, :create, :update, :destroy] do
         member do
