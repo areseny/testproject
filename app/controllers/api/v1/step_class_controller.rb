@@ -16,7 +16,7 @@ module Api
 
       def index_by_gems
         @step_gems = StepClassCollector.step_gem_hash
-        render json: {all_step_gems: @step_gems}, status: 200
+        render json: {available_step_gems: @step_gems}, status: 200
       rescue => e
         ap e.message
         ap e.backtrace

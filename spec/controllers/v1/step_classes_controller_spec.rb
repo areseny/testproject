@@ -63,13 +63,16 @@ RSpec.describe Api::V1::StepClassController do
 
   def sample_step_gems
   [
-      { name: "InkStep::Coko::DemoSteps", version: "1.2", git_version: "wat", repo: "some_repo", step_classes: sample_step_json},
-      { name: "InkStep::Coko::ConversionSteps", version: '0.1', git_version: "ok", repo: "blah", step_classes: conversion_step_json}
+      { name: "InkStep::Coko::DemoSteps", version: "1.2", git_version: "wat", repo: "some_repo", step_classes: sample_step_classes},
+      { name: "InkStep::Coko::ConversionSteps", version: '0.1', git_version: "ok", repo: "blah", step_classes: conversion_step_classes}
     ]
   end
 
   def sample_gem_json
-    sample_step_gems
+    [
+        { name: "InkStep::Coko::DemoSteps", version: "1.2", git_version: "wat", repo: "some_repo", step_classes: sample_step_json},
+        { name: "InkStep::Coko::ConversionSteps", version: '0.1', git_version: "ok", repo: "blah", step_classes: conversion_step_json}
+    ]
   end
 
   def perform_step_class_index_request(data = {})

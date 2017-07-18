@@ -7,7 +7,7 @@ class StepClassCollector
 
     def step_gem_hash
       step_gems.each do |gem_info_hash|
-        gem_info_hash[:step_classes] = gem_info_hash[:step_classes].map{|klass_hash| { name: klass_hash[:name], description: klass_hash[:description] } }
+        gem_info_hash[:step_classes] = gem_info_hash[:step_classes].map{|klass| { name: klass.name, description: klass.description } }
       end
     end
 
@@ -32,7 +32,7 @@ class StepClassCollector
         gem_hash[:name] = gem_spec.name
         gem_hash[:version] = gem_spec.version
         gem_hash[:git_version] = gem_spec.git_version
-        gem_hash[:repo] = get_repo(gem_spec)
+        gem_hash[:repo] = get_repo(gem_spec.source)
         gem_hash[:step_classes] = load_step_classes(gem_spec)
         step_gems << gem_hash
       end
