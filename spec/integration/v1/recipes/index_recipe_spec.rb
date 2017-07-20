@@ -34,6 +34,8 @@ describe "Account lists all their recipes" do
         it 'returns a list of Recipe objects' do
           expect(body_as_json.count).to eq 1
 
+          ap body_as_json
+
           expect(body_as_json['recipes'][0]['name']).to eq recipe.name
           expect(body_as_json['recipes'][0]['description']).to eq recipe.description
           expect(body_as_json['recipes'][0]['account_id']).to eq recipe.account.id
@@ -79,6 +81,8 @@ describe "Account lists all their recipes" do
 
           it 'returns chain information in the right order' do
             perform_index_request(auth_headers)
+
+            ap body_as_json
 
             expect(body_as_json['recipes'][0]['process_chains'].count).to eq 2
             expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'].count).to eq 2

@@ -1,22 +1,16 @@
 require 'execution_errors'
 require 'sidekiq/api'
 
-# create_table "recipes", force: :cascade do |t|
-#   t.integer  "account_id",                    null: false
-#   t.string   "name",                       null: false
-#   t.text     "description"
-#   t.boolean  "active",      default: true, null: false
-#   t.boolean  "public",     default: false, null: false
-#   t.datetime "created_at",                 null: false
-#   t.datetime "updated_at",                 null: false
-# end
-
 class Recipe < ApplicationRecord
   include ExecutionErrors
 
   belongs_to :account, inverse_of: :recipes
   has_many :recipe_steps, -> { order(:position) }, inverse_of: :recipe, dependent: :destroy
-  has_many :process_chains, -> { order(created_at: :desc) }, inverse_of: :recipe, dependent: :destroy
+  has_many :process_chains, -> { order(created_at: :desc)}, inverse_of: :recipe, dependent: :destroy
+
+  has_many :my_process_chains, -> (current_entity) {
+    where(account_id: current_entity.account.id).order(created_at: :desc)
+  }, inverse_of: :recipe, class_name: ProcessChain
 
   validates_presence_of :name, :account
   validates_inclusion_of :active, :in => [true, false]
@@ -28,9 +22,21 @@ class Recipe < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  scope :available_to_account, -> (account_id) {
-    active.where("PUBLIC = ? OR ACCOUNT_ID = ?", true, account_id)
+  scope :available_to_account, -> (account_id, admin) {
+    if admin
+      all
+    else
+      active.where("PUBLIC = ? OR ACCOUNT_ID = ?", true, account_id)
+    end
   }
+
+  def available_process_chains(current_entity)
+    if current_entity.admin?
+      ProcessChain.order(created_at: :desc)
+    else
+      ProcessChain.where(account_id: current_entity.account.id).order(created_at: :desc)
+    end
+  end
 
   def check_for_empty_steps
     raise ExecutionErrors::NoStepsError.new("No steps specified - please add some steps to the recipe and try again.") if recipe_steps.count < 1
@@ -38,6 +44,26 @@ class Recipe < ApplicationRecord
 
   def check_for_input_file(input_files)
     raise ExecutionErrors::NoFileSuppliedError.new unless input_files.present?
+  end
+
+  def attempt_to_destroy!(current_entity)
+    if current_entity.admin?
+      destroy
+    else
+      if account != current_entity.account
+        ap "Does it belong to this user? #{current_entity.account.email}"
+        ap account != current_entity.account
+        raise RuntimeError.new("Can't destroy this recipe - it is not yours")
+      elsif (process_chains.map(&:account_id) - [current_entity.account.id]).any?
+        ap "Does it have process chains not belonging to them?"
+        ap process_chains.map(&:account_id)
+        ap (process_chains.map(&:account_id) - [current_entity.account.id])
+        ap (process_chains.map(&:account_id) - [current_entity.account.id]).any?
+        raise RuntimeError.new("Can't delete this recipe, because it has process chains that aren't yours.")
+      else
+        destroy
+      end
+    end
   end
 
   def prepare_for_execution(input_files:, account:, execution_parameters: {})

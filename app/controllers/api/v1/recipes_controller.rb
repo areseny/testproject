@@ -26,7 +26,7 @@ module Api
       def create
         new_recipe.generate_recipe_steps(recipe_step_params)
         new_recipe.save!
-        render json: new_recipe
+        render json: new_recipe, scope: current_entity, scope_name: :current_entity
       rescue => e
         ap e.message
         ap e.backtrace
@@ -34,11 +34,11 @@ module Api
       end
 
       def index
-        render json: recipes, account_id: current_entity.account.id
+        render json: recipes, scope: current_entity, scope_name: :current_entity
       end
 
       def show
-        render json: recipe, account_id: current_entity.account.id
+        render json: recipe, scope: current_entity, scope_name: :current_entity
       rescue => e
         ap e.message
         ap e.backtrace
@@ -47,7 +47,7 @@ module Api
 
       def update
         recipe.update!(update_recipe_params)
-        render json: recipe, root: false
+        render json: recipe, root: false, scope: current_entity, scope_name: :current_entity
       rescue => e
         ap e.message
         ap e.backtrace
@@ -55,8 +55,8 @@ module Api
       end
 
       def destroy
-        recipe.destroy
-        render json: recipe, root: false
+        recipe.attempt_to_destroy!(current_entity)
+        render json: recipe, root: false, scope: current_entity, scope_name: :current_entity
       rescue => e
         render_error(e)
       end
@@ -88,7 +88,7 @@ module Api
       end
 
       def recipe
-        @recipe ||= Recipe.includes(:recipe_steps, {process_chains: :process_steps}).available_to_account(current_entity.account.id).find(params[:id])
+        @recipe ||= Recipe.includes(:recipe_steps, {process_chains: :process_steps}).available_to_account(current_entity.account.id, current_entity.admin?).find(params[:id])
       end
 
       def new_recipe
@@ -96,11 +96,7 @@ module Api
       end
 
       def recipes
-        @recipes ||= Recipe.includes(:recipe_steps, process_chains: :process_steps).available_to_account(current_entity.account.id)
-        @recipes.each do |r|
-          r.process_chains = r.process_chains.select{|pc| pc.account_id == current_entity.account.id }
-        end
-        @recipes
+        @recipes ||= Recipe.includes(:recipe_steps, process_chains: :process_steps).available_to_account(current_entity.account.id, current_entity.admin?)
       end
     end
   end
