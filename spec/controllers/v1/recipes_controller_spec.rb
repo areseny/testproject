@@ -587,46 +587,153 @@ RSpec.describe Api::V1::RecipesController do
   describe "DELETE destroy" do
 
     context 'if a valid token is supplied' do
-
       context 'if the recipe does not exist' do
-
         it "returns an error" do
           request_with_auth(account.new_jwt) do
             perform_destroy_request({id: "nonsense"})
           end
-
           expect(response.status).to eq 404
           expect(assigns[:recipe]).to be_nil
         end
-
       end
 
       context 'the recipe exists' do
+        context 'and the account IS NOT an admin' do
+          context 'the recipe belongs to the account' do
+            let!(:recipe)      { create(:recipe, account: account) }
 
-        context 'the recipe belongs to the account' do
-          let!(:recipe)      { create(:recipe, account: account) }
+            context 'the recipe has NO process chains' do
+              it "allows it to be destroyed" do
+                request_with_auth(account.new_jwt) do
+                  perform_destroy_request({id: recipe.id})
+                end
 
-          it "finds the recipe" do
-            request_with_auth(account.new_jwt) do
-              perform_destroy_request({id: recipe.id})
+                expect(response.status).to eq 200
+                expect(assigns[:recipe]).to eq recipe
+              end
             end
 
-            expect(response.status).to eq 200
-            expect(assigns[:recipe]).to eq recipe
+            context 'the recipe has only process chains belonging to the account' do
+              let!(:process_chain)  { create(:process_chain, account: account, recipe: recipe) }
+
+              it "destroys both the recipe and account's process chains" do
+                request_with_auth(account.new_jwt) do
+                  perform_destroy_request({id: recipe.id})
+                end
+
+                expect(response.status).to eq 200
+                expect(assigns[:recipe]).to eq recipe
+                expect{recipe.reload}.to raise_error
+                expect{process_chain.reload}.to raise_error
+                expect(Recipe.count).to eq 0
+                expect(RecipeStep.count).to eq 0
+                expect(ProcessChain.count).to eq 0
+                expect(ProcessStep.count).to eq 0
+              end
+            end
+
+            context 'the recipe has a process chain belonging to others' do
+              let!(:process_chain)  { create(:process_chain, account: other_account, recipe: recipe) }
+              it "does not allow it to be destroyed" do
+                request_with_auth(account.new_jwt) do
+                  perform_destroy_request({id: recipe.id})
+                end
+
+                expect(response.status).to eq 422
+                expect(assigns[:recipe]).to eq recipe
+                expect{recipe.reload}.to_not raise_error
+                expect{process_chain.reload}.to_not raise_error
+              end
+            end
+          end
+
+          context 'the recipe belongs to another account' do
+            let!(:other_account)     { create(:account) }
+            let!(:recipe)       { create(:recipe, account: other_account) }
+
+            it "does not find the recipe" do
+              request_with_auth(account.new_jwt) do
+                perform_destroy_request({id: recipe.id})
+              end
+
+              expect(response.status).to eq 404
+              expect(assigns[:recipe]).to be_nil
+            end
           end
         end
 
-        context 'the recipe belongs to another account' do
-          let!(:other_account)     { create(:account) }
-          let!(:recipe)       { create(:recipe, account: other_account) }
+        context 'and the account IS an admin' do
+          before { create(:account_role, account: account, role: "admin") }
 
-          it "does not find the recipe" do
-            request_with_auth(account.new_jwt) do
-              perform_destroy_request({id: recipe.id})
+          context 'the recipe belongs to the account' do
+            let!(:recipe)      { create(:recipe, account: account) }
+
+            context 'the recipe has NO process chains' do
+              it "allows it to be destroyed" do
+                request_with_auth(account.new_jwt) do
+                  perform_destroy_request({id: recipe.id})
+                end
+
+                expect(response.status).to eq 200
+                expect(assigns[:recipe]).to eq recipe
+              end
             end
 
-            expect(response.status).to eq 404
-            expect(assigns[:recipe]).to be_nil
+            context 'the recipe has only process chains belonging to the account' do
+              let!(:process_chain)  { create(:process_chain, account: account, recipe: recipe) }
+
+              it "destroys both the recipe and account's process chains" do
+                request_with_auth(account.new_jwt) do
+                  perform_destroy_request({id: recipe.id})
+                end
+
+                expect(response.status).to eq 200
+                expect(assigns[:recipe]).to eq recipe
+                expect{recipe.reload}.to raise_error
+                expect{process_chain.reload}.to raise_error
+                expect(Recipe.count).to eq 0
+                expect(RecipeStep.count).to eq 0
+                expect(ProcessChain.count).to eq 0
+                expect(ProcessStep.count).to eq 0
+              end
+            end
+
+            context 'the recipe has a process chain belonging to others' do
+              it "allows it to be destroyed anyway" do
+                request_with_auth(account.new_jwt) do
+                  perform_destroy_request({id: recipe.id})
+                end
+
+                expect(response.status).to eq 200
+                expect(assigns[:recipe]).to eq recipe
+                expect{recipe.reload}.to raise_error
+                expect{process_chain.reload}.to raise_error
+                expect(Recipe.count).to eq 0
+                expect(RecipeStep.count).to eq 0
+                expect(ProcessChain.count).to eq 0
+                expect(ProcessStep.count).to eq 0
+              end
+            end
+          end
+
+          context 'the recipe belongs to another account' do
+            let!(:other_account)     { create(:account) }
+            let!(:recipe)       { create(:recipe, account: other_account) }
+
+            it "destroys the recipe" do
+              request_with_auth(account.new_jwt) do
+                perform_destroy_request({id: recipe.id})
+              end
+
+              expect(response.status).to eq 200
+              expect(assigns[:recipe]).to eq recipe
+              expect{recipe.reload}.to raise_error
+              expect{process_chain.reload}.to raise_error
+              expect(Recipe.count).to eq 0
+              expect(RecipeStep.count).to eq 0
+              expect(ProcessChain.count).to eq 0
+              expect(ProcessStep.count).to eq 0
+            end
           end
         end
       end
