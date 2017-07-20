@@ -51,14 +51,8 @@ class Recipe < ApplicationRecord
       destroy
     else
       if account != current_entity.account
-        ap "Does it belong to this user? #{current_entity.account.email}"
-        ap account != current_entity.account
         raise RuntimeError.new("Can't destroy this recipe - it is not yours")
       elsif (process_chains.map(&:account_id) - [current_entity.account.id]).any?
-        ap "Does it have process chains not belonging to them?"
-        ap process_chains.map(&:account_id)
-        ap (process_chains.map(&:account_id) - [current_entity.account.id])
-        ap (process_chains.map(&:account_id) - [current_entity.account.id]).any?
         raise RuntimeError.new("Can't delete this recipe, because it has process chains that aren't yours.")
       else
         destroy
