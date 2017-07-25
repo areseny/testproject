@@ -74,10 +74,11 @@ class Recipe < ApplicationRecord
       raw_params = execution_parameters[recipe_step.position.to_s] || {}
       parameters = raw_params["data"] || {}
 
-      combined_parameters = recipe_step.execution_parameters.merge(parameters)
+      # Folding the ad-hoc execution parameters into the execution parameters detailed in the recipe step
+      # The ad-hoc parameters of the same name take precedence.
       new_chain.process_steps.new(position: recipe_step.position,
                                   step_class_name: recipe_step.step_class_name,
-                                  execution_parameters: combined_parameters)
+                                  execution_parameters: recipe_step.execution_parameters.merge(parameters))
     end
     new_chain
   end

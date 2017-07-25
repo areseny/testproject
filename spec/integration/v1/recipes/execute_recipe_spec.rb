@@ -90,12 +90,28 @@ describe "Account executes a single recipe" do
                     id: recipe.id
                 }}
 
-                before do
-                  perform_execute_request(auth_headers, params)
+                context 'and there are no existing parameters in the Recipe Step' do
+                  specify do
+                    perform_execute_request(auth_headers, params)
+
+                    expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_parameters']}).to match_array [exec_params1, exec_params2]
+                  end
                 end
 
-                specify do
-                  expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_parameters']}).to eq [exec_params1, exec_params2]
+                context 'and there are existing parameters in the Recipe Step' do
+                  let(:combined_params1) { { "animal" => "honey badger", "abc" => "2.5", "continent" => "Asia" } }
+                  let(:combined_params2) { { "animal" => "hammerhead shark", "abc" => "9.214", "continent" => "Oceania" } }
+
+                  before do
+                    step1.update_attribute(:execution_parameters, { "animal" => "cassowary", "continent" => "Asia" })
+                    step2.update_attribute(:execution_parameters, { "animal" => "elephant", "continent" => "Oceania" })
+                  end
+
+                  it 'overwrites the Recipe Step parameters in favour of the ad-hoc parameters' do
+                    perform_execute_request(auth_headers, params)
+
+                    expect(body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.map{|e| e['execution_parameters']}).to match_array [combined_params1, combined_params2]
+                  end
                 end
               end
 

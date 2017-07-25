@@ -41,15 +41,15 @@ describe "Account retrieves installed step classes" do
 
   def sample_step_classes
     [
-        InkStep::ShoutifierStep,
-        InkStep::RotThirteenStep
+        shoutifier_step_class,
+        rot_thirteen_step_class
     ]
   end
 
   def sample_step_json
     [
-        { "name" => InkStep::ShoutifierStep.name, "description" => InkStep::ShoutifierStep.description },
-        { "name" => InkStep::RotThirteenStep.name, "description" => InkStep::RotThirteenStep.description }
+        { "name" => shoutifier_step_class.name, "description" => shoutifier_step_class.description, "accepted_parameters" => shoutifier_step_class.accepted_parameters },
+        { "name" => rot_thirteen_step_class.name, "description" => rot_thirteen_step_class.description, "accepted_parameters" => rot_thirteen_step_class.accepted_parameters }
     ]
   end
   
