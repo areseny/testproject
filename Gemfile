@@ -28,9 +28,8 @@ gem 'pg', '~> 0.15'
 
 ################### basic steps #############################
 
-gem 'ink_step', path: "~/RubymineProjects/coko/ink-step"
-
-# gem 'ink_step', git: 'https://gitlab.coko.foundation/INK/ink-step.git'
+# gem 'ink_step', path: "~/Projects/coko/ink-step"
+gem 'ink_step', git: 'https://gitlab.coko.foundation/INK/ink-step.git'
 
 # Load StepGemfile
 if File.exists?(File.join(File.dirname(__FILE__), "StepGemfile"))
