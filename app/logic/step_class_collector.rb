@@ -2,12 +2,12 @@ class StepClassCollector
 
   class << self
     def step_class_hash
-      step_classes.map{|klass| { name: klass.name, description: klass.description } }
+      step_classes.map{|klass| { name: klass.name, description: klass.description, accepted_parameters: klass.accepted_parameters } }
     end
 
     def step_gem_hash
       step_gems.each do |gem_info_hash|
-        gem_info_hash[:step_classes] = gem_info_hash[:step_classes].map{|klass| { name: klass.name, description: klass.description } }
+        gem_info_hash[:step_classes] = gem_info_hash[:step_classes].map{|klass| { name: klass.name, description: klass.description, accepted_parameters: klass.accepted_parameters } }
       end
     end
 
@@ -43,7 +43,7 @@ class StepClassCollector
       if source.is_a?(Bundler::Source::Git)
         return source.uri
       elsif source.is_a?(Bundler::Source::Path)
-        return source.original_path
+        return source.send(:original_path)
       end
       source.to_s
     end
@@ -52,7 +52,7 @@ class StepClassCollector
       # e.g. /home/charlie/.rbenv/versions/2.2.3/lib/ruby/gems/2.2.0/bundler/gems/inkstep_coko_demo_steps-7eafb06c791d/
       gem_path = gem_spec.full_gem_path
 
-      # Dive into it and grab anything in the `lib/#{gemname minus inkstep_}/ink_step` that is an extension of Base or something else that is an extension of Base
+      # Dive into it and grab anything in the `lib/#{gemname minus inkstep_}/ink_step` of which InkStep::Base is an ancestor
       inner_module_name = gem_spec.name.gsub("inkstep_", "")
       step_directory = File.join(gem_path, "lib", inner_module_name)
       step_classes = []
@@ -64,17 +64,8 @@ class StepClassCollector
               klass = class_name.constantize
               step_classes << klass if klass.ancestors.include? InkStep::Base
             rescue => e
-              # ap "Tried to constantise #{class_name}, didn't work. Trying autoloading..."
-              # begin
-              #   # name = class_name.split("::").last
-              #   require File.join gem_spec.name, "engine"
-              #   # autoload name, pathname
-              #   ap "Success - #{class_name} autoloaded"
-              #   class_name.constantize
-              # rescue => e2
-                ap "Couldn't load the class #{class_name} in gem #{gem_spec.name} located in #{pathname}"
-                ap e2.message
-              # end
+              ap "Couldn't load the class #{class_name} in gem #{gem_spec.name} located in #{pathname}"
+              ap e2.message
             end
           end
         end

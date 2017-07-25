@@ -8,7 +8,7 @@ describe base_step_class do
 
   describe 'basic step gem' do
     specify do
-      subject.required_parameters = []
+      allow(subject).to receive(:required_parameters).and_return []
 
       expect{subject.perform_step(options: {})}.to_not raise_error
     end

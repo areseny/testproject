@@ -11,8 +11,8 @@ RSpec.describe StepClassCollector do
 
     let(:expected_result) {
       [
-          { name: InkStep::ExampleStep.name, description: InkStep::ExampleStep.description },
-          { name: InkStep::MysteryStep.name, description: InkStep::MysteryStep.description }
+          { name: InkStep::ExampleStep.name, description: InkStep::ExampleStep.description, accepted_parameters: InkStep::ExampleStep.accepted_parameters },
+          { name: InkStep::MysteryStep.name, description: InkStep::MysteryStep.description, accepted_parameters: InkStep::MysteryStep.accepted_parameters }
 
       ]
     }
@@ -40,8 +40,8 @@ RSpec.describe StepClassCollector do
 
     let(:expected_output) {
       [
-          { name: "inkstep_another_example_step_gem", version: 0.3, git_version: "fedcba", step_classes: [{ name: "InkStep::MysteryStep", description: InkStep::MysteryStep.description }, { name: "InkStep::ExampleStep", description: InkStep::ExampleStep.description }], source: "https://gitlab.coko.foundation/inkstep_another_example_step_gem" },
-          { name: "inkstep_example_step_gem", version: 1.1, git_version: "abcdef", step_classes: [{ name: "InkStep::AmazingStep", description: InkStep::AmazingStep.description }, { name: "InkStep::DelightfulStep", description: InkStep::DelightfulStep.description }], source: "https://gitlab.coko.foundation/inkstep_example_step_gem" }
+          { name: "inkstep_another_example_step_gem", version: 0.3, git_version: "fedcba", step_classes: [{ name: "InkStep::MysteryStep", description: InkStep::MysteryStep.description, accepted_parameters: InkStep::MysteryStep.accepted_parameters }, { name: "InkStep::ExampleStep", description: InkStep::ExampleStep.description, accepted_parameters: InkStep::ExampleStep.accepted_parameters }], source: "https://gitlab.coko.foundation/inkstep_another_example_step_gem" },
+          { name: "inkstep_example_step_gem", version: 1.1, git_version: "abcdef", step_classes: [{ name: "InkStep::AmazingStep", description: InkStep::AmazingStep.description, accepted_parameters: InkStep::AmazingStep.accepted_parameters }, { name: "InkStep::DelightfulStep", description: InkStep::DelightfulStep.description, accepted_parameters: InkStep::DelightfulStep.accepted_parameters }], source: "https://gitlab.coko.foundation/inkstep_example_step_gem" }
       ]
     }
 

@@ -35,29 +35,29 @@ RSpec.describe Api::V1::StepClassController do
 
   def sample_step_classes
     [
-      InkStep::ShoutifierStep,
-      InkStep::RotThirteenStep
+      shoutifier_step_class,
+      rot_thirteen_step_class
     ]
   end
 
   def sample_step_json
     [
-        { name: InkStep::ShoutifierStep.name, description: InkStep::ShoutifierStep.description },
-        { name: InkStep::RotThirteenStep.name, description: InkStep::RotThirteenStep.description }
+        { name: shoutifier_step_class.name, description: shoutifier_step_class.description, accepted_parameters: shoutifier_step_class.accepted_parameters },
+        { name: rot_thirteen_step_class.name, description: rot_thirteen_step_class.description, accepted_parameters: rot_thirteen_step_class.accepted_parameters }
     ]
   end
 
   def conversion_step_classes
     [
-      InkStep::PandocConversionStep,
-      InkStep::CalibreHtmlToEpubStep
+      pandoc_conversion_step_class,
+      calibre_html_to_epub_step_class
     ]
   end
 
   def conversion_step_json
     [
-        { name: InkStep::PandocConversionStep.name, description: InkStep::PandocConversionStep.description },
-        { name: InkStep::CalibreHtmlToEpubStep.name, description: InkStep::CalibreHtmlToEpubStep.description }
+        { name: pandoc_conversion_step_class.name, description: pandoc_conversion_step_class.description, accepted_parameters: pandoc_conversion_step_class.accepted_parameters },
+        { name: calibre_html_to_epub_step_class.name, description: calibre_html_to_epub_step_class.description, accepted_parameters: calibre_html_to_epub_step_class.accepted_parameters }
     ]
   end
 
