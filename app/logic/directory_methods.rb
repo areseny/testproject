@@ -17,7 +17,6 @@ module DirectoryMethods
       result << file_info_hash
       result
     end
-
   end
 
   def recursive_file_list(directory_path)
@@ -46,22 +45,6 @@ module DirectoryMethods
     raise "Cannot find #{relative_path}" unless located_in?(location, file_path) && File.file?(Pathname.new(file_path))
     # raise "Cannot find #{relative_path}" unless File.exists?(file_path) && File.file?(file_path)
     file_path
-  end
-
-  def file_tag(file_path:, start_benchmark:)
-    :created
-    :modified
-    # if created after start time
-    #   it was created by the step
-    #   set to :created
-    # if modified and changed
-    #   it had been modified by that step
-    #   set to :modified
-    # else if changed but not modified
-    #   set to :unchanged
-
-    change_time = File.ctime(file_path)
-    modified_time = File.mtime(file_path)
   end
 
   def file_size_for_humans(path)

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe base_step_class do
 
   let(:chain_file_location)   { File.join("tmp", "ink_api_files", Time.now.to_i.to_s) }
-  subject                     { base_step_class.new(chain_file_location: chain_file_location, position: 1) }
+  subject                     { base_step_class.new(chain_file_location: chain_file_location, position: 1, incoming_file_manifest: [{path: "some_text.html"}]) }
   let(:input_file)            { File.new('spec/fixtures/files/some_text.html', 'r') }
 
   describe 'basic step gem' do

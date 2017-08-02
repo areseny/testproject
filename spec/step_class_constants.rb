@@ -3,6 +3,20 @@ module StepClassConstants
     InkStep::Base
   end
 
+  # utility steps
+
+  def zip_step_class
+    InkStep::UtilitySteps::ZipStep
+  end
+
+  def unzip_step_class
+    InkStep::UtilitySteps::UnzipStep
+  end
+
+  def modified_files_step_class
+    InkStep::UtilitySteps::ModifiedFileCollectorStep
+  end
+
   def conversion_step_class
     InkStep::ConversionStep
   end

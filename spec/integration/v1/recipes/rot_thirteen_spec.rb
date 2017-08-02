@@ -62,7 +62,7 @@ describe "Account executes a ROT13 recipe" do
       perform_execute_request(auth_headers, execution_params)
 
       result = ProcessChain.last.output_file_manifest
-      expect(result).to match([{:path=>"plaintext.txt", :size=>"18 bytes", checksum: anything}])
+      expect(result).to match([{:path=>"plaintext.txt", :size=>"18 bytes", checksum: anything, tag: :identical}])
     end
   end
 
