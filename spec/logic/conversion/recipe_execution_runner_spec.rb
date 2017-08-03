@@ -162,6 +162,5 @@ describe Execution::RecipeExecutionRunner do
         expect(subject.semantically_tagged_manifest(step1.working_directory, old_file_manifest)).to eq expected_result
       end
     end
-
   end
 end

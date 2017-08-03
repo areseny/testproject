@@ -70,8 +70,22 @@ RSpec.describe Api::V1::StepClassController do
 
   def sample_gem_json
     [
-        { name: "InkStep::Coko::DemoSteps", version: "1.2", git_version: "wat", repo: "some_repo", step_classes: sample_step_json},
-        { name: "InkStep::Coko::ConversionSteps", version: '0.1', git_version: "ok", repo: "blah", step_classes: conversion_step_json}
+        { name: "InkStep::Coko::DemoSteps", version: "1.2", git_version: "wat", repo: "some_repo", step_classes: sample_step_basic_json},
+        { name: "InkStep::Coko::ConversionSteps", version: '0.1', git_version: "ok", repo: "blah", step_classes: conversion_step_basic_json}
+    ]
+  end
+
+  def sample_step_basic_json
+    [
+        { name: shoutifier_step_class.name, description: shoutifier_step_class.description},
+        { name: rot_thirteen_step_class.name, description: rot_thirteen_step_class.description}
+    ]
+  end
+
+  def conversion_step_basic_json
+    [
+        { name: pandoc_conversion_step_class.name, description: pandoc_conversion_step_class.description},
+        { name: calibre_html_to_epub_step_class.name, description: calibre_html_to_epub_step_class.description}
     ]
   end
 
