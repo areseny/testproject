@@ -55,6 +55,7 @@ describe "Account executes a ROT13 recipe" do
 
   context 'if the execution fails' do
     before do
+      allow_any_instance_of(rot_thirteen_step_class).to receive(:cumulative_file_manifest).and_return({input: [{:path=>"plaintext.txt", :size=>"18 bytes", checksum: "5a42e1f277fbc664677c2d290742176b"}]})
       allow_any_instance_of(rot_thirteen_step_class).to receive(:perform_step) { raise "OMG!" }
     end
 
@@ -62,7 +63,7 @@ describe "Account executes a ROT13 recipe" do
       perform_execute_request(auth_headers, execution_params)
 
       result = ProcessChain.last.output_file_manifest
-      expect(result).to match([{:path=>"plaintext.txt", :size=>"18 bytes", checksum: anything, tag: :identical}])
+      expect(result).to match([{:path=>"plaintext.txt", :size=>"18 bytes", checksum: "5a42e1f277fbc664677c2d290742176b", tag: :identical}])
     end
   end
 

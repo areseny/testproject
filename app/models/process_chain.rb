@@ -53,7 +53,6 @@ class ProcessChain < ApplicationRecord
     raise ExecutionErrors::NoFileSuppliedError.new("No input files received") unless input_files.present?
     initialize_directories
     write_input_files(input_files)
-    save_input_file_manifest!
     ExecutionWorker.perform_async(self.id, callback_url)
   end
 
@@ -100,20 +99,6 @@ class ProcessChain < ApplicationRecord
     end
   end
 
-  def map_results(runner_steps)
-    runner_steps.each do |runner_step|
-      process_step = process_steps[runner_step.position-1]
-      process_step.execution_errors = [runner_step.errors].flatten
-      process_step.notes = [runner_step.notes].flatten
-      process_step.version = runner_step.version
-      process_step.started_at = runner_step.started_at
-      process_step.finished_at = runner_step.finished_at
-      process_step.successful = runner_step.successful
-      process_step.save!
-      process_step.save_process_log(runner_step.process_log)
-    end
-  end
-
   def successful?
     process_steps.each do |step|
       return false unless step.successful
@@ -142,11 +127,10 @@ class ProcessChain < ApplicationRecord
   end
 
   def input_file_manifest
-    if input_file_list.present?
-      input_file_list
-    else
+    unless input_file_list.present?
       save_input_file_manifest!
     end
+    input_file_list
   end
 
   def output_file_manifest

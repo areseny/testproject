@@ -27,25 +27,6 @@ class ProcessStep < ApplicationRecord
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
   validates_uniqueness_of :position, { scope: :process_chain, message: "Only one step can be in this position for this chain" }
 
-  def save_process_log(message_array)
-    new_file = File.new(process_log_path, "w")
-    new_file.puts "# FYI - The process chain working directory has been replaced with \"$process_chain_working_directory\"."
-    message_array.each do |line|
-      new_line = line.gsub(process_chain.working_directory, "$process_chain_working_directory")
-      new_file.puts(new_line)
-    end
-    ap "Log file saved to #{process_log_path}"
-    new_file.close
-  end
-
-  def process_log_relative_path
-    process_log_path.gsub(File.join(working_directory, File::SEPARATOR), "")
-  end
-
-  def process_log_path
-    File.join(working_directory, process_log_file_name)
-  end
-
   def step_class
     class_from_string(step_class_name)
   end
@@ -88,5 +69,26 @@ class ProcessStep < ApplicationRecord
 
   def process_log_file_name
     "process_step_#{self.id}.log"
+  end
+
+  def map_results(behaviour_step:)
+    self.execution_errors = [behaviour_step.errors].flatten.map{|line| line.gsub(working_directory, "$process_step_working_directory")}
+    self.notes = [behaviour_step.notes].flatten.map{|line| line.gsub(working_directory, "$process_step_working_directory")}
+    self.version = behaviour_step.version
+    self.started_at = behaviour_step.started_at
+    self.finished_at = behaviour_step.finished_at
+    self.successful = behaviour_step.successful
+    self.output_file_list = behaviour_step.semantically_tagged_manifest
+    self.process_log = generate_process_log(behaviour_step.process_log)
+    save!
+  end
+
+  def generate_process_log(message_array)
+    new_array = []
+    message_array.each do |line|
+      new_line = line.gsub(process_chain.working_directory, "$process_chain_working_directory")
+      new_array << new_line
+    end
+    new_array
   end
 end

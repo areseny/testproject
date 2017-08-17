@@ -60,20 +60,48 @@ describe "Account executes a real recipe" do
         expect(body_as_json['process_chain']['finished_at']).to_not be_nil
         expect(body_as_json['process_chain']['input_file_manifest']).to match(manifests[:incoming])
         expect(body_as_json['process_chain']['output_file_manifest']).to match(manifests[:'3'])
-        # process_chain.input_file_manifest.map(&:stringify_keys)
       end
 
-      it 'also returns the steps' do
+      it 'also returns the first step info' do
+        perform_execute_request(auth_headers, execution_params)
+
+        result = body_as_json['process_chain']['process_steps'][0]
+        expect(result['execution_errors']).to eq ""
+        expect(result['successful']).to eq true
+        expect(result['started_at']).to_not be_nil
+        expect(result['finished_at']).to_not be_nil
+        ap result['output_file_manifest']
+        expect(result['output_file_manifest']).to match_array manifests[:"1"]
+      end
+
+      it 'also returns the second step info' do
+        perform_execute_request(auth_headers, execution_params)
+
+        result = body_as_json['process_chain']['process_steps'][1]
+        expect(result['execution_errors']).to eq ""
+        expect(result['successful']).to eq true
+        expect(result['started_at']).to_not be_nil
+        expect(result['finished_at']).to_not be_nil
+        expect(result['output_file_manifest']).to match_array manifests[:"2"]
+      end
+
+      it 'also returns the third step info' do
+        perform_execute_request(auth_headers, execution_params)
+
+        result = body_as_json['process_chain']['process_steps'][2]
+        expect(result['execution_errors']).to eq ""
+        expect(result['successful']).to eq true
+        expect(result['started_at']).to_not be_nil
+        expect(result['finished_at']).to_not be_nil
+        ap "Testing #{result['position']}"
+        ap result['output_file_manifest']
+        expect(result['output_file_manifest']).to match_array manifests[:"3"]
+      end
+
+      it 'has the correct number of steps' do
         perform_execute_request(auth_headers, execution_params)
 
         expect(body_as_json['process_chain']['process_steps'].count).to eq 3
-        body_as_json['process_chain']['process_steps'].sort_by{|e| e['position'].to_i}.each do |result|
-          expect(result['execution_errors']).to eq ""
-          expect(result['successful']).to eq true
-          expect(result['started_at']).to_not be_nil
-          expect(result['finished_at']).to_not be_nil
-          expect(result['output_file_manifest']).to eq manifests[:"#{result['position']}"]
-        end
       end
     end
   end
@@ -95,7 +123,7 @@ end
 def incoming_manifest
   [{"path"=>"basic_doc.docx",
     "size"=>"4.8 kB",
-    "checksum"=>anything}]
+    "checksum"=>"9e488bc7237c824490bdc707673971f1"}]
 end
 
 def xsweet_step_manifest
@@ -103,74 +131,74 @@ def xsweet_step_manifest
       {
       'path' => "docx-html-extract.xsl",
       'size' => "8.7 kB",
-      'checksum' => anything,
+      'checksum' => "97e34e755a802da78c206ff87eeaac1c",
       'tag' => "new"
       },
-          {
-          'path' => "unzip/[Content_Types].xml",
-          'size' => "1.3 kB",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/word/settings.xml",
-          'size' => "208 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/word/styles.xml",
-          'size' => "2.3 kB",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/word/numbering.xml",
-          'size' => "4.8 kB",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/word/document.xml",
-          'size' => "1.8 kB",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/word/fontTable.xml",
-          'size' => "853 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/word/_rels/document.xml.rels",
-          'size' => "664 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/docProps/app.xml",
-          'size' => "360 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
-          'path' => "unzip/docProps/core.xml",
-          'size' => "505 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
-      },
-          {
+      {
           'path' => "basic_doc.html",
           'size' => "380 bytes",
-          'checksum' => anything,
+          'checksum' => "d8972a7e18099638c6ea037512717540",
           'tag' => 'new'
       },
-          {
-          'path' => "basic_doc.docx",
-          'size' => "4.8 kB",
-          'checksum' => anything,
-          'tag' => 'identical'
+      {
+      'path' => "basic_doc/[Content_Types].xml",
+      'size' => "1.3 kB",
+      'checksum' => "ef7c7aab4ed1c89c4d286053052eac61",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/word/settings.xml",
+      'size' => "208 bytes",
+      'checksum' => "a4e1cd692809f2f552a8386c2f1d248f",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/word/styles.xml",
+      'size' => "2.3 kB",
+      'checksum' => "aee2c9c55cba7b33f39956161c387ddb",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/word/numbering.xml",
+      'size' => "4.8 kB",
+      'checksum' => "972926acd198e9688b89ed974ef9947a",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/word/document.xml",
+      'size' => "1.8 kB",
+      'checksum' => "a91ac4b6a40d38081f2a7d689c760166",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/word/fontTable.xml",
+      'size' => "853 bytes",
+      'checksum' => "8607336877646f51f438674727da21cb",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/word/_rels/document.xml.rels",
+      'size' => "664 bytes",
+      'checksum' => "5e0aa4a310402d3df359dc3db5b8eccc",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/docProps/app.xml",
+      'size' => "360 bytes",
+      'checksum' => "53781b1580dcf39cb563cbea6469b977",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc/docProps/core.xml",
+      'size' => "505 bytes",
+      'checksum' => "e0636be1f07e192cde84087d93dd3f06",
+      'tag' => 'new'
+      },
+      {
+      'path' => "basic_doc.docx",
+      'size' => "4.8 kB",
+      'checksum' => "9e488bc7237c824490bdc707673971f1",
+      'tag' => 'identical'
       }
   ]
 end
@@ -180,73 +208,73 @@ def shoutifier_step_manifest
       {
           'path' => "docx-html-extract.xsl",
           'size' => "8.7 kB",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "97e34e755a802da78c206ff87eeaac1c",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/[Content_Types].xml",
+          'path' => "basic_doc/[Content_Types].xml",
           'size' => "1.3 kB",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "ef7c7aab4ed1c89c4d286053052eac61",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/word/settings.xml",
+          'path' => "basic_doc/word/settings.xml",
           'size' => "208 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "a4e1cd692809f2f552a8386c2f1d248f",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/word/styles.xml",
+          'path' => "basic_doc/word/styles.xml",
           'size' => "2.3 kB",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "aee2c9c55cba7b33f39956161c387ddb",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/word/numbering.xml",
+          'path' => "basic_doc/word/numbering.xml",
           'size' => "4.8 kB",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "972926acd198e9688b89ed974ef9947a",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/word/document.xml",
+          'path' => "basic_doc/word/document.xml",
           'size' => "1.8 kB",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "a91ac4b6a40d38081f2a7d689c760166",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/word/fontTable.xml",
+          'path' => "basic_doc/word/fontTable.xml",
           'size' => "853 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "8607336877646f51f438674727da21cb",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/word/_rels/document.xml.rels",
+          'path' => "basic_doc/word/_rels/document.xml.rels",
           'size' => "664 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "5e0aa4a310402d3df359dc3db5b8eccc",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/docProps/app.xml",
+          'path' => "basic_doc/docProps/app.xml",
           'size' => "360 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "53781b1580dcf39cb563cbea6469b977",
+          'tag' => 'identical'
       },
       {
-          'path' => "unzip/docProps/core.xml",
+          'path' => "basic_doc/docProps/core.xml",
           'size' => "505 bytes",
-          'checksum' => anything,
-          'tag' => 'new'
+          'checksum' => "e0636be1f07e192cde84087d93dd3f06",
+          'tag' => 'identical'
       },
       {
           'path' => "basic_doc.html",
-          'size' => "380 bytes",
-          'checksum' => anything,
+          'size' => "390 bytes",
+          'checksum' => "c8cab16435721d4ea65b87e8462ab59b",
           'tag' => 'modified'
       },
       {
           'path' => "basic_doc.docx",
           'size' => "4.8 kB",
-          'checksum' => anything,
+          'checksum' => "9e488bc7237c824490bdc707673971f1",
           'tag' => 'identical'
       }
   ]
@@ -257,7 +285,7 @@ def modified_step_manifest
       {
           'path' => "basic_doc.html",
           'size' => "390 bytes",
-          'checksum' => anything,
+          'checksum' => "c8cab16435721d4ea65b87e8462ab59b",
           'tag' => 'identical'
       }
   ]

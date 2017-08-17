@@ -2,86 +2,16 @@ require_relative 'version'
 
 describe Api::V1::ProcessStepsController, type: :controller do
 
-  let!(:account)             { create(:account, password: "password", password_confirmation: "password") }
-  let!(:process_step)        { create(:process_step) }
+  let(:process_log)         { ["Nothing happened", "Delightful process", "Would process again A+++++"] }
+  let!(:account)            { create(:account, password: "password", password_confirmation: "password") }
+  let!(:process_step)       { create(:process_step, process_log: process_log) }
   let(:process_chain)       { process_step.process_chain }
-  let!(:working_directory)   { process_step.working_directory }
+  let!(:working_directory)  { process_step.working_directory }
 
   before do
     process_chain.update_attribute(:account_id, account.id)
     process_step.update_attribute(:finished_at, 5.minutes.ago)
 
-  end
-
-  describe "GET download_log" do
-
-    context 'when processing is finished' do
-      let!(:download_params) {
-        {
-            id: process_step.id
-        }
-      }
-
-      before do
-        copy_fixture_file('process_step.log', working_directory)
-        FileUtils.move(File.join(working_directory, 'process_step.log'), process_step.process_log_path)
-      end
-
-      it 'allows download of the log' do
-        request_with_auth(account.new_jwt) do
-          perform_download_log_request(download_params)
-        end
-
-        expect(response.status).to eq 200
-      end
-
-      context 'when the chain does not belong to that user' do
-
-        before { process_chain.update_attribute(:account_id, create(:account).id) }
-
-        it 'does not allow download of the log' do
-          request_with_auth(account.new_jwt) do
-            perform_download_log_request(download_params)
-          end
-
-          expect(response.status).to eq 401
-        end
-      end
-    end
-
-    context 'when processing is not finished' do
-      before { process_step.update_attribute(:finished_at, nil) }
-
-      let!(:download_params) {
-        {
-            id: process_step.id
-        }
-      }
-
-      it 'does not allow download of the log' do
-        request_with_auth(account.new_jwt) do
-          perform_download_log_request(download_params)
-        end
-
-        expect(response.status).to eq 404
-      end
-    end
-
-    context 'if no valid token is supplied' do
-      let!(:download_params) {
-        {
-            id: process_step.id
-        }
-      }
-
-      it 'does not allow download of the log' do
-        request_with_auth do
-          perform_download_log_request(download_params)
-        end
-
-        expect(response.status).to eq 401
-      end
-    end
   end
 
   describe "GET download_output_zip" do

@@ -28,14 +28,6 @@ module Api::V1
                 :url_based_filename => true)
     end
 
-    def download_process_log
-      ap "Downloading #{process_step.process_log_path}..."
-
-      send_file(process_step.process_log_path,
-                :disposition => 'attachment',
-                :url_based_filename => true)
-    end
-
     private
 
     def process_step
