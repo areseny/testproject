@@ -38,7 +38,7 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.perform_caching = false
-  config.web_console.whitelisted_ips = ['172.16.0.0/12', '10.42.0.0/16', '192.168.0.0/16']
+  # config.web_console.whitelisted_ips = ['172.16.0.0/12', '10.42.0.0/16', '192.168.0.0/16']
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
