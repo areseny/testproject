@@ -8,6 +8,11 @@ module Api::V1
 
     respond_to :json
 
+    def download_process_log
+      process_log = [YAML::load(process_step.process_log)].flatten
+      send_data(process_log, type: "text/plain")#, disposition:  "attachment", filename: process_step.process_log_file_name)
+    end
+
     def download_output_file
       file_path = assemble_file_path(location: process_step.working_directory, relative_path: params[:relative_path])
 

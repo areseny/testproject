@@ -3,6 +3,7 @@ require 'sidekiq/api'
 
 class Recipe < ApplicationRecord
   include ExecutionErrors
+  include EventConstants
 
   belongs_to :account, inverse_of: :recipes
   has_many :recipe_steps, -> { order(:position) }, inverse_of: :recipe, dependent: :destroy
@@ -65,6 +66,7 @@ class Recipe < ApplicationRecord
     check_for_input_file([input_files].flatten)
     new_chain = clone_to_process_chain(account: account, execution_parameters: execution_parameters)
     new_chain.save!
+    trigger_event(channels: chain_creation_channel(account.id), event: process_chain_created_event, data: ProcessChainSerializer.new(new_chain).as_json)
     new_chain
   end
 

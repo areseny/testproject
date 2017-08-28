@@ -3,7 +3,7 @@ require "yaml"
 class ProcessStepSerializer < ActiveModel::Serializer
   attributes :id, :position, :process_chain_id, :step_class_name, :notes, :execution_errors,
              :output_file_manifest, :version, :started_at, :finished_at, :successful,
-             :execution_parameters, :process_log, :process_log_location
+             :execution_parameters, :process_log_location, :human_readable_name
 
   def execution_parameters
     object.execution_parameters || {}
@@ -33,10 +33,12 @@ class ProcessStepSerializer < ActiveModel::Serializer
     notes.join(", ").gsub(/\n/, "")
   end
 
-  def process_log
-    return "" if object.process_log.nil?
-    log_contents = [YAML::load(object.process_log)].flatten
-    log_contents.join(", ").gsub(/\n/, "")
+  def human_readable_name
+    if object.step_class.nil?
+      nil
+    else
+      object.step_class.human_readable_name
+    end
   end
 
 end

@@ -31,6 +31,12 @@ describe "Account executes a recipe and an event is triggered" do
 
     context 'and execution is successful' do
 
+      it 'fires the chain creation event' do
+        perform_execute_request(auth_headers, execution_params)
+
+        expect_event(channels: chain_creation_channel(account.id), event: process_chain_created_event, data: {recipe_id: recipe.id, chain_id: chain.id } )
+      end
+
       it 'fires the chain start event' do
         perform_execute_request(auth_headers, execution_params)
 
@@ -81,10 +87,10 @@ describe "Account executes a recipe and an event is triggered" do
         expect_event(channels: execution_channel, event: process_step_finished_event, data: { chain_id: chain.id, position: step.position, successful: step.successful, notes: step.notes, execution_errors: step.execution_errors, recipe_id: recipe.id, output_file_manifest: step.output_file_manifest } )
       end
 
-      it 'fires the chain completion event' do
+      it 'fires the chain completion with error event' do
         perform_execute_request(auth_headers, execution_params)
 
-        expect_event(channels: execution_channel, event: process_chain_done_processing_event, data: { recipe_id: recipe.id, chain_id: chain.id, output_file_manifest: chain.output_file_manifest } )
+        expect_event(channels: execution_channel, event: process_chain_error_event, data: { recipe_id: recipe.id, chain_id: chain.id, output_file_manifest: chain.output_file_manifest } )
       end
     end
 
@@ -106,7 +112,7 @@ describe "Account executes a recipe and an event is triggered" do
     end
 
     def expect_event(channels:, event:, data: {})
-      expect(WebMock).to have_requested(:post,  /#{Pusher.host}\:#{Pusher.port}\/apps\/#{Pusher.app_id}\/events/).with(body: hash_including({"name" => event, "channels" => [channels].flatten, "data" => "#{data.to_json}"}))
+      expect(WebMock).to have_requested(:post,  /#{Pusher.host}\:#{Pusher.port}\/apps\/#{Pusher.app_id}\/events/).with(body: hash_including({"name" => event, "channels" => [channels].flatten}))#, "data" => "#{data.to_json}"}))
     end
 
     def stub_event_request
