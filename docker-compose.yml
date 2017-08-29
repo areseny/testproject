@@ -23,6 +23,8 @@ services:
       - '.env'
     depends_on:
       - postgres
+    ports:
+      - "3000:3000"
   sidekiq:
     build: .
     command: '/bin/sh docker/init_sidekiq.sh'
