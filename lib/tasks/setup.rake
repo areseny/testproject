@@ -38,9 +38,10 @@ namespace :setup do
       editoria_recipe_step3 = editoria_recipe.recipe_steps.new(position: 3, step_class_name: Constants.xsweet_step_3_scrub_step_class.to_s)
       editoria_recipe_step4 = editoria_recipe.recipe_steps.new(position: 4, step_class_name: Constants.xsweet_step_4_join_step_class.to_s)
       editoria_recipe_step5 = editoria_recipe.recipe_steps.new(position: 5, step_class_name: Constants.xsweet_step_5_collapse_paragraphs_step_class.to_s)
-      editoria_recipe_step6 = editoria_recipe.recipe_steps.new(position: 6, step_class_name: Constants.xsweet_step_6_header_promotion_step_class.to_s)
-      editoria_recipe_step7 = editoria_recipe.recipe_steps.new(position: 7, step_class_name: Constants.xsweet_step_7_final_rinse_step_class.to_s)
-      editoria_recipe_step8 = editoria_recipe.recipe_steps.new(position: 8, step_class_name: Constants.xsweet_step_8_editoria_step_class.to_s)
+      editoria_recipe_step6 = editoria_recipe.recipe_steps.new(position: 6, step_class_name: Constants.xsweet_step_6_handle_lists_step_class.to_s)
+      editoria_recipe_step7 = editoria_recipe.recipe_steps.new(position: 7, step_class_name: Constants.xsweet_step_7_header_promotion_step_class.to_s)
+      editoria_recipe_step8 = editoria_recipe.recipe_steps.new(position: 8, step_class_name: Constants.xsweet_step_8_final_rinse_step_class.to_s)
+      editoria_recipe_step9 = editoria_recipe.recipe_steps.new(position: 9, step_class_name: Constants.xsweet_step_9_editoria_step_class.to_s)
       editoria_recipe.save!
     end
     acc = Account.find_by(email: args[:email])

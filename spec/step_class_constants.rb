@@ -71,15 +71,20 @@ module StepClassConstants
     InkStep::Coko::XsweetPipeline::DocxExtract::CollapseParagraphsStep
   end
 
-  def xsweet_step_6_header_promotion_step_class
+  def xsweet_step_6_handle_lists_step_class
+    InkStep::Coko::XsweetPipeline::HandleLists::HandleListsStep
+  end
+
+  def xsweet_step_7_header_promotion_step_class
     InkStep::Coko::XsweetPipeline::HeaderPromote::HeaderPromotionStep
   end
 
-  def xsweet_step_7_final_rinse_step_class
+  def xsweet_step_8_final_rinse_step_class
     InkStep::Coko::XsweetPipeline::FinaliseTypescript::FinalRinseStep
   end
 
-  def xsweet_step_8_editoria_step_class
+  def xsweet_step_9_editoria_step_class
     InkStep::Coko::XsweetPipeline::PrepareForEditoria::EditoriaPrepareStep
   end
+
 end

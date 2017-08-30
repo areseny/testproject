@@ -15,7 +15,7 @@
     </xsl:copy>
   </xsl:template>
   
-  <!-- Mappings declared on ticket at https://gitlab.coko.foundation/wendell/XSweet/issues/16  -->
+  <!-- Mappings declared on ticket at https://gitlab.coko.foundation/XSweet/XSweet/issues/16  -->
   
   <!-- A p matches *only* when it contains element(s) span[@style='font-size: 24']/b
        *and* it has no (non-ws) text nodes outside such element(s) -->
