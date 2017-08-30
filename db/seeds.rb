@@ -18,7 +18,8 @@ editoria_recipe_step2 = editoria_recipe.recipe_steps.new(position: 2, step_class
 editoria_recipe_step3 = editoria_recipe.recipe_steps.new(position: 3, step_class_name: InkStep::Coko::XsweetPipeline::DocxExtract::ScrubStep.to_s)
 editoria_recipe_step4 = editoria_recipe.recipe_steps.new(position: 4, step_class_name: InkStep::Coko::XsweetPipeline::DocxExtract::JoinElementsStep.to_s)
 editoria_recipe_step5 = editoria_recipe.recipe_steps.new(position: 5, step_class_name: InkStep::Coko::XsweetPipeline::DocxExtract::CollapseParagraphsStep.to_s)
-editoria_recipe_step6 = editoria_recipe.recipe_steps.new(position: 6, step_class_name: InkStep::Coko::XsweetPipeline::HeaderPromote::HeaderPromotionStep.to_s)
-editoria_recipe_step7 = editoria_recipe.recipe_steps.new(position: 7, step_class_name: InkStep::Coko::XsweetPipeline::FinaliseTypescript::FinalRinseStep.to_s)
-editoria_recipe_step8 = editoria_recipe.recipe_steps.new(position: 8, step_class_name: InkStep::Coko::XsweetPipeline::PrepareForEditoria::EditoriaPrepareStep.to_s)
+editoria_recipe_step6 = editoria_recipe.recipe_steps.new(position: 6, step_class_name: InkStep::Coko::XsweetPipeline::HandleLists::HandleListsStep.to_s)
+editoria_recipe_step7 = editoria_recipe.recipe_steps.new(position: 7, step_class_name: InkStep::Coko::XsweetPipeline::HeaderPromote::HeaderPromotionStep.to_s)
+editoria_recipe_step8 = editoria_recipe.recipe_steps.new(position: 8, step_class_name: InkStep::Coko::XsweetPipeline::FinaliseTypescript::FinalRinseStep.to_s)
+editoria_recipe_step9 = editoria_recipe.recipe_steps.new(position: 9, step_class_name: InkStep::Coko::XsweetPipeline::PrepareForEditoria::EditoriaPrepareStep.to_s)
 editoria_recipe.save!

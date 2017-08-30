@@ -21,6 +21,7 @@ module DirectoryMethods
 
   def recursive_file_list(directory_path)
     # ap "recursive_file_list of #{directory_path}"
+    create_directory_if_needed(directory_path)
     Dir.chdir(directory_path) do
       files = Dir["**/*"] # Dir["**/*.*"]
       files_only = []

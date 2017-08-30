@@ -38,8 +38,16 @@ module EventConstants
 
   # process chain channel and events
 
+  def chain_creation_channel(account_id)
+    "#{account_id}_process_chain_creation"
+  end
+
   def execution_channel
     "process_chain_execution"
+  end
+
+  def process_chain_created_event
+    'chain_created'
   end
 
   def process_chain_error_event

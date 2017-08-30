@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170616111427) do
+ActiveRecord::Schema.define(version: 20170812063014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20170616111427) do
     t.text     "output_file_list"
     t.boolean  "successful"
     t.json     "execution_parameters", default: {}, null: false
+    t.text     "process_log",          default: "", null: false
     t.index ["position", "process_chain_id"], name: "index_process_steps_on_position_and_process_chain_id", unique: true, using: :btree
   end
 
