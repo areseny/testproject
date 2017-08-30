@@ -3,7 +3,7 @@ class RecipeSerializer < ActiveModel::Serializer
   has_many :recipe_steps, serializer: RecipeStepSerializer
   has_many :process_chains, serializer: ProcessChainSerializer do
     if scope.admin?
-      object.process_chains
+      object.process_chains.take(25)
     else
       object.process_chains.where(account_id: scope.account.id)
     end
