@@ -32,7 +32,7 @@ describe "Account executes a real recipe" do
     }
 
     before do
-      stub_request(:get, "https://gitlab.coko.foundation/wendell/XSweet/raw/ink-api-publish/applications/docx-extract/docx-html-extract.xsl").
+      stub_request(:get, "https://gitlab.coko.foundation/XSweet/XSweet/raw/ink-api-publish/applications/docx-extract/docx-html-extract.xsl").
           with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
           to_return(status: 200, body: File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/docx-html-extract.xsl')), headers: {})
 
