@@ -55,4 +55,9 @@ FactoryGirl.define do
     position 1
   end
 
+  factory :recipe_favourite do
+    recipe
+    account
+  end
+
 end
