@@ -17,6 +17,7 @@ services:
     links:
       - postgres
       - redis
+      - slanger
     volumes:
       # This will mount your "gems" volume (defined below as your external gem volumes) onto /gems
       - gems:/gems
@@ -26,20 +27,9 @@ services:
       - '.env'
     depends_on:
       - postgres
+      - slanger
     ports:
       - "3000:3000"
-  sidekiq:
-    build: .
-    command: '/bin/sh docker/init_sidekiq.sh'
-    env_file:
-      - '.env'
-    links:
-      - postgres
-      - redis
-    volumes:
-      - ./:/ink-api
-    depends_on:
-      - ink
   slanger:
     image: antillion/slanger
     ports:
