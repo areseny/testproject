@@ -32,7 +32,9 @@ class ProcessStep < ApplicationRecord
   end
 
   def output_file_manifest
-    if output_file_list.present?
+    if !finished?
+      []
+    elsif output_file_list.present?
       output_file_list
     elsif File.exists?(working_directory)
       assemble_manifest(directory: working_directory)
@@ -40,6 +42,7 @@ class ProcessStep < ApplicationRecord
       # @TODO flag an error to admin!
       ap "Cannot find file location for process step id '#{self.id}', chain id '#{process_chain_id}' and recipe id '#{process_chain.recipe_id}'"
       ap "Looking in #{working_directory}"
+      []
     end
   end
 
