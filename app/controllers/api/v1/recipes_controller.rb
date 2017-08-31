@@ -1,7 +1,7 @@
 module Api
   module V1
     class RecipesController < ApplicationController
-      before_action :authenticate_account!, only: [:create, :update, :destroy]
+      before_action :authenticate_account!, only: [:create, :update, :destroy, :favourite, :unfavourite]
       before_action :authenticate!, only: [:index, :show, :execute]
 
       respond_to :json
@@ -30,6 +30,18 @@ module Api
       rescue => e
         ap e.message
         ap e.backtrace
+        render_error(e)
+      end
+
+      def favourite
+        render json: recipe.mark_as_favourite!(current_entity.account)
+      rescue => e
+        render_error(e)
+      end
+
+      def unfavourite
+        render json: recipe.unmark_as_favourite!(current_entity.account)
+      rescue => e
         render_error(e)
       end
 

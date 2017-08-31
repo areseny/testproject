@@ -137,6 +137,17 @@ class Recipe < ApplicationRecord
     recipe_favourites.map(&:account_id).include?(account.id)
   end
 
+  def mark_as_favourite!(account)
+    favourite = recipe_favourites.new(account: account)
+    favourite.save
+  end
+
+  def unmark_as_favourite!(account)
+    favourite = recipe_favourites.where(account: account).first
+    favourite.destroy if favourite
+    true
+  end
+
   private
 
   def generate_steps_with_positions(recipe_step_data)

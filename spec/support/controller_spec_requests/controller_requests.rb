@@ -40,6 +40,14 @@ def retry_execution(version, data = {}.to_json)
   get :retry, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
+def favourite_recipe(version, data = {}.to_json)
+  get :favourite, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
+def unfavourite_recipe(version, data = {}.to_json)
+  get :unfavourite, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
 # process_chain / process_stepcontroller requests
 
 def download_input_file(version, data = {}.to_json)
