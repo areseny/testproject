@@ -38,6 +38,8 @@ Rails.application.routes.draw do
       resources :recipes, only: [:index, :show, :create, :update, :destroy] do
         member do
           post 'execute'
+          get 'favourite'
+          get 'unfavourite'
         end
       end
 

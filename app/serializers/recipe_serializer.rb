@@ -9,10 +9,14 @@ class RecipeSerializer < ActiveModel::Serializer
     end
   end
 
-  attributes :id, :name, :description, :active, :account_id, :executeRecipeInProgress, :public, :process_chains, :recipe_steps
+  attributes :id, :name, :description, :active, :account_id, :executeRecipeInProgress, :public, :process_chains, :recipe_steps, :favourite
 
   def executeRecipeInProgress
     object.execute_recipe_in_progress?
+  end
+
+  def favourite
+    object.favourited_by?(scope)
   end
 
 end

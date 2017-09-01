@@ -36,6 +36,27 @@ describe "Account finds a single recipe" do
             expect(body_as_json['recipe']['public']).to eq recipe.public
           end
 
+          context 'and the recipe is NOT favourited' do
+            before do
+              perform_show_request(auth_headers, recipe.id)
+            end
+
+            specify do
+              expect(body_as_json['recipe']['favourite']).to eq recipe.favourited_by?(account)
+            end
+          end
+
+          context 'and the recipe is favourited' do
+            before do
+              create(:recipe_favourite, recipe: recipe, account: account)
+              perform_show_request(auth_headers, recipe.id)
+            end
+
+            specify do
+              expect(body_as_json['recipe']['favourite']).to be_truthy
+            end
+          end
+
           context 'and it has steps' do
             let!(:step1)      { recipe.recipe_steps.first }
             let!(:step2)      { create(:recipe_step, recipe: recipe, position: 2) }
