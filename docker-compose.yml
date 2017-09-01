@@ -17,26 +17,19 @@ services:
     links:
       - postgres
       - redis
+      - slanger
     volumes:
-      - ./:/ink-api
+      # This will mount your "gems" volume (defined below as your external gem volumes) onto /gems
+      - gems:/gems
+      # This will mount ., your app code, into the /app directory within the container
+      - .:/app
     env_file:
       - '.env'
     depends_on:
       - postgres
+      - slanger
     ports:
       - "3000:3000"
-  sidekiq:
-    build: .
-    command: '/bin/sh docker/init_sidekiq.sh'
-    env_file:
-      - '.env'
-    links:
-      - postgres
-      - redis
-    volumes:
-      - ./:/ink-api
-    depends_on:
-      - ink
   slanger:
     image: antillion/slanger
     ports:
@@ -46,28 +39,8 @@ services:
       - redis:redis
     env_file:
       - '.env'
-  # editoria:
-  #   image: inkmap/editoria:0.1.2
-  #   volumes:
-  #     - ./editoria/api/db/production:/editoria/api/db/production
-  #   environment:
-  #     PUBSWEET_SECRET: 5046a3dd-d178-41ac-bd87-cac327cdf23a
-  #     INK_ENDPOINT: http://ink:3000
-  #     INK_USERNAME: admin@admin.com
-  #     INK_PASSWORD: abc12345
-  #   links:
-  #     - ink:ink
-  #   ports:
-  #     - "3000:3000"
-    # depends_on:
-    #   - setupdb
-  # setupdb:
-  #   image: inkmap/editoria:0.1.2
-  #   volumes:
-  #     - ./editoria/api/db/production:/editoria/api/db/production
-  #   environment:
-  #     PUB_USER: admin
-  #     PUB_MAIL: admin@inkmap.com
-  #     PUB_PASS: 12345
-  #     PUB_COL: Collection
-  #   command: sh docker/setupdb
+volumes:
+  db: {}
+  gems:
+    # Flagging this as "external" means it will use the volume named "gems" on the host instead of making a new volume specific to this docker-compose file
+    external: true

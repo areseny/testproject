@@ -182,4 +182,96 @@ RSpec.describe Recipe, type: :model do
       end
     end
   end
+
+
+  describe 'favouriting' do
+    subject             { create(:recipe) }
+    let(:other_recipe)  { create(:recipe) }
+
+    describe 'mark as favourite' do
+
+      context 'recipe has already been favourited by that account' do
+        before do
+          create(:recipe_favourite, recipe: subject, account: account)
+        end
+
+        specify do
+          subject.mark_as_favourite!(account)
+
+          expect(subject.favourited_by?(account)).to be_truthy
+        end
+      end
+
+      context 'recipe has not been favourited by that account' do
+        it 'recipe is still favourited' do
+          subject.mark_as_favourite!(account)
+
+          expect(subject.favourited_by?(account)).to be_truthy
+        end
+      end
+    end
+
+    describe 'unmark as favourite' do
+
+      context 'recipe has been favourited by that account' do
+        before do
+          create(:recipe_favourite, recipe: subject, account: account)
+        end
+
+        specify do
+          subject.unmark_as_favourite!(account)
+
+          expect(subject.favourited_by?(account)).to be_falsey
+        end
+      end
+
+      context 'recipe has not been favourited by that account' do
+        it 'recipe is not favourited' do
+          subject.unmark_as_favourite!(account)
+
+          expect(subject.favourited_by?(account)).to be_falsey
+        end
+      end
+    end
+
+    describe '#favourited_by?' do
+
+      context 'that recipe has not been favourited' do
+        specify do
+          expect(subject.favourited_by?(account)).to be_falsey
+        end
+      end
+
+      context 'that recipe has been favourited by another account only' do
+        before do
+          create(:recipe_favourite, recipe: subject, account: other_account)
+        end
+
+        specify do
+          expect(subject.favourited_by?(account)).to be_falsey
+        end
+      end
+
+      context 'a different recipe has been favourited by that account' do
+        before do
+          create(:recipe_favourite, recipe: other_recipe, account: account)
+        end
+
+        specify do
+          expect(subject.favourited_by?(account)).to be_falsey
+        end
+      end
+
+      context 'that recipe has been favourited by that account' do
+        before do
+          create(:recipe_favourite, recipe: subject, account: account)
+        end
+
+        specify do
+          expect(subject.favourited_by?(account)).to be_truthy
+        end
+      end
+    end
+
+  end
 end

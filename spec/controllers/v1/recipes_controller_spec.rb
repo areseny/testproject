@@ -752,11 +752,191 @@ RSpec.describe Api::V1::RecipesController do
     end
   end
 
+  describe "GET favourite" do
+    let!(:recipe)   { create(:recipe, account: account) }
+
+    context 'with a valid token' do
+      context 'if recipe exists' do
+        context 'and it belongs to the user' do
+          before do
+            request_with_auth(account.new_jwt) do
+              perform_favourite_request({id: recipe.id})
+            end
+          end
+
+          specify do
+            expect(response.status).to eq 200
+          end
+
+          it 'is favourited' do
+            expect(recipe.reload.favourited_by?(account)).to be_truthy
+          end
+        end
+
+        context 'and it belongs to a different user' do
+          context 'and it is public' do
+            let!(:other_recipe) { create(:recipe, account: other_account, public: true) }
+
+            before do
+              request_with_auth(account.new_jwt) do
+                perform_favourite_request({id: other_recipe.id})
+              end
+            end
+
+            specify do
+              expect(response.status).to eq 200
+            end
+
+            it 'is favourited' do
+              expect(other_recipe.reload.favourited_by?(account)).to be_truthy
+            end
+          end
+
+          context 'and it is private' do
+            let!(:other_recipe) { create(:recipe, account: other_account, public: false) }
+
+            before do
+              request_with_auth(account.new_jwt) do
+                perform_favourite_request({id: other_recipe.id})
+              end
+            end
+
+            specify do
+              expect(response.status).to eq 404
+            end
+
+            it 'is not favourited' do
+              expect(other_recipe.reload.favourited_by?(account)).to be_falsey
+            end
+          end
+        end
+      end
+
+      context 'if recipe does not exist' do
+        specify do
+          request_with_auth(account.new_jwt) do
+            perform_favourite_request({id: "LOL"})
+          end
+
+          expect(response.status).to eq 404
+          expect(assigns[:recipe]).to be_nil
+        end
+      end
+    end
+
+    context 'if no valid token is supplied' do
+      it "does not return anything" do
+        request_with_auth do
+          perform_favourite_request({id: recipe.id})
+        end
+
+        expect(response.status).to eq 401
+        expect(assigns[:recipe]).to be_nil
+      end
+    end
+  end
+
+  describe "GET unfavourite" do
+    let!(:recipe)   { create(:recipe, account: account) }
+
+    before do
+      create(:recipe_favourite, recipe: recipe, account: account)
+    end
+
+    context 'with a valid token' do
+      context 'if recipe exists' do
+        context 'and it belongs to the user' do
+          before do
+            request_with_auth(account.new_jwt) do
+              perform_unfavourite_request({id: recipe.id})
+            end
+          end
+
+          specify do
+            expect(response.status).to eq 200
+          end
+
+          it 'is favourited' do
+            expect(recipe.reload.favourited_by?(account)).to be_falsey
+          end
+        end
+
+        context 'and it belongs to a different user' do
+          context 'and it is public' do
+            let!(:other_recipe) { create(:recipe, account: other_account, public: true) }
+
+            before do
+              request_with_auth(account.new_jwt) do
+                perform_unfavourite_request({id: other_recipe.id})
+              end
+            end
+
+            specify do
+              expect(response.status).to eq 200
+            end
+
+            it 'is favourited' do
+              expect(other_recipe.reload.favourited_by?(account)).to be_falsey
+            end
+          end
+
+          context 'and it is private' do
+            let!(:other_recipe) { create(:recipe, account: other_account, public: false) }
+
+            before do
+              request_with_auth(account.new_jwt) do
+                perform_unfavourite_request({id: other_recipe.id})
+              end
+            end
+
+            specify do
+              expect(response.status).to eq 404
+            end
+
+            it 'is not favourited' do
+              expect(other_recipe.reload.favourited_by?(account)).to be_falsey
+            end
+          end
+        end
+      end
+
+      context 'if recipe does not exist' do
+        specify do
+          request_with_auth(account.new_jwt) do
+            perform_unfavourite_request({id: "LOL"})
+          end
+
+          expect(response.status).to eq 404
+          expect(assigns[:recipe]).to be_nil
+        end
+      end
+    end
+
+    context 'if no valid token is supplied' do
+      it "does not return anything" do
+        request_with_auth do
+          perform_unfavourite_request({id: recipe.id})
+        end
+
+        expect(response.status).to eq 401
+        expect(assigns[:recipe]).to be_nil
+      end
+    end
+  end
+
   # request.headers.merge!(auth_headers)
-  # this is special for controller tests - you can't just merge them in manually for some reason
+  # this is special for controller tests - you can't just merge them in manually
 
   def perform_execute_request(data = {})
     execute_recipe(version, data)
+  end
+
+  def perform_favourite_request(data = {})
+    favourite_recipe(version, data)
+  end
+
+  def perform_unfavourite_request(data = {})
+    unfavourite_recipe(version, data)
   end
 
   def perform_create_request(data = {})

@@ -13,6 +13,8 @@ class Recipe < ApplicationRecord
     where(account_id: current_entity.account.id).order(created_at: :desc)
   }, inverse_of: :recipe, class_name: ProcessChain
 
+  has_many :recipe_favourites, inverse_of: :recipe
+
   validates_presence_of :name, :account
   validates_inclusion_of :active, :in => [true, false]
   validates_inclusion_of :public, :in => [true, false]
@@ -129,6 +131,22 @@ class Recipe < ApplicationRecord
       return true if job.args.include?(self.id)
     end
     false
+  end
+
+  def favourited_by?(account)
+    recipe_favourites.map(&:account_id).include?(account.id)
+  end
+
+  def mark_as_favourite!(account)
+    favourite = recipe_favourites.new(account: account)
+    favourite.save
+  end
+
+  def unmark_as_favourite!(account)
+    favourite = recipe_favourites.where(account: account).first
+    if favourite
+      favourite.destroy
+    end
   end
 
   private

@@ -24,6 +24,14 @@ def archive_recipe_request(version, auth_headers, id)
   delete "/api/recipes/#{id}", params: {}, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
 end
 
+def favourite_recipe_request(version, auth_headers, id)
+  get "/api/recipes/#{id}/favourite", params: {}, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+end
+
+def unfavourite_recipe_request(version, auth_headers, id)
+  get "/api/recipes/#{id}/unfavourite", params: {}, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+end
+
 def execute_recipe_request(version, auth_headers, data = {})
   id = data[:id]
   data.delete(:id)

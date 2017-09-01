@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170812063014) do
+ActiveRecord::Schema.define(version: 20170826041732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,14 @@ ActiveRecord::Schema.define(version: 20170812063014) do
     t.json     "execution_parameters", default: {}, null: false
     t.text     "process_log",          default: "", null: false
     t.index ["position", "process_chain_id"], name: "index_process_steps_on_position_and_process_chain_id", unique: true, using: :btree
+  end
+
+  create_table "recipe_favourites", force: :cascade do |t|
+    t.integer  "account_id", null: false
+    t.integer  "recipe_id",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "recipe_id"], name: "index_recipe_favourites_on_account_id_and_recipe_id", using: :btree
   end
 
   create_table "recipe_steps", force: :cascade do |t|
