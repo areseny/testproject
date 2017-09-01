@@ -46085,10 +46085,10 @@
 
 	module.exports = {
 		"app_key": "slangerkey",
-		"http_host": "demoink.inkmap.com",
+		"http_host": "localhost",
 		"http_port": 4567,
-		"web_host": "demoink.inkmap.com",
-		"web_port": 4444
+		"web_host": "localhost",
+		"web_port": 8080
 	};
 
 /***/ },
@@ -46097,10 +46097,11 @@
 
 	module.exports = {
 		"app_key": "44332211ffeeddccbbaa",
-		"http_host": "162.243.148.158",
+		"secret": "44332211ffeeddccbbaa",
+		"http_host": "localhost",
 		"http_port": 4567,
-		"web_host": "162.243.148.158",
-		"web_port": 4444
+		"web_host": "localhost",
+		"web_port": 8080
 	};
 
 /***/ },
@@ -46109,10 +46110,10 @@
 
 	module.exports = {
 		"app_key": "inkstaging123",
-		"http_host": "162.243.148.158",
-		"http_port": 4565,
-		"web_host": "162.243.148.158",
-		"web_port": 4445
+		"http_host": "localhost",
+		"http_port": 4567,
+		"web_host": "localhost",
+		"web_port": 8080
 	};
 
 /***/ },
