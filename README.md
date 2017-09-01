@@ -13,9 +13,19 @@ It uses Rails 5 in API version.
 ## Setup with docker
 Follow the instructions here https://docs.docker.com/compose/install/ to install docker and docker-compose
 To run the stack:
-
-    docker-compose build
-    docker-compose up
+    docker volume create --name gems
+    ./bin/docker
+    -> bundle
+    -> rake db:create
+    -> rake db:schema:load
+    -> rake db:seed
+    -> rake db:test:prepare
+    # on new terminal start sidekiq
+    ./bin sidekiq
+    # to start a new bash in the running ink instance
+    docker exec -it inkapi_ink_run_1 bash
+    # to shutdown everything
+    docker-compose down
 
 ## Setup gitlab CI
 
@@ -105,7 +115,7 @@ Once it is up and running, run the rake task in `lib/setup.rake` to create some 
 ### Adding a new step gem to the server
 
 Modify the `StepGemfile` (or make one if you don't have one already - there's a `StepGemfile.sample` to copy)
-The dependencies are handled by Bundler, so be aware that there may be version incompatibilities if ink-api and a step gem require different versions of the same dependency. 
+The dependencies are handled by Bundler, so be aware that there may be version incompatibilities if ink-api and a step gem require different versions of the same dependency.
 In most cases, Bundler cna handle this by itself, but it may take some fiddling by you to get it right.
 
 Run `bundle install`
