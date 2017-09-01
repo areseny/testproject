@@ -144,8 +144,9 @@ class Recipe < ApplicationRecord
 
   def unmark_as_favourite!(account)
     favourite = recipe_favourites.where(account: account).first
-    favourite.destroy if favourite
-    true
+    if favourite
+      favourite.destroy
+    end
   end
 
   private

@@ -34,13 +34,15 @@ module Api
       end
 
       def favourite
-        render json: recipe.mark_as_favourite!(current_entity.account)
+        recipe.mark_as_favourite!(current_entity.account)
+        render json: { favourite: recipe.favourited_by?(current_entity.account) }
       rescue => e
         render_error(e)
       end
 
       def unfavourite
-        render json: recipe.unmark_as_favourite!(current_entity.account)
+        recipe.unmark_as_favourite!(current_entity.account)
+        render json: { favourite: recipe.favourited_by?(current_entity.account) }
       rescue => e
         render_error(e)
       end
