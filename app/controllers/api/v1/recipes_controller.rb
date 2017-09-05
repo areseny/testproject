@@ -1,7 +1,7 @@
 module Api
   module V1
     class RecipesController < ApplicationController
-      before_action :authenticate_account!, only: [:create, :update, :destroy, :favourite, :unfavourite]
+      before_action :authenticate_account!, only: [:create, :update, :destroy, :favourite, :unfavourite, :favourites]
       before_action :authenticate!, only: [:index, :show, :execute]
 
       respond_to :json
@@ -49,6 +49,10 @@ module Api
 
       def index
         render json: recipes, scope: current_entity, scope_name: :current_entity
+      end
+
+      def favourites
+        render json: favourite_recipes, scope: current_entity, scope_name: :current_entity
       end
 
       def show
@@ -111,6 +115,10 @@ module Api
 
       def recipes
         @recipes ||= Recipe.includes(:recipe_steps, process_chains: :process_steps).available_to_account(current_entity.account.id, current_entity.admin?)
+      end
+
+      def favourite_recipes
+        @recipes ||= Recipe.includes(:recipe_steps, process_chains: :process_steps).available_to_account(current_entity.account.id, current_entity.admin?).favourites(current_entity.account.id, current_entity.admin?)
       end
     end
   end

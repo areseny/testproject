@@ -29,8 +29,12 @@ class Recipe < ApplicationRecord
     if admin
       all
     else
-      active.where("PUBLIC = ? OR ACCOUNT_ID = ?", true, account_id)
+      active.where("RECIPES.PUBLIC = ? OR RECIPES.ACCOUNT_ID = ?", true, account_id)
     end
+  }
+
+  scope :favourites, -> (account_id, admin) {
+    includes(:recipe_favourites).available_to_account(account_id, admin).where(recipe_favourites: { account_id: account_id })
   }
 
   def available_process_chains(current_entity)

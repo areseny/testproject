@@ -36,6 +36,10 @@ def execute_recipe(version, data = {}.to_json)
   post :execute, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
+def get_favourites_request(version, data={}.to_json)
+  get :favourites, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
 def retry_execution(version, data = {}.to_json)
   get :retry, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
