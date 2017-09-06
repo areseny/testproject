@@ -13,6 +13,7 @@ It uses Rails 5 in API version.
 ## Setup with docker
 Follow the instructions here https://docs.docker.com/compose/install/ to install docker and docker-compose
 To run the stack:
+
     docker volume create --name gems
     ./bin/docker
     -> bundle
@@ -25,7 +26,7 @@ To run the stack:
     # to start a new bash in the running ink instance
     docker exec -it inkapi_ink_run_1 bash
     # to shutdown everything
-    docker-compose down
+   docker-compose down
 
 ## Setup gitlab CI
 
