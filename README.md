@@ -21,6 +21,7 @@ To run the stack:
     -> rake db:schema:load
     -> rake db:seed
     -> rake db:test:prepare
+    -> ./bin/server
     # on new terminal start sidekiq
     ./bin sidekiq
     # to start a new bash in the running ink instance
