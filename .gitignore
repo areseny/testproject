@@ -20,5 +20,6 @@ public/test/*
 .env
 .env.test
 .env.development
+.env.production
 
 StepGemfile

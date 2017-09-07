@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
 APP_PATH = File.expand_path('../config/application', __dir__)
 require_relative '../config/boot'
+
+# to make Puma the default server
+require 'rack/handler'
+Rack::Handler::WEBrick = Rack::Handler.get(:puma)
+
 require 'rails/commands'
