@@ -27,11 +27,10 @@ GIT
   specs:
     inkstep_coko_demo_steps (1.0.2)
 
-GIT
-  remote: https://gitlab.coko.foundation/blahah/inkstep_development
-  revision: 45b3de0ec0328c1ab5d9795e85bcd89578f5bd4f
+PATH
+  remote: ../rik_inkstep_development
   specs:
-    inkstep_development (1.0.1)
+    inkstep_development (1.0.2)
 
 GEM
   remote: https://rubygems.org/
