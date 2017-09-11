@@ -115,25 +115,25 @@ class Recipe < ApplicationRecord
   end
 
   def execute_recipe_in_progress?
-    Sidekiq::Workers.new.each do |process_id, thread_id, work|
-      return true if work['payload']['args'].include?(self.id)
-      # process_id is a unique identifier per Sidekiq process
-      # thread_id is a unique identifier per thread
-      # work is a Hash which looks like:
-      # { 'queue' => name, 'run_at' => timestamp, 'payload' => msg }
-      # run_at is an epoch Integer.
-      # payload is a Hash which looks like:
-      # { 'retry' => true,
-      #   'queue' => 'default',
-      #   'class' => 'Redacted',
-      #   'args' => [1, 2, 'foo'],
-      #   'jid' => '80b1e7e46381a20c0c567285',
-      #   'enqueued_at' => 1427811033.2067106 }
-    end
-
-    Sidekiq::Queue.new.each do |job|
-      return true if job.args.include?(self.id)
-    end
+    # Sidekiq::Workers.new.each do |process_id, thread_id, work|
+    #   return true if work['payload']['args'].include?(self.id)
+    #   # process_id is a unique identifier per Sidekiq process
+    #   # thread_id is a unique identifier per thread
+    #   # work is a Hash which looks like:
+    #   # { 'queue' => name, 'run_at' => timestamp, 'payload' => msg }
+    #   # run_at is an epoch Integer.
+    #   # payload is a Hash which looks like:
+    #   # { 'retry' => true,
+    #   #   'queue' => 'default',
+    #   #   'class' => 'Redacted',
+    #   #   'args' => [1, 2, 'foo'],
+    #   #   'jid' => '80b1e7e46381a20c0c567285',
+    #   #   'enqueued_at' => 1427811033.2067106 }
+    # end
+    #
+    # Sidekiq::Queue.new.each do |job|
+    #   return true if job.args.include?(self.id)
+    # end
     false
   end
 
