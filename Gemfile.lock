@@ -29,9 +29,9 @@ GIT
 
 GIT
   remote: https://gitlab.coko.foundation/blahah/inkstep_development
-  revision: 60748e4ec3854df8a8825a8ef07dd64de65ff23d
+  revision: 97eef605721c1be204ccc61bb34221cb75f7354c
   specs:
-    inkstep_development (1.0.2)
+    inkstep_development (1.0.3)
 
 GEM
   remote: https://rubygems.org/
