@@ -507,6 +507,63 @@ RSpec.describe Api::V1::RecipesController do
     end
   end
 
+  describe "GET favourites" do
+
+    context 'if a valid token is supplied' do
+
+      context 'there are no favourited recipes' do
+
+        it "finds no recipes" do
+          request_with_auth(account.new_jwt) do
+            perform_favourites_request
+          end
+
+          expect(response.status).to eq 200
+          expect(assigns[:recipes]).to eq []
+        end
+
+      end
+
+      context 'there are recipes' do
+        let!(:other_account)    { create(:account) }
+        let!(:recipe1)      { create(:recipe, name: "recipe1", account: account, public: true) }
+        let!(:recipe2)      { create(:recipe, name: "recipe2", account: account, public: true, active: false) }
+        let!(:recipe3)      { create(:recipe, name: "recipe3", account: other_account, public: false) }
+        let!(:recipe4)      { create(:recipe, name: "recipe4", account: account, public: false) }
+        let!(:recipe5)      { create(:recipe, name: "recipe5", account: account, public: true) }
+
+        before do
+          create(:recipe_favourite, recipe: recipe1, account: account )
+          create(:recipe_favourite, recipe: recipe2, account: account )
+          create(:recipe_favourite, recipe: recipe3, account: other_account )
+          create(:recipe_favourite, recipe: recipe4, account: account )
+          create(:recipe_favourite, recipe: recipe5, account: other_account )
+        end
+
+        it "finds the account's recipes" do
+          request_with_auth(account.new_jwt) do
+            perform_favourites_request
+          end
+
+          expect(response.status).to eq 200
+          expect(assigns[:recipes].to_a).to match_array [recipe1, recipe4]
+        end
+      end
+    end
+
+    context 'if no valid token is supplied' do
+
+      it "does not assign anything" do
+        request_with_auth do
+          perform_index_request({})
+        end
+
+        expect(response.status).to eq 401
+        expect(assigns[:recipe]).to be_nil
+      end
+    end
+  end
+
   describe "GET show" do
 
     context 'if a valid token is supplied' do
@@ -949,6 +1006,10 @@ RSpec.describe Api::V1::RecipesController do
 
   def perform_index_request(data = {})
     get_index_request(version, data)
+  end
+
+  def perform_favourites_request(data = {})
+    get_favourites_request(version, data)
   end
 
   def perform_show_request(data = {})

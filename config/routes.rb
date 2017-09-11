@@ -36,6 +36,10 @@ Rails.application.routes.draw do
       get 'available_step_gems' => 'step_class#index_by_gems'
 
       resources :recipes, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          get 'favourites'
+        end
+
         member do
           post 'execute'
           get 'favourite'

@@ -29,8 +29,12 @@ class Recipe < ApplicationRecord
     if admin
       all
     else
-      active.where("PUBLIC = ? OR ACCOUNT_ID = ?", true, account_id)
+      active.where("RECIPES.PUBLIC = ? OR RECIPES.ACCOUNT_ID = ?", true, account_id)
     end
+  }
+
+  scope :favourites, -> (account_id, admin) {
+    includes(:recipe_favourites).available_to_account(account_id, admin).where(recipe_favourites: { account_id: account_id })
   }
 
   def available_process_chains(current_entity)
@@ -111,25 +115,25 @@ class Recipe < ApplicationRecord
   end
 
   def execute_recipe_in_progress?
-    Sidekiq::Workers.new.each do |process_id, thread_id, work|
-      return true if work['payload']['args'].include?(self.id)
-      # process_id is a unique identifier per Sidekiq process
-      # thread_id is a unique identifier per thread
-      # work is a Hash which looks like:
-      # { 'queue' => name, 'run_at' => timestamp, 'payload' => msg }
-      # run_at is an epoch Integer.
-      # payload is a Hash which looks like:
-      # { 'retry' => true,
-      #   'queue' => 'default',
-      #   'class' => 'Redacted',
-      #   'args' => [1, 2, 'foo'],
-      #   'jid' => '80b1e7e46381a20c0c567285',
-      #   'enqueued_at' => 1427811033.2067106 }
-    end
-
-    Sidekiq::Queue.new.each do |job|
-      return true if job.args.include?(self.id)
-    end
+    # Sidekiq::Workers.new.each do |process_id, thread_id, work|
+    #   return true if work['payload']['args'].include?(self.id)
+    #   # process_id is a unique identifier per Sidekiq process
+    #   # thread_id is a unique identifier per thread
+    #   # work is a Hash which looks like:
+    #   # { 'queue' => name, 'run_at' => timestamp, 'payload' => msg }
+    #   # run_at is an epoch Integer.
+    #   # payload is a Hash which looks like:
+    #   # { 'retry' => true,
+    #   #   'queue' => 'default',
+    #   #   'class' => 'Redacted',
+    #   #   'args' => [1, 2, 'foo'],
+    #   #   'jid' => '80b1e7e46381a20c0c567285',
+    #   #   'enqueued_at' => 1427811033.2067106 }
+    # end
+    #
+    # Sidekiq::Queue.new.each do |job|
+    #   return true if job.args.include?(self.id)
+    # end
     false
   end
 
