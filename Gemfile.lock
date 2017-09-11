@@ -27,8 +27,9 @@ GIT
   specs:
     inkstep_coko_demo_steps (1.0.2)
 
-PATH
-  remote: ../rik_inkstep_development
+GIT
+  remote: https://gitlab.coko.foundation/blahah/inkstep_development
+  revision: 60748e4ec3854df8a8825a8ef07dd64de65ff23d
   specs:
     inkstep_development (1.0.2)
 
