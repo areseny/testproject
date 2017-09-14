@@ -27,7 +27,7 @@ services:
       - postgres
       - slanger
     volumes:
-      - ./ink-api-files:/ink-api/ink_api_files
+      - ./ink_api_files:/ink-api/ink_api_files
   # ink-client:
   #   image: inkmap/ink-client:latest
   #   environment:
@@ -52,7 +52,7 @@ services:
     depends_on:
       - ink
     volumes:
-      - ./ink-api-files:/ink-api/ink_api_files
+      - ./ink_api_files:/ink-api/ink_api_files
   slanger:
     image: inkmap/slanger:1.0.3
     ports:
