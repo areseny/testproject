@@ -7,5 +7,5 @@ else
   Pusher.key = Rails.application.secrets.slanger_key
   Pusher.secret = Rails.application.secrets.slanger_secret
   Pusher.host = Rails.application.secrets.slanger_host
-  Pusher.port = Rails.application.secrets.slanger_api_port
+  Pusher.port = Rails.application.secrets.slanger_http_port
 end

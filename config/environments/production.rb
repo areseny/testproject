@@ -23,7 +23,7 @@ Rails.application.configure do
 
   # missing_values = []
   #
-  # ['SLANGER_ID', 'SLANGER_KEY', 'SLANGER_SECRET', 'SLANGER_HOST', 'SLANGER_PORT'].each do |key|
+  # ['SLANGER_ID', 'SLANGER_KEY', 'SLANGER_SECRET', 'SLANGER_HOST', 'SLANGER_HTTP_PORT'].each do |key|
   #   missing_values << key unless ENV[key].present?
   # end
   # raise "Missing environment values: #{missing_values.join(", ")}. Please set these environment variables for Slanger" if missing_values.any?
