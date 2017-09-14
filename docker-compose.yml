@@ -18,11 +18,6 @@ services:
       - postgres
       - redis
       - slanger
-    volumes:
-      # This will mount your "gems" volume (defined below as your external gem volumes) onto /gems
-      - gems:/gems
-      # This will mount ., your app code, into the /app directory within the container
-      - .:/app
     env_file:
       - '.env'
     depends_on:
