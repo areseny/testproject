@@ -1,0 +1,64 @@
+version: '2'
+services:
+  postgres:
+    image: 'postgres:9.5'
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  redis:
+    image: 'redis:latest'
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/var/lib/redis/data
+  ink:
+    # image: registry.inkmap.com:5000/devops/ink-api
+    build: .
+    links:
+      - postgres
+      - redis
+      - slanger
+    env_file:
+      - '.env'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - slanger
+    volumes:
+      - ./ink-api-files:/ink-api/ink_api_files
+  # ink-client:
+  #   image: inkmap/ink-client:latest
+  #   environment:
+  #     INK_HOST: "'localhost'"
+  #     API_URL: "'localhost:3000'"
+  #     SLANGER_WS_PORT: 8080
+  #     SLANGER_HTTP_PORT: 4567
+  #     SLANGER_KEY: "'44332211ffeeddccbbaa'"
+  #     NODE_ENV: "'development'"
+  #     STAGE: "'development'"
+  #   ports:
+  #     - "4000:3000"
+  sidekiq:
+    build: .
+    command: '/bin/sh docker/init_sidekiq.sh'
+    env_file:
+      - '.env'
+    links:
+      - postgres
+      - redis
+      - slanger
+    depends_on:
+      - ink
+    volumes:
+      - ./ink-api-files:/ink-api/ink_api_files
+  slanger:
+    image: inkmap/slanger:1.0.3
+    ports:
+      - 4567:4567
+      - 8080:8080
+    links:
+      - redis:redis
+    env_file:
+      - '.env'
