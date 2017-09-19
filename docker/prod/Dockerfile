@@ -21,5 +21,6 @@ RUN gem install bundler puma
 
 RUN bundle
 COPY ./init_server.sh ./docker/init_server.sh
+COPY ./init_sidekiq.sh ./docker/init_sidekiq.sh
 
 CMD sh ./docker/init_server.sh
