@@ -5,7 +5,7 @@ FactoryGirl.define do
 
   factory :recipe do
     name "PNG to JPG transmogrifier"
-    description "This will allow me to input a PNG and get out a JPG! It's magic!"
+    description "magical and mysterious"
     account
     active true
     factory :archived_recipe do
@@ -53,6 +53,13 @@ FactoryGirl.define do
     recipe
     step_class_name InkStep::ConversionStep.to_s
     position 1
+  end
+
+  factory :recipe_step_preset do
+    recipe_step
+    name "the magic sauce"
+    description "very secret"
+    account
   end
 
   factory :recipe_favourite do
