@@ -66,6 +66,11 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :recipe_steps, only: [] do #ha
+        resources :recipe_step_presets, only: [:index]
+      end
+
+      resources :recipe_step_presets, only: [:create, :update, :show, :destroy]
     end
 
     # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do

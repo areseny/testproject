@@ -153,6 +153,12 @@ class Recipe < ApplicationRecord
     end
   end
 
+  def available_to_account?(target_account)
+    return true if public? || account == target_account
+    return false if !active? && account != target_account
+    false
+  end
+
   private
 
   def generate_steps_with_positions(recipe_step_data)
