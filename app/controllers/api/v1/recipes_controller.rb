@@ -2,7 +2,7 @@ module Api
   module V1
     class RecipesController < ApplicationController
       before_action :authenticate_account!, only: [:create, :update, :destroy, :favourite, :unfavourite, :favourites]
-      before_action :authenticate!, only: [:index, :show, :execute]
+      before_action :authenticate!, only: [:index, :show, :execute, :index_all]
 
       respond_to :json
 
@@ -47,8 +47,13 @@ module Api
         render_error(e)
       end
 
-      def index
+      def index_all
         render json: recipes, scope: current_entity, scope_name: :current_entity
+      end
+
+      def index
+        @recipes = Recipe.available_to_account(current_entity.account.id, current_entity.admin?)
+        render json: @recipes, scope: current_entity, scope_name: :current_entity, each_serializer: SimpleRecipeSerializer
       end
 
       def favourites
@@ -98,7 +103,12 @@ module Api
       end
 
       def execution_params
-        params[:execution_parameters] || {}
+        ex_params = params[:execution_parameters] || {}
+        if ex_params.is_a?(String)
+          return JSON.parse(ex_params)
+        else
+          ex_params
+        end
       end
 
       def callback_url_param
@@ -114,7 +124,7 @@ module Api
       end
 
       def recipes
-        @recipes ||= Recipe.includes(:recipe_steps, process_chains: :process_steps).available_to_account(current_entity.account.id, current_entity.admin?)
+        @recipes ||= Recipe.includes(:recipe_steps, :recipe_favourites, process_chains: :process_steps).available_to_account(current_entity.account.id, current_entity.admin?)
       end
 
       def favourite_recipes

@@ -118,7 +118,7 @@ Restart the server on production by running `touch $rails_root/tmp/restart.txt`.
 
 To write a new step, create a gem (you can host it under RubyGems). I've included code so that the step files get autoloaded when Rails is present.
 
-The example I'll use here is `InkStep::RotThirteen` included in the gem `coko_demo_steps`.
+The example I'll use here is `InkStep::Coko::RotThirteen` included in the gem `coko_demo_steps`.
 
 You can install in a few ways:
 

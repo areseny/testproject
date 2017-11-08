@@ -36,6 +36,9 @@ describe "Account executes a real recipe" do
           with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
           to_return(status: 200, body: File.read(Rails.root.join('spec/fixtures/files/xsweet_pipeline/docx-html-extract.xsl')), headers: {})
 
+      stub_request(:get, "https://gitlab.coko.foundation/atheg/XSweet/raw/master/applications/docx-extract/docx-html-extract.xsl").
+          with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+          to_return(status: 200, body: "", headers: {})
     end
 
     context 'and execution is successful' do

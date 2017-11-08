@@ -37,3 +37,7 @@ def execute_recipe_request(version, auth_headers, data = {})
   data.delete(:id)
   post "/api/recipes/#{id}/execute", params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
 end
+
+def index_all_recipes_request(version, auth_headers)
+  get "/api/recipes/index-all", params: {}, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }.merge(auth_headers)
+end

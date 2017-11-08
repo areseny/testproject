@@ -20,11 +20,78 @@ describe "Account lists all their recipes" do
     let!(:other_recipe)     { create(:recipe, account: other_account) }
 
     context 'if account is signed in' do
-
       context 'and there are some active recipes that belong to the account' do
 
         before do
           perform_index_request(auth_headers)
+        end
+
+        it 'responds with success' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'returns a list of Recipe objects' do
+          expect(body_as_json.count).to eq 1
+
+          ap body_as_json
+
+          expect(body_as_json['recipes'][0]['name']).to eq recipe.name
+          expect(body_as_json['recipes'][0]['description']).to eq recipe.description
+          expect(body_as_json['recipes'][0]['account_id']).to eq recipe.account.id
+          expect(body_as_json['recipes'][0]['active']).to eq recipe.active
+          expect(body_as_json['recipes'][0]['public']).to eq recipe.public
+        end
+
+      end
+
+      context 'and there are no active recipes that belong to the current account' do
+
+        before do
+          recipe.destroy
+          perform_index_request(auth_headers)
+        end
+
+        it 'responds with success' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'responds with an empty set' do
+          ap body_as_json
+
+          expect(body_as_json.to_a).to eq [['recipes', []]]
+        end
+      end
+    end
+
+    context 'if no account is signed in' do
+      before do
+        perform_index_request({})
+      end
+
+      it 'raises an error' do
+        expect(response.status).to eq(401)
+      end
+
+      it 'provides a message' do
+        expect_to_contain_string(body_as_json['errors'], /Authorized users only/)
+      end
+    end
+  end
+
+  describe "GET index_full" do
+    let!(:account)          { create(:account, password: "password", password_confirmation: "password") }
+    let!(:other_account)    { create(:account) }
+
+    let!(:auth_headers)     { account.new_jwt }
+    let!(:recipe)           { create(:recipe, account: account, step_classes: [rot_thirteen_step_class.to_s]) }
+    let!(:inactive_recipe)  { create(:recipe, account: account, active: false) }
+    let!(:other_recipe)     { create(:recipe, account: other_account) }
+
+    context 'if account is signed in' do
+      context 'and there are some active recipes that belong to the account' do
+
+        before do
+          perform_all_index_request(auth_headers)
         end
 
         it 'responds with success' do
@@ -68,11 +135,7 @@ describe "Account lists all their recipes" do
             end
 
             it 'does not show them' do
-              perform_index_request(auth_headers)
-
-              ap "ACCOUNT OWNS PROCESS CHAIN ID #{process_chain1.id}"
-              ap "ACCOUNT DOES NOT OWN PROCESS CHAIN ID #{process_chain2.id}"
-              ap body_as_json['recipes'][0]['process_chains']
+              perform_all_index_request(auth_headers)
 
               expect(body_as_json['recipes'][0]['process_chains'].count).to eq 1
               expect(body_as_json['recipes'][0]['process_chains'][0]['id']).to eq process_chain1.id
@@ -80,7 +143,7 @@ describe "Account lists all their recipes" do
           end
 
           it 'returns chain information in the right order' do
-            perform_index_request(auth_headers)
+            perform_all_index_request(auth_headers)
 
             ap body_as_json
 
@@ -92,7 +155,7 @@ describe "Account lists all their recipes" do
           end
 
           it 'gets the information correct' do
-            perform_index_request(auth_headers)
+            perform_all_index_request(auth_headers)
 
             expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'][0]['position']).to eq 1
             expect(body_as_json['recipes'][0]['process_chains'][0]['process_steps'][0]['step_class_name']).to eq process_step1a.step_class_name
@@ -112,7 +175,7 @@ describe "Account lists all their recipes" do
 
         before do
           recipe.destroy
-          perform_index_request(auth_headers)
+          perform_all_index_request(auth_headers)
         end
 
         it 'responds with success' do
@@ -129,7 +192,7 @@ describe "Account lists all their recipes" do
 
     context 'if no account is signed in' do
       before do
-        perform_index_request({})
+        perform_all_index_request({})
       end
 
       it 'raises an error' do
@@ -144,7 +207,7 @@ describe "Account lists all their recipes" do
     xcontext 'if the token has expired' do
       before do
         expire_token(account, auth_headers['client'])
-        perform_index_request({})
+        perform_all_index_request({})
       end
 
       it 'raises an error' do
@@ -160,5 +223,9 @@ describe "Account lists all their recipes" do
   
   def perform_index_request(auth_headers)
     index_recipe_request(version, auth_headers)
+  end
+
+  def perform_all_index_request(auth_headers)
+    index_all_recipes_request(version, auth_headers)
   end
 end

@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       resources :recipes, only: [:index, :show, :create, :update, :destroy] do
         collection do
           get 'favourites'
+          get 'index-all'
         end
 
         member do
@@ -66,6 +67,15 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :recipe_steps, only: [] do #ha
+        resources :recipe_step_presets, only: [:index]
+      end
+
+      resources :recipe_step_presets, only: [:create, :update, :show, :destroy] do
+        collection do
+          post 'create_from_process_step'
+        end
+      end
     end
 
     # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do

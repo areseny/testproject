@@ -80,7 +80,12 @@ class Recipe < ApplicationRecord
     new_chain = process_chains.new(account: account, execution_parameters: execution_parameters)
     recipe_steps.each do |recipe_step|
       raw_params = execution_parameters[recipe_step.position.to_s] || {}
+      ap "Execution parameters"
+      ap execution_parameters
+      ap("raw param:", raw_params)
       parameters = raw_params["data"] || {}
+      ap "param"
+      ap parameters
 
       # Folding the ad-hoc execution parameters into the execution parameters detailed in the recipe step
       # The ad-hoc parameters of the same name take precedence.
@@ -151,6 +156,14 @@ class Recipe < ApplicationRecord
     if favourite
       favourite.destroy
     end
+  end
+
+  def available_to_account?(target_account)
+    return true if target_account.admin?
+    return true if public?
+    return true if account == target_account
+    return false unless active? || account != target_account
+    false
   end
 
   private

@@ -488,6 +488,12 @@ RSpec.describe Api::V1::RecipesController do
             perform_index_request
           end
 
+          ap "ACCOUNT"
+          ap account
+          ap "ADMIN? #{account.admin?}"
+          ap "ACCOUNT OWNS RECIPE ID #{recipe_1.id}"
+          ap "ACCOUNT DOES NOT OWN RECIPE ID #{recipe_2.id}"
+
           expect(response.status).to eq 200
           expect(assigns[:recipes].to_a).to eq [recipe_1, recipe_4]
         end
