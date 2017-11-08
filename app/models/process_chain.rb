@@ -145,8 +145,10 @@ class ProcessChain < ApplicationRecord
 
   def assemble_input_file_zip
     zip_path = "/tmp/chain_#{id}_input.zip"
-    unless File.exists?(zip_path)
-      `zip -rj "#{zip_path}" "#{input_files_directory}"`
+    Dir.chdir(input_files_directory) do
+      unless File.exists?(zip_path)
+        `zip -r "#{zip_path}" *`
+      end
     end
     zip_path
   end

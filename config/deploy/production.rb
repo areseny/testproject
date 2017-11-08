@@ -1,9 +1,12 @@
 set :stage, :production
 set :rails_env, 'production'
 
-server '162.243.148.158', user: 'admin', roles: %w{web app}
-set :deploy_to, '/home/admin/ink-api/production'
+# server '162.243.148.158', user: 'admin', roles: %w{web app} #discourse
 set :branch, 'production'
+
+server '46.101.192.238', user: 'deploy', roles: %w{web app} #ink
+set :deploy_to, '/home/deploy/ink-api/production'
+set :rbenv_path, '/var/opt/rbenv'
 
 # server-based syntax
 # ======================

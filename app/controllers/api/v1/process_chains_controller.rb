@@ -29,6 +29,7 @@ module Api
 
       def download_input_zip
         zip_path = process_chain.assemble_input_file_zip
+        ap "Assembled #{zip_path}"
 
         send_file(zip_path,
                   :disposition => 'attachment',
@@ -53,6 +54,7 @@ module Api
           return
         end
         zip_path = process_chain.assemble_output_file_zip
+        ap "Assembled #{zip_path}"
 
         send_file(zip_path,
                   :disposition => 'attachment',

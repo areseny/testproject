@@ -1,19 +1,12 @@
-# create_table "recipe_steps", force: :cascade do |t|
-#   t.integer  "recipe_id", null: false
-#   t.integer  "position",          null: false
-#   t.datetime "created_at",        null: false
-#   t.datetime "updated_at",        null: false
-#   t.string  "step_class_name",    null: false
-# end
-
 class RecipeStep < ApplicationRecord
   include ObjectMethods
 
   belongs_to :recipe, inverse_of: :recipe_steps
+  has_many :recipe_step_presets, inverse_of: :recipe_step
 
   validates_presence_of :recipe, :position, :step_class_name
   validates :position, numericality: { greater_than_or_equal_to: 1, only_integer: true }
-  validates_uniqueness_of :position, { scope: :recipe, message: "Only one step can be in this position for this chain" }
+  validates_uniqueness_of :position, { scope: :recipe, message: "Only one step can be in this position for this recipe" }
 
   def step_class
     class_from_string(step_class_name)

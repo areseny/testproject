@@ -64,8 +64,10 @@ class ProcessStep < ApplicationRecord
 
   def assemble_output_file_zip
     zip_path = "/tmp/step_#{id}_output.zip"
-    unless File.exists?(zip_path)
-      `zip -rj "#{zip_path}" "#{working_directory}"`
+    Dir.chdir(working_directory) do
+      unless File.exists?(zip_path)
+        `zip -r "#{zip_path}" *`
+      end
     end
     zip_path
   end
