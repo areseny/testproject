@@ -11,7 +11,6 @@ require "action_mailer/railtie"
 # require "action_cable/engine"
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
-require 'dotenv-rails' ; Dotenv.load ".env.local", ".env.#{Rails.env}"
 
 require_relative '../app/middleware/catch_json_parse_errors'
 
