@@ -130,8 +130,8 @@ RSpec.describe Api::V1::RecipeStepPresetsController do
         end
       end
 
-      context 'if the recipe is invalid' do
-        context 'if the recipe is missing a field' do
+      context 'if the preset is invalid' do
+        context 'if the preset is missing a field' do
           let(:invalid_preset_params) {
             {
                 recipe_step_preset: {
@@ -167,6 +167,113 @@ RSpec.describe Api::V1::RecipeStepPresetsController do
       it "does not assign anything" do
         request_with_auth do
           perform_create_request(preset_params)
+        end
+
+        expect(response.status).to eq 401
+        expect(assigns[:new_recipe_step_preset]).to be_nil
+      end
+    end
+  end
+
+  describe "POST create_from_process_step" do
+    let!(:execution_params)         { { "tool" => "draw-knife", "wood" => "matai", "bird" => "South Island kōkako" } }
+    let!(:process_chain)            { create(:process_chain, recipe: recipe, account: account) }
+    let!(:process_step)             { create(:process_step, process_chain: process_chain, execution_parameters: execution_params) }
+
+    let(:preset_params) {
+    {
+        recipe_step_preset: {
+            name: new_name,
+            description: new_description
+        },
+        process_step_id: process_step.id
+      }
+    }
+
+    context 'if a valid token is supplied' do
+      context 'if the recipe step preset is valid' do
+        context "on another account's private recipe" do
+          before do
+            recipe.update_attribute(:account_id, other_account.id)
+            recipe.update_attribute(:public, false)
+          end
+
+          it 'does not allow it' do
+            request_with_auth(account.new_jwt) do
+              perform_create_from_process_step_request(preset_params)
+            end
+
+            expect(response.status).to eq 404
+          end
+        end
+
+        context 'and they are valid' do
+
+          it "creates the preset" do
+            request_with_auth(account.new_jwt) do
+              perform_create_from_process_step_request(preset_params)
+            end
+
+            expect(response.status).to eq 200
+            new_preset = assigns[:new_recipe_step_preset]
+            expect(new_preset).to be_a RecipeStepPreset
+            expect(new_preset.name).to eq new_name
+            expect(new_preset.description).to eq new_description
+            expect(new_preset.account).to eq account
+            expect(new_preset.execution_parameters).to eq execution_params
+          end
+        end
+      end
+
+      context 'if the preset is invalid' do
+        context 'if the preset is missing a field' do
+          let(:invalid_preset_params) {
+            {
+                recipe_step_preset: {
+                    description: new_description,
+                    recipe_step_id: recipe_step.id
+                },
+                process_step_id: process_step.id
+            }
+          }
+
+          it "is not successful" do
+            request_with_auth(account.new_jwt) do
+              perform_create_from_process_step_request(invalid_preset_params)
+            end
+
+            expect(response.status).to eq 422
+            expect(body_as_json['errors']).to eq ["Validation failed: Name can't be blank"]
+          end
+        end
+
+        context 'if the process chain does not belong to that account' do
+          before { process_chain.update_attribute(:account_id, other_account.id) }
+
+          it "is not successful" do
+            request_with_auth(account.new_jwt) do
+              perform_create_from_process_step_request(preset_params)
+            end
+
+            expect(response.status).to eq 404
+          end
+        end
+      end
+    end
+
+    context 'if no valid token is supplied' do
+      let(:preset_params) {
+        {
+            recipe_step_preset: {
+                name: new_name,
+                description: new_description,
+                execution_parameters: new_execution_parameters
+            }
+        }
+      }
+      it "does not assign anything" do
+        request_with_auth do
+          perform_create_from_process_step_request(preset_params)
         end
 
         expect(response.status).to eq 401
@@ -449,6 +556,10 @@ RSpec.describe Api::V1::RecipeStepPresetsController do
 
   def perform_create_request(data = {})
     post_create_request(version, data)
+  end
+
+  def perform_create_from_process_step_request(data = {})
+    post_create_from_chain_request(version, data)
   end
 
   def perform_update_request(data)

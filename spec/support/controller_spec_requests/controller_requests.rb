@@ -86,6 +86,12 @@ def get_index_by_gems_request(version, data = {}.to_json)
   get :index_by_gems, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
+# recipe step preset controller requests
+
+def post_create_from_chain_request(version, data = {}.to_json)
+  post :create_from_process_step, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
+end
+
 # jwt auth authentication_controller requests
 
 def post_sign_in_request(version, data = {}.to_json)
