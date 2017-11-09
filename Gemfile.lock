@@ -346,6 +346,7 @@ DEPENDENCIES
   database_cleaner
   devise
   devise_token_auth
+  dotenv
   dotenv-rails
   factory_girl_rails (~> 4.0)
   health-monitor-rails
