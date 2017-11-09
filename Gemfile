@@ -4,7 +4,8 @@ gem 'rails', '5.0.0.1'
 gem 'active_model_serializers'
 
 gem 'rack-cors', :require => 'rack/cors'
-gem 'dotenv-rails', require: 'dotenv/rails-now', groups: [:development, :test]
+gem 'dotenv'
+gem 'dotenv-rails', require: 'dotenv/rails-now'#, groups: [:development, :test]
 
 ################### authentication ####################
 

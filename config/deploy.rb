@@ -7,7 +7,7 @@ lock '3.4.1'
 set :application, 'ink-api'
 set :repo_url, 'git@gitlab.coko.foundation:INK/ink-api.git'
 
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', '.env.production', 'StepGemfile', 'config/ink_api.yml')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', '.env', 'StepGemfile', 'config/ink_api.yml')
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 
 set :bundle_binstubs, nil
