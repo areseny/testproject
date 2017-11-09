@@ -18,7 +18,6 @@ require_relative '../app/middleware/catch_json_parse_errors'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 Dotenv::Railtie.load
-HOSTNAME = ENV['HOSTNAME']
 
 module Ink
   class Application < Rails::Application
