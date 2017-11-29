@@ -5,4 +5,5 @@ class Constants
 
   FILE_LOCATION = Rails.configuration.ink_api['file_location']
   INPUT_FILE_DIRECTORY_NAME = "input_files"
+  OUTPUT_FILE_DIRECTORY_NAME = "output_files"
 end

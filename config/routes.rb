@@ -67,6 +67,16 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :single_step_executions do
+        member do
+          get 'download_output_file'
+          get 'download_output_zip'
+          get 'download_process_log'
+          get 'download_input_file'
+          get 'download_input_zip'
+        end
+      end
+
       resources :recipe_steps, only: [] do #ha
         resources :recipe_step_presets, only: [:index]
       end

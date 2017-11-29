@@ -3,23 +3,12 @@ require 'yaml'
 require 'ink_step/mixins/helper_methods'
 require 'constants'
 
-# create_table "process_chains", force: :cascade do |t|
-  # t.integer  "account_id",     null: false
-  # t.datetime "executed_at"
-  # t.string   "input_file"
-  # t.integer  "recipe_id",   null: false
-  # t.datetime "created_at",  null: false
-  # t.datetime "updated_at",  null: false
-  # t.datetime "finished_at"
-  # t.string   "slug"
-  # t.text     "input_file_manifest"
-# end
-
 class ProcessChain < ApplicationRecord
   include ExecutionErrors
   include SlugMethods
   include DirectoryMethods
   include EventConstants
+  include DownloadableMethods
 
   serialize :input_file_list
 
@@ -114,42 +103,7 @@ class ProcessChain < ApplicationRecord
     File.join(working_directory, Constants::INPUT_FILE_DIRECTORY_NAME)
   end
 
-  def open_input_files
-    recursive_file_list(input_files_directory).inject([]) do |list, file|
-      list << UploadedFile.new(input_files_directory: input_files_directory, relative_path: file)
-      list
-    end
-  end
-
-  def save_input_file_manifest!
-    self.input_file_list = assemble_manifest(directory: input_files_directory)
-    save!
-  end
-
-  def input_file_manifest
-    unless input_file_list.present?
-      save_input_file_manifest!
-    end
-    input_file_list
-  end
-
-  def output_file_manifest
-    last_step.output_file_manifest
-  rescue => e
-    nil
-  end
-
-  def assemble_output_file_zip
-    last_step.assemble_output_file_zip
-  end
-
-  def assemble_input_file_zip
-    zip_path = "/tmp/chain_#{id}_input.zip"
-    Dir.chdir(input_files_directory) do
-      unless File.exists?(zip_path)
-        `zip -r "#{zip_path}" *`
-      end
-    end
-    zip_path
+  def zip_path
+    "/tmp/chain_#{id}_input.zip"
   end
 end

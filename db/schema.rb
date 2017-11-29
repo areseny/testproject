@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170911083743) do
+ActiveRecord::Schema.define(version: 20171114094010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,24 @@ ActiveRecord::Schema.define(version: 20170911083743) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["auth_key"], name: "index_services_on_auth_key", unique: true, using: :btree
+  end
+
+  create_table "single_step_executions", force: :cascade do |t|
+    t.integer  "account_id"
+    t.string   "description"
+    t.string   "slug"
+    t.string   "step_class_name"
+    t.json     "execution_parameters", default: {}, null: false
+    t.datetime "executed_at"
+    t.datetime "finished_at"
+    t.text     "input_file_list"
+    t.text     "output_file_list"
+    t.boolean  "successful"
+    t.text     "notes"
+    t.text     "execution_errors"
+    t.text     "process_log",          default: "", null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
 end

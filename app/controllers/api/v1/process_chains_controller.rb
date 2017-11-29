@@ -28,10 +28,9 @@ module Api
       end
 
       def download_input_zip
-        zip_path = process_chain.assemble_input_file_zip
-        ap "Assembled #{zip_path}"
+        process_chain.assemble_input_file_zip
 
-        send_file(zip_path,
+        send_file(process_chain.zip_path,
                   :disposition => 'attachment',
                   :url_based_filename => true)
       end
@@ -68,8 +67,8 @@ module Api
       end
 
       def authorise_account!
-        if process_chain.account != current_entity.account
-          e = ExecutionErrors::NotAuthorisedError.new("That recipe is not accessible to you.")
+        if(process_chain.account != current_entity.account) && !current_entity.account.admin?
+          e = ExecutionErrors::NotAuthorisedError.new("That process chain is not accessible to you.")
           render_error(e)
         end
       end

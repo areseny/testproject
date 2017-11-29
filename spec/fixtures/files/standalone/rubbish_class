@@ -1,0 +1,10 @@
+module InkStep
+  class Improperly Formatted Class
+
+    some rubbish here
+
+    def perform_step
+      ap "Doesn't work :("
+    end
+  end
+end

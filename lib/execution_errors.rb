@@ -9,4 +9,9 @@ module ExecutionErrors
     attr_accessor :missing_step_classes
   end
 
+  class ClassNotDefinedError < RuntimeError; end
+  class ClassInvalidError < RuntimeError
+    attr_accessor :errors, :output
+  end
+
 end

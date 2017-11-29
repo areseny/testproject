@@ -1,23 +1,7 @@
-# create_table "process_steps", force: :cascade do |t|
-#   t.integer  "process_chain_id",                  null: false
-#   t.integer  "position",                          null: false
-#   t.text     "notes"
-#   t.datetime "executed_at"
-#   t.text     "execution_errors"
-#   t.datetime "created_at",                        null: false
-#   t.datetime "updated_at",                        null: false
-#   t.string   "step_class_name",                   null: false
-#   t.string   "version"
-#   t.datetime "started_at"
-#   t.datetime "finished_at"
-#   t.text     "output_file_list"
-#   t.boolean  "successful"
-#   t.json     "execution_parameters", default: {}, null: false
-# end
-
 class ProcessStep < ApplicationRecord
   include ObjectMethods
   include DirectoryMethods
+  include DownloadableMethods
 
   serialize :output_file_list
 
@@ -29,21 +13,6 @@ class ProcessStep < ApplicationRecord
 
   def step_class
     class_from_string(step_class_name)
-  end
-
-  def output_file_manifest
-    if !finished?
-      []
-    elsif output_file_list.present?
-      output_file_list
-    elsif File.exists?(working_directory)
-      assemble_manifest(directory: working_directory)
-    else
-      # @TODO flag an error to admin!
-      ap "Cannot find file location for process step id '#{self.id}', chain id '#{process_chain_id}' and recipe id '#{process_chain.recipe_id}'"
-      ap "Looking in #{working_directory}"
-      []
-    end
   end
 
   def working_directory
@@ -60,16 +29,6 @@ class ProcessStep < ApplicationRecord
 
   def started?
     !!started_at
-  end
-
-  def assemble_output_file_zip
-    zip_path = "/tmp/step_#{id}_output.zip"
-    Dir.chdir(working_directory) do
-      unless File.exists?(zip_path)
-        `zip -r "#{zip_path}" *`
-      end
-    end
-    zip_path
   end
 
   def process_log_file_name

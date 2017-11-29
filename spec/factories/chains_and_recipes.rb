@@ -67,4 +67,11 @@ FactoryGirl.define do
     account
   end
 
+  factory :single_step_execution do
+    account
+    description "just by itself!"
+    step_class_name "InkStep::AwesomeClass"
+    execution_parameters {}
+  end
+
 end

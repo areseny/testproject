@@ -4,6 +4,8 @@ module ObjectMethods
       mod.const_get(class_name)
     end
   rescue => e
+    ap e.message
+    ap e.backtrace
     nil
   end
 end

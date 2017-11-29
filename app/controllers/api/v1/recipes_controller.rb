@@ -105,7 +105,7 @@ module Api
       def execution_params
         ex_params = params[:execution_parameters] || {}
         if ex_params.is_a?(String)
-          return JSON.parse(ex_params)
+          JSON.parse(ex_params)
         else
           ex_params
         end

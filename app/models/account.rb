@@ -14,6 +14,8 @@ class Account < ApplicationRecord
   has_many :account_roles, inverse_of: :account
   has_many :recipe_favourites, inverse_of: :account
   has_many :recipe_step_presets, inverse_of: :account
+  has_many :single_step_executions, inverse_of: :account
+
   has_one :service
 
   def roles

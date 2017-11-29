@@ -72,4 +72,22 @@ module EventConstants
     'process_step_completed'
   end
 
+  # standalone execution events
+
+  def standalone_execution_channel(account_id)
+    "#{account_id}_standalone_execution"
+  end
+
+  def standalone_execution_started_event(account_id)
+    "#{account_id}_standalone_execution_started"
+  end
+
+  def standalone_execution_finished_event(account_id)
+    "#{account_id}_standalone_execution_completed"
+  end
+
+  def standalone_execution_error_event
+    'standalone_processing_error'
+  end
+
 end
