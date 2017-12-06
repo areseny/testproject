@@ -82,4 +82,6 @@ Rails.application.routes.draw do
     #
     # end
   end
+
+  root 'api/v1/pages#anyone'
 end
