@@ -76,6 +76,8 @@ Rails.application.routes.draw do
           post 'create_from_process_step'
         end
       end
+
+      root 'pages#anyone'
     end
 
     # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do
@@ -83,5 +85,5 @@ Rails.application.routes.draw do
     # end
   end
 
-  root 'api/v1/pages#anyone'
+  root 'api/v1/pages#index'
 end
