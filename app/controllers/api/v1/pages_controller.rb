@@ -6,6 +6,14 @@ module Api
 
       respond_to :json
 
+      def index
+        render json: {
+            data: {
+                message: "INK API works! - To use it, point to /api/"
+            }
+        }
+      end
+
       def anyone
         render json: {
                    data: {
