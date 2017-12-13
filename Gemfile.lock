@@ -29,9 +29,9 @@ GIT
 
 GIT
   remote: https://gitlab.coko.foundation/blahah/inkstep_development
-  revision: 97eef605721c1be204ccc61bb34221cb75f7354c
+  revision: a6972d5324d2ea96c78fc7c1cdb4b08fafb0cb51
   specs:
-    inkstep_development (1.0.3)
+    inkstep_development (1.0.5)
 
 GEM
   remote: https://rubygems.org/
@@ -81,7 +81,7 @@ GEM
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
     arel (7.1.4)
-    awesome_print (1.8.0)
+    awesome_print (1.7.0)
     bcrypt (3.1.11)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)

@@ -3,9 +3,9 @@ class RecipeSerializer < ActiveModel::Serializer
   has_many :recipe_steps, serializer: RecipeStepSerializer
   has_many :process_chains, serializer: ProcessChainSerializer do
     if scope.admin?
-      object.process_chains.take(25)
+      object.process_chains.includes(:process_steps).take(5)
     else
-      object.process_chains.where(account_id: scope.account.id)
+      object.process_chains.includes(:process_steps).where(account_id: scope.account.id).take(5)
     end
   end
 
