@@ -52,7 +52,7 @@ def unfavourite_recipe(version, data = {}.to_json)
   get :unfavourite, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }
 end
 
-# process_chain / process_stepcontroller requests
+# process_chain / process_step / single_step_execution_controller requests
 
 def download_input_file(version, data = {}.to_json)
   get :download_input_file, params: data, headers: {'Content-Type' => "application/json", 'Accept' => "application/vnd.ink.#{version}" }

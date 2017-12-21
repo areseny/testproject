@@ -65,20 +65,6 @@ class ProcessChain < ApplicationRecord
     process_steps.sort_by(&:position)
   end
 
-  def write_input_files(input_files)
-    # Input file is received by the controller like so
-    #<ActionDispatch::Http::UploadedFile:0x007f2ad1984fd8
-    # @tempfile=#<Tempfile:/tmp/RackMultipart20161211-6674-1d8irke.docx>,
-    # @original_filename="a_very_nice_document.docx",
-    # @content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    # @headers="Content-Disposition: form-data; name=\"input_file\"; filename=\"a_very_nice_document.docx\"\r\nContent-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document\r\n">
-
-    input_files.each do |uploaded_file|
-      target_file = File.join(input_files_directory, uploaded_file.original_filename)
-      FileUtils.cp(uploaded_file.tempfile, target_file)
-    end
-  end
-
   def initialize_directories
     create_directory_if_needed(Constants::FILE_LOCATION)
     create_directory_if_needed(working_directory)

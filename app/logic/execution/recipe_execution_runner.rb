@@ -6,12 +6,12 @@ module Execution
     include DirectoryMethods
     include ExecutionErrors
 
-    attr_accessor :step_array, :process_steps, :chain_file_location, :chain_id, :recipe_id, :cumulative_file_manifest
+    attr_accessor :step_array, :process_steps, :base_file_location, :chain_id, :recipe_id, :cumulative_file_manifest
 
-    def initialize(process_steps_in_order:, chain_file_location:, process_chain:)
+    def initialize(process_steps_in_order:, base_file_location:, process_chain:)
       @step_array = []
       @process_steps = process_steps_in_order
-      @chain_file_location = chain_file_location
+      @base_file_location = base_file_location
       @process_chain = process_chain
       @recipe_id = process_chain.recipe_id
       @chain_id = @process_chain.id
@@ -37,7 +37,7 @@ module Execution
     def execute_process_steps
       @cumulative_file_manifest = {}
       @process_steps.each do |process_step|
-        behaviour_step = process_step.step_class.new(chain_file_location: chain_file_location,
+        behaviour_step = process_step.step_class.new(base_file_location: base_file_location,
                                                      position: process_step.position)
         @step_array << behaviour_step
         trigger_step_started_event(behaviour_step)

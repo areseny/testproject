@@ -7,6 +7,7 @@ Sidekiq::Testing.inline!
 describe Api::V1::SingleStepExecutionsController, type: :controller do
 
   let!(:account)                { create(:account, password: "password", password_confirmation: "password") }
+  let!(:other_account)          { create(:account, password: "password", password_confirmation: "password") }
   let!(:text_file)              { File.new('spec/fixtures/files/plaintext.txt', 'r') }
   let!(:single_step_execution)  {
     create(:single_step_execution, account: account, step_class_name: "InkStep::Base")
@@ -37,7 +38,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
               description: description,
               step_class_name: step_class_name,
               execution_parameters: execution_parameters,
-              input_files: html_file,
+              input_file_list: [html_file],
               code: klass_file
           }
       }
@@ -64,7 +65,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
         context 'if the code supplied is blank' do
           before do
-            single_step_execution_params[:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/blank_file.rb'))
+            single_step_execution_params[:single_step_execution][:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/blank_file.rb'))
           end
 
           specify do
@@ -79,14 +80,13 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
         context 'if the code supplied does not contain a class' do
           before do
-            single_step_execution_params[:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/valid_not_a_class.rb'))
+            single_step_execution_params[:single_step_execution][:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/valid_not_a_class.rb'))
           end
 
           specify do
             request_with_auth(account.new_jwt) do
               perform_create_request(single_step_execution_params)
             end
-
             expect(response.status).to eq 422
             expect(body_as_json['errors']).to eq ["Mismatch! You provided InkStep::AwesomeClass and the file defined something else"]
           end
@@ -94,7 +94,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
         context 'if the code supplied is not valid syntax' do
           before do
-            single_step_execution_params[:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/rubbish_class'))
+            single_step_execution_params[:single_step_execution][:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/rubbish_class'))
           end
 
           specify do
@@ -145,14 +145,24 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
     }
 
     context 'if a valid token is supplied' do
-      context 'and the chain belongs to that account' do
+      context 'and the execution belongs to that account' do
         it 'serves the file successfully' do
           request_with_auth(account.new_jwt) do
             perform_download_input_zip_request(download_params)
           end
 
           expect(response.status).to eq 200
-          expect(response.stream.to_path).to eq "/tmp/chain_#{single_step_execution.id}_input.zip"
+          expect(response.stream.to_path).to eq single_step_execution.input_zip_path
+        end
+      end
+
+      context 'and the execution does not belong to that account' do
+        it 'does not allow access' do
+          request_with_auth(other_account.new_jwt) do
+            perform_download_input_zip_request(download_params)
+          end
+
+          expect(response.status).to eq 404
         end
       end
     end
@@ -168,18 +178,19 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
     before do
       create_directory_if_needed(single_step_execution.working_directory)
       copy_fixture_file('some_text.txt', single_step_execution.working_directory)
+      single_step_execution.update_attribute(:finished_at, 3.minutes.ago)
     end
 
     context 'if a valid token is supplied' do
-      context 'and the chain belongs to that account' do
-        context 'and exeuction is finished' do
+      context 'and the execution belongs to that account' do
+        context 'and execuction is finished' do
           it 'serves the file successfully' do
             request_with_auth(account.new_jwt) do
               perform_download_output_zip_request(download_params)
             end
 
             expect(response.status).to eq 200
-            expect(response.stream.to_path).to eq "/tmp/step_#{single_step_execution.last_step.id}_output.zip"
+            expect(response.stream.to_path).to eq single_step_execution.output_zip_path
           end
         end
         context 'and the execution is not finished' do
@@ -196,6 +207,16 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
           end
         end
       end
+
+      context 'and the execution does not belong to that account' do
+        it 'does not allow access' do
+          request_with_auth(other_account.new_jwt) do
+            perform_download_input_zip_request(download_params)
+          end
+
+          expect(response.status).to eq 404
+        end
+      end
     end
   end
 
@@ -204,6 +225,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
     before do
       create_directory_if_needed(single_step_execution.send(:working_directory))
       copy_fixture_file("plaintext.txt", single_step_execution.send(:working_directory))
+      single_step_execution.update_attribute(:finished_at, 3.minutes.ago)
     end
 
     context 'when there is an output file' do
@@ -214,7 +236,18 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
         }
       }
 
+      context 'and the execution does not belong to that account' do
+        it 'does not allow access' do
+          request_with_auth(other_account.new_jwt) do
+            perform_download_input_zip_request(download_params)
+          end
+
+          expect(response.status).to eq 404
+        end
+      end
+
       context 'when execution is finished' do
+
         it 'downloads the file' do
           request_with_auth(account.new_jwt) do
             perform_download_output_file_request(download_params)
@@ -223,6 +256,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
           expect(response.status).to eq 200
         end
       end
+
       context 'and the execution is not finished' do
         before do
           single_step_execution.update_attribute(:finished_at, nil)
@@ -248,7 +282,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
       it 'fails' do
         request_with_auth(account.new_jwt) do
-          expect{perform_download_output_file_request(download_params)}.to raise_error("Please provide a relative file path")
+          expect{perform_download_output_file_request(download_params)}.to raise_error("param is missing or the value is empty: relative_path")
         end
       end
     end
@@ -313,7 +347,6 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
         end
       end
     end
-
   end
 
   describe "GET download_input_file" do
@@ -331,6 +364,16 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
           perform_download_input_file_request(download_params)
         end
       end
+
+      context 'and the execution does not belong to that account' do
+        it 'does not allow access' do
+          request_with_auth(other_account.new_jwt) do
+            perform_download_input_zip_request(download_params)
+          end
+
+          expect(response.status).to eq 404
+        end
+      end
     end
 
     context 'if no filename is supplied' do
@@ -343,7 +386,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
       it 'fails' do
         request_with_auth(account.new_jwt) do
-          expect{perform_download_input_file_request(download_params)}.to raise_error("Please provide a relative file path")
+          expect{perform_download_input_file_request(download_params)}.to raise_error("param is missing or the value is empty: relative_path")
         end
       end
     end

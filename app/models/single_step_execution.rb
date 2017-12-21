@@ -30,9 +30,10 @@ class SingleStepExecution < ApplicationRecord
     File.join(Constants::FILE_LOCATION, "single_step_executions", slug)
   end
 
-  def start_execution!(code:, callback_url: nil)
+  def start_execution!(input_files:, code:, callback_url: nil)
     initialize_directories
     write_code_to_file(code: code)
+    write_input_files(input_files)
     StandaloneExecutionWorker.perform_async(self.id, callback_url)
   end
 
@@ -82,14 +83,30 @@ class SingleStepExecution < ApplicationRecord
     File.join(working_directory, Constants::OUTPUT_FILE_DIRECTORY_NAME)
   end
 
+  def input_zip_path
+    "/tmp/standalone_#{id}_input.zip"
+  end
+
+  def output_zip_path
+    "/tmp/standalone_#{id}_output.zip"
+  end
+
   def assemble_output_file_zip
-    zip_path = "/tmp/step_#{id}_output.zip"
     Dir.chdir(working_directory) do
-      unless File.exists?(zip_path)
-        `zip -r "#{zip_path}" *`
+      unless File.exists?(output_zip_path)
+        `zip -r "#{output_zip_path}" *`
       end
     end
-    zip_path
+    output_zip_path
+  end
+
+  def assemble_input_file_zip
+    Dir.chdir(working_directory) do
+      unless File.exists?(input_zip_path)
+        `zip -r "#{input_zip_path}" *`
+      end
+    end
+    input_zip_path
   end
 
   def process_log_file_name
@@ -99,7 +116,7 @@ class SingleStepExecution < ApplicationRecord
   def map_results(behaviour_step:)
     self.execution_errors = [behaviour_step.errors].flatten.map{|line| line.gsub(working_directory, "$process_step_working_directory")}
     self.notes = [behaviour_step.notes].flatten.map{|line| line.gsub(working_directory, "$process_step_working_directory")}
-    self.executed_at = behaviour_step.executed_at
+    self.executed_at = behaviour_step.started_at
     self.finished_at = behaviour_step.finished_at
     self.successful = behaviour_step.successful
     self.output_file_list = behaviour_step.semantically_tagged_manifest

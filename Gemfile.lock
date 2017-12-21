@@ -7,15 +7,6 @@ GIT
       sshkit (~> 1.3)
 
 GIT
-  remote: https://gitlab.coko.foundation/INK/ink-step.git
-  revision: 30a166cc2b813cf143b59c5c11552f9dd62636d2
-  specs:
-    ink_step (1.3.3)
-      awesome_print
-      httparty
-      rubyzip
-
-GIT
   remote: https://gitlab.coko.foundation/INK/inkstep_coko_conversion.git
   revision: 6cb33e4f6f15c30cb5467a96d3afc69557801067
   specs:
@@ -32,6 +23,14 @@ GIT
   revision: a6972d5324d2ea96c78fc7c1cdb4b08fafb0cb51
   specs:
     inkstep_development (1.0.5)
+
+PATH
+  remote: ../ink-step
+  specs:
+    ink_step (1.3.3)
+      awesome_print
+      httparty
+      rubyzip
 
 GEM
   remote: https://rubygems.org/

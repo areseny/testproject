@@ -18,7 +18,7 @@ describe Execution::RecipeExecutionRunner do
   describe '#run!' do
     context 'for a successful execution' do
       context 'if there are no steps' do
-        subject         { Execution::RecipeExecutionRunner.new(process_steps_in_order: [], chain_file_location: chain.working_directory, process_chain: chain) }
+        subject         { Execution::RecipeExecutionRunner.new(process_steps_in_order: [], base_file_location: chain.working_directory, process_chain: chain) }
 
         it 'returns nil - no change was made' do
           expect{subject.run!}.to raise_error(ExecutionErrors::EmptyChainError, error_message)
@@ -28,7 +28,7 @@ describe Execution::RecipeExecutionRunner do
       context 'if there is 1 step' do
         let!(:step1)          { create(:process_step, process_chain: chain, position: 1, step_class_name: base_step_class.to_s) }
 
-        subject               { Execution::RecipeExecutionRunner.new(process_steps_in_order: [step1], chain_file_location: chain.working_directory, process_chain: chain) }
+        subject               { Execution::RecipeExecutionRunner.new(process_steps_in_order: [step1], base_file_location: chain.working_directory, process_chain: chain) }
 
         before { chain.reload }
 
@@ -45,7 +45,7 @@ describe Execution::RecipeExecutionRunner do
         let!(:step2)          { create(:process_step, process_chain: chain, position: 2, step_class_name: rot_thirteen_step_class.to_s) }
         let!(:step3)          { create(:process_step, process_chain: chain, position: 3, step_class_name: base_step_class.to_s) }
         let(:steps)           { [step1, step2, step3] }
-        subject               { Execution::RecipeExecutionRunner.new(process_steps_in_order: steps, chain_file_location: chain.working_directory, process_chain: chain) }
+        subject               { Execution::RecipeExecutionRunner.new(process_steps_in_order: steps, base_file_location: chain.working_directory, process_chain: chain) }
 
         before { chain.reload }
 
@@ -61,7 +61,7 @@ describe Execution::RecipeExecutionRunner do
 
     context 'if there is a failure' do
       let(:steps)               { [step1] }
-      subject                   { Execution::RecipeExecutionRunner.new(process_steps_in_order: steps, chain_file_location: chain.working_directory, process_chain: chain) }
+      subject                   { Execution::RecipeExecutionRunner.new(process_steps_in_order: steps, base_file_location: chain.working_directory, process_chain: chain) }
 
       before do
         allow_any_instance_of(base_step_class).to receive(:perform_step) { raise "Oh noes! Error!" }

@@ -12,7 +12,7 @@ class ExecutionWorker
     sleep(5) unless Rails.env.test? # icky hack to solve race condition - not final solution
 
     @process_chain = ProcessChain.includes(:process_steps).find(chain_id)
-    runner = Execution::RecipeExecutionRunner.new(process_steps_in_order: process_steps_in_order, chain_file_location: @process_chain.working_directory, process_chain: @process_chain)
+    runner = Execution::RecipeExecutionRunner.new(process_steps_in_order: process_steps_in_order, base_file_location: @process_chain.working_directory, process_chain: @process_chain)
     begin
       runner.run!
     rescue => e
