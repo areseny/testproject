@@ -16,6 +16,8 @@ Follow [the official instructions](https://docs.docker.com/compose/install/) for
 
 (optional) If your INK steps have Docker dependencies, add those services to a `docker-compose.override.yml` file in this directory.
 
+Run `docker volume create --name=gems` to create a Docker volume for storing the Ruby gem dependencies outside the container.
+
 Run `docker-compose build` to build the Docker images, then run `./bin/docker` to start the INK API service and its dependencies.
 
 Once started, a command line prompt will open inside the running INK container. From that command line, run `./bin/setup` for initial application setup, or run `./bin/update` when needed for updates and migrations. Run `./bin/server` to start the server - after a while, a message will let you know that it's ready.
