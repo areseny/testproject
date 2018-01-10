@@ -13,7 +13,6 @@
 /tmp
 
 .idea/
-.env
 public/uploads/*
 public/test/*
 
@@ -22,3 +21,5 @@ public/test/*
 .env.development
 
 StepGemfile
+
+postgres/
