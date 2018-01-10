@@ -10,12 +10,19 @@ Ink is an API. It provides an extensible step-based framework for file conversio
 
 It uses Rails 5 in API version.
 
-## Setup with docker
-Follow the instructions here https://docs.docker.com/compose/install/ to install docker and docker-compose
-To run the stack:
+## Setup with Docker (recommended)
 
-    docker-compose build
-    docker-compose up
+Follow [the official instructions](https://docs.docker.com/compose/install/) for installation of Docker and Docker Compose.
+
+(optional) If your INK steps have Docker dependencies, add those services to a `docker-compose.override.yml` file in this directory.
+
+Run `docker volume create --name=gems` to create a Docker volume for storing the Ruby gem dependencies outside the container.
+
+Run `docker-compose build` to build the Docker images, then run `./bin/docker` to start the INK API service and its dependencies.
+
+Once started, a command line prompt will open inside the running INK container. From that command line, run `./bin/setup` for initial application setup, or run `./bin/update` when needed for updates and migrations. Run `./bin/server` to start the server - after a while, a message will let you know that it's ready.
+
+The INK API is now running. See [ink-client](https://gitlab.coko.foundation/INK/ink-client/) for a React front-end for creating and managing recipes.
 
 ## Setup gitlab CI
 
