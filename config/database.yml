@@ -19,9 +19,7 @@ staging:
 development:
   <<: *default
   database: ink_development
-  host: localhost
 
 test:
   <<: *default
   database: ink_test
-  host: localhost

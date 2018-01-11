@@ -1,48 +1,83 @@
-version: '2'
+version: '3'
+
 services:
   postgres:
-    image: 'postgres:9.5'
+    image: postgres:9.5
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres-volume:/var/lib/postgresql/data
+
   redis:
-    image: 'redis:latest'
+    image: redis:latest
     ports:
-      - "6379:6379"
+      - 6379:6379
     volumes:
-      - ./redis:/var/lib/redis/data
-  ink:
-    build: .
-    links:
-      - postgres
-      - redis
-      - slanger
-    volumes:
-      # This will mount your "gems" volume (defined below as your external gem volumes) onto /gems
-      - gems:/gems
-      # This will mount ., your app code, into the /app directory within the container
-      - .:/app
-    env_file:
-      - '.env'
-    depends_on:
-      - postgres
-      - slanger
-    ports:
-      - "3000:3000"
+      - redis-volume:/var/lib/redis/data
+
   slanger:
-    image: antillion/slanger
+    image: inkmap/slanger:1.0.3
+    env_file:
+      - '.env.sample'
     ports:
       - 4567:4567
       - 8080:8080
-    links:
-      - redis:redis
+    depends_on:
+      - redis
+
+  sidekiq:
+    build: .
     env_file:
-      - '.env'
+      - '.env.sample'
+    environment:
+      # override rails_env through shell
+      - RAILS_ENV=${RAILS_ENV}
+    depends_on:
+      - postgres
+      - redis
+      - slanger
+      - ink
+    volumes:
+      - ink-api-files-volume:/ink-api/ink_api_files
+    command: ['./bin/wait-for-it', 'postgres:5432', '-s', '-t', '40', '--', './bin/bundle', 'exec', 'sidekiq']
+
+  seed_db:
+    build: .
+    env_file:
+      - '.env.sample'
+    environment:
+      # override rails_env through shell
+      - RAILS_ENV=${RAILS_ENV}
+    depends_on:
+      - postgres
+      - redis
+      - slanger
+    command: ['./bin/wait-for-it', 'postgres:5432', '-s', '-t', '40', '--', './bin/seed-db']
+    
+  ink:
+    build: .
+    env_file:
+      - '.env.sample'
+    environment:
+      # override rails_env through shell
+      - RAILS_ENV=${RAILS_ENV}
+    depends_on:
+      - postgres
+      - redis
+      - slanger
+      - seed_db
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - gems:/gems
+      - ink-api-files-volume:/ink-api/ink_api_files
+    command: ['./bin/wait-for-it', 'seed_db:1234', '-s', '-t', '100', '--', './bin/start']
+
 volumes:
-  db: {}
+  redis-volume:
+  postgres-volume:
   gems:
     # Flagging this as "external" means it will use the volume named "gems" on the host instead of making a new volume specific to this docker-compose file
     external: true
-  pgdata:
-    external: true
+  ink-api-files-volume:
