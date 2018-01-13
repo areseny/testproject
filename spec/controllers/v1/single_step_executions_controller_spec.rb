@@ -38,9 +38,9 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
               description: description,
               step_class_name: step_class_name,
               execution_parameters: execution_parameters,
-              input_file_list: [html_file],
-              code: klass_file
-          }
+          },
+          code: klass_file,
+          input_files: [html_file],
       }
     }
 
@@ -63,9 +63,24 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
       context 'if the single_step_execution is invalid' do
 
+        context 'if the code supplied is missing' do
+          before do
+            single_step_execution_params[:code] = nil
+          end
+
+          specify do
+            request_with_auth(account.new_jwt) do
+              perform_create_request(single_step_execution_params)
+            end
+
+            expect(response.status).to eq 422
+            expect(body_as_json['errors']).to eq ["That file does not define the class InkStep::AwesomeClass"]
+          end
+        end
+
         context 'if the code supplied is blank' do
           before do
-            single_step_execution_params[:single_step_execution][:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/blank_file.rb'))
+            single_step_execution_params[:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/blank_file.rb'))
           end
 
           specify do
@@ -80,7 +95,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
         context 'if the code supplied does not contain a class' do
           before do
-            single_step_execution_params[:single_step_execution][:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/valid_not_a_class.rb'))
+            single_step_execution_params[:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/valid_not_a_class.rb'))
           end
 
           specify do
@@ -94,7 +109,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
         context 'if the code supplied is not valid syntax' do
           before do
-            single_step_execution_params[:single_step_execution][:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/rubbish_class'))
+            single_step_execution_params[:code] = File.read(Rails.root.join('spec/fixtures/files/standalone/rubbish_class'))
           end
 
           specify do

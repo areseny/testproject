@@ -15,9 +15,11 @@ module Api
       end
 
       def create
-        new_single_step_execution[:execution_parameters] = params[:single_step_execution][:execution_parameters]
+        new_single_step_execution.description = single_step_execution_param["description"]
+        new_single_step_execution.step_class_name = single_step_execution_param["step_class_name"]
+        new_single_step_execution.execution_parameters = execution_params
         new_single_step_execution.save!
-        new_single_step_execution.start_execution!(input_files: input_file_param, code: params[:single_step_execution][:code])
+        new_single_step_execution.start_execution!(input_files: input_file_param, code: code_param)
         render json: new_single_step_execution
       rescue => e
         ap e.message
@@ -67,11 +69,33 @@ module Api
       private
 
       def input_file_param
-        params.require(:single_step_execution).require(:input_file_list)
+        params.require(:input_files)
       end
 
       def single_step_execution_params
-        params.require(:single_step_execution).permit(:description, :step_class_name, :execution_parameters, :input_file_list)
+        params.require(:single_step_execution)
+      end
+
+      def single_step_execution_param
+        the_params = params[:single_step_execution]
+        if the_params.is_a?(String)
+          JSON.parse(the_params)
+        else
+          the_params
+        end
+      end
+
+      def code_param
+        params[:code]
+      end
+
+      def execution_params
+        ex_params = single_step_execution_param["execution_parameters"] || {}
+        if ex_params.is_a?(String)
+          JSON.parse(ex_params)
+        else
+          ex_params
+        end
       end
 
       def relative_path_param
@@ -87,7 +111,12 @@ module Api
       end
 
       def new_single_step_execution
-        @single_step_execution ||= current_entity.account.single_step_executions.new(single_step_execution_params)
+        @single_step_execution ||= current_entity.account.single_step_executions.new
+        # @single_step_execution ||= current_entity.account.single_step_executions.new(
+        #     description: params[:single_step_execution][:description],
+        #     step_class_name: params[:single_step_execution][:step_class_name],
+        #     execution_parameters: params[:single_step_execution][:execution_parameters]
+        # )# single_step_execution_params
       end
 
       def authorise_account!

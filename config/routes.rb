@@ -68,6 +68,9 @@ Rails.application.routes.draw do
       end
 
       resources :single_step_executions do
+        collection do
+          post 'create'
+        end
         member do
           get 'download_output_file'
           get 'download_output_zip'
