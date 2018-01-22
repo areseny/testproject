@@ -7,4 +7,4 @@ test:
   script:
     - docker info
     - docker-compose --version
-    - ./bin/ci-test
+    - ./script/ci-test
