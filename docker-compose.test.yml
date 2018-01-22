@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  ink:
+    build: .
+    env_file:
+      - '.env.sample'
+    environment:
+      # override rails_env through shell
+      - RAILS_ENV
+    depends_on:
+      - postgres
+      - redis
+    command: ['./bin/wait-for-it', 'postgres:5432', '-s', '-t', '40', '--', './bin/start']

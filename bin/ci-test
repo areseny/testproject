@@ -1,29 +1,35 @@
 #!/bin/sh
+set -ex
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
+export COMPOSE_PROJECT_NAME=inkapi
+export COMPOSE_FILE=docker-compose.yml:docker-compose.test.yml
+export RAILS_ENV=test
+
+# docker-compose config
+# exit
+
 # kill and remove any running containers
 cleanup () {
-  docker-compose -p inkapi kill
-  docker-compose down -v 
-  docker-compose -p inkapi rm -f
+  docker-compose down -v --timeout=1
 }
+
+# run cleanup now in case the last run didn't exit properly
+cleanup
 
 # catch unexpected failures, do cleanup and output an error message
 trap 'cleanup ; printf "${RED}Tests Failed For Unexpected Reasons${NC}\n"'\
   HUP INT QUIT PIPE TERM
 
-# build composed services and run the tests 
-export RAILS_ENV=test; docker-compose -p inkapi up --build 
-if [ $? -ne 0 ] ; then
-  printf "${RED}Docker Compose Failed${NC}\n"
-  exit 1
-fi
+# build composed services and run the tests
+docker-compose build
+docker-compose up -d postgres redis
+docker-compose run ink
 
-# wait for the test service to complete and grab the exit code
-TEST_EXIT_CODE=`docker wait inkapi_ink_1`
+TEST_EXIT_CODE=$?
 # inspect the output of the test and display respective message
 if [[ "$TEST_EXIT_CODE" -ne 0 ]] ; then
   printf "${RED}Tests Failed${NC} - Exit Code: $TEST_EXIT_CODE\n"
