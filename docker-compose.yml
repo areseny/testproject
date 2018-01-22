@@ -18,7 +18,4 @@ services:
 volumes:
   redis-volume:
   postgres-volume:
-  gems:
-    # Flagging this as "external" means it will use the volume named "gems" on the host instead of making a new volume specific to this docker-compose file
-    external: true
   ink-api-files-volume:
