@@ -22,7 +22,10 @@ The INK API is now running. See [ink-client](https://gitlab.coko.foundation/INK/
 
 ## Run tests
 
-Run `bin/test` to run the tests in a Docker container.
+Run `bin/test` to run the tests in a Docker container. You can pass files or directories as arguments to scope the run to particular tests:
+
+    bin/test spec/models
+    bin/test spec/controllers/v1/admin_controller_spec.rb
 
 ## Setup gitlab CI
 

@@ -5,4 +5,4 @@ export COMPOSE_FILE=docker-compose.yml:docker-compose.test.yml
 export RAILS_ENV=test
 
 docker-compose up -d postgres redis
-docker-compose run -v "$PWD:/app" -v "gems:/gems" ink
+docker-compose run -v "$PWD:/app" -v "gems:/gems" ink "$@"

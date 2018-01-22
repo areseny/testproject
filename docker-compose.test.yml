@@ -11,4 +11,4 @@ services:
     depends_on:
       - postgres
       - redis
-    command: ['./bin/wait-for-it', 'postgres:5432', '-s', '-t', '40', '--', './bin/start']
+    entrypoint: ['./bin/wait-for-it', 'postgres:5432', '-s', '-t', '40', '--', './bin/start']
