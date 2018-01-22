@@ -1,8 +1,5 @@
-#!/bin/bash
-set -ex
+#!/usr/bin/env bash
+set -e
 
-export COMPOSE_FILE=docker-compose.yml:docker-compose.test.yml
-export RAILS_ENV=test
-
-docker-compose up -d postgres redis
-docker-compose run -v "$PWD:/app" -v "gems:/gems" ink
+./bin/rake db:create
+./bin/bundle exec rspec "$@"

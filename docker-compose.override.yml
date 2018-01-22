@@ -59,3 +59,8 @@ services:
       - gems:/gems
       - ink-api-files-volume:/ink-api/ink_api_files
     command: ['./bin/wait-for-it', 'seed_db:1234', '-s', '-t', '100', '--', './bin/start']
+
+volumes:
+  gems:
+    # Flagging this as "external" means it will use the volume named "gems" on the host instead of making a new volume specific to this docker-compose file
+    external: true

@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-
 set -ex
 
-if [[ $RAILS_ENV == 'test' ]]; then
-  ./bin/rake db:create
-  ./bin/bundle exec rspec spec
-else
-  ./bin/rails s -p 3000 -b 0.0.0.0
-fi
+./bin/rails s -p 3000 -b 0.0.0.0
