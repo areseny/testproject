@@ -16,4 +16,4 @@ COPY spec spec
 
 EXPOSE 3000
 
-CMD ['./bin/server']
+CMD ['./bin/start']

@@ -4,12 +4,15 @@ services:
 stages:
   - build
   - test
+  - review
 
 variables:
   IMAGE_ORG: inkcoko
   IMAGE_NAME: ink-api
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: ''
+  BASE_DOMAIN: gateway.ps.semioticsquares.com
+  CONFIGURATION_REPOSITORY: https://gitlab.coko.foundation/INK/deployment-config.git
 
 build:
   image: docker:latest
@@ -37,3 +40,32 @@ test:
     - cd /app
     - ./bin/rake db:create
     - ./bin/bundle exec rspec spec
+
+review:
+  image: xpub/deployer:latest
+  stage: review
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    # !! kube-lego will fail if domain > 63 chars
+    url: "https://${CI_ENVIRONMENT_SLUG}.${BASE_DOMAIN}"
+    on_stop: stop_review
+  except:
+    - master
+  script:
+    - source deploy.sh
+    - create_deployment
+
+stop_review:
+  image: xpub/deployer:latest
+  stage: review
+  variables:
+    GIT_STRATEGY: none
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  when: manual
+  except:
+    - master
+  script:
+    - source deploy.sh
+    - delete_deployment_no_db
