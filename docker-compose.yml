@@ -15,7 +15,69 @@ services:
     volumes:
       - redis-volume:/var/lib/redis/data
 
+  slanger:
+    image: inkmap/slanger:1.0.3
+    env_file:
+      - '.env.sample'
+    ports:
+      - 4567:4567
+      - 8080:8080
+    depends_on:
+      - redis
+
+  sidekiq:
+    build: .
+    env_file:
+      - '.env.sample'
+    environment:
+      # override rails_env through shell
+      - RAILS_ENV
+    depends_on:
+      - postgres
+      - redis
+      - slanger
+      - ink
+    volumes:
+      - ink-api-files-volume:/ink-api/ink_api_files
+    command: ['./bin/wait-for-it', 'postgres:5432', '-s', '-t', '40', '--', './bin/bundle', 'exec', 'sidekiq']
+
+  seed_db:
+    build: .
+    env_file:
+      - '.env.sample'
+    environment:
+      # override rails_env through shell
+      - RAILS_ENV
+    depends_on:
+      - postgres
+      - redis
+      - slanger
+    command: ['./bin/wait-for-it', 'postgres:5432', '-s', '-t', '40', '--', './bin/seed-db']
+
+  ink:
+    build: .
+    env_file:
+      - '.env.sample'
+    environment:
+      # override rails_env through shell
+      - RAILS_ENV
+    depends_on:
+      - postgres
+      - redis
+      - slanger
+      - seed_db
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - gems:/gems
+      - ink-api-files-volume:/ink-api/ink_api_files
+    command: ['./bin/wait-for-it', 'seed_db:1234', '-s', '-t', '100', '--', './bin/start']
+
 volumes:
   redis-volume:
   postgres-volume:
+  gems:
+    # Flagging this as "external" means it will use the volume named "gems" on the host instead of making a new volume specific to this docker-compose file
+    external: true
   ink-api-files-volume:

@@ -14,6 +14,8 @@ It uses Rails 5 in API version.
 
 Follow [the official instructions](https://docs.docker.com/compose/install/) for installation of Docker and Docker Compose.
 
+(optional) If your INK steps have Docker dependencies, add those services to a `docker-compose.override.yml` file in this directory.
+
 Run `docker volume create --name=gems` to create a Docker volume for storing the Ruby gem dependencies outside the container.
 
 Run `docker-compose up` to start the app.

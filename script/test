@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-export COMPOSE_FILE=docker-compose.yml:docker-compose.test.yml
-export RAILS_ENV=test
+export COMPOSE_PROJECT_NAME=inkapi_test
+export COMPOSE_FILE=docker-compose.test.yml
 
-docker-compose up -d postgres redis
+docker-compose up -d postgres
 docker-compose run -v "$PWD:/app" -v "gems:/gems" ink "$@"
