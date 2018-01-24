@@ -10,16 +10,16 @@ default: &default
 
 production:
   <<: *default
-  database: ink_production
+  database: <%= ENV.fetch('POSTGRESQL_DB_NAME', 'ink_production') %>
 
 staging:
   <<: *default
-  database: ink_staging
+  database: <%= ENV.fetch('POSTGRESQL_DB_NAME', 'ink_staging') %>
 
 development:
   <<: *default
-  database: ink_development
+  database: <%= ENV.fetch('POSTGRESQL_DB_NAME', 'ink_development') %>
 
 test:
   <<: *default
-  database: ink_test
+  database: <%= ENV.fetch('POSTGRESQL_DB_NAME', 'ink_test') %>
