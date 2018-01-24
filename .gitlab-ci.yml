@@ -42,7 +42,7 @@ test:
     - ./bin/bundle exec rspec spec
 
 review:
-  image: xpub/deployer:latest
+  image: pubsweet/deployer:latest
   stage: review
   environment:
     name: review/$CI_COMMIT_REF_NAME
@@ -56,7 +56,7 @@ review:
     - create_deployment
 
 stop_review:
-  image: xpub/deployer:latest
+  image: pubsweet/deployer:latest
   stage: review
   variables:
     GIT_STRATEGY: none
