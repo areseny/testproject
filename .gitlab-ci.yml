@@ -69,4 +69,3 @@ stop_review:
   script:
     - source deploy.sh
     - delete_deployment_no_db
-    - deploy_postdelete_job
