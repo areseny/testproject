@@ -42,7 +42,7 @@ test:
     - ./bin/bundle exec rspec spec
 
 review:
-  image: "pubsweet/deployer@sha256:be649b83126c42f1f397789c85cb12babf4635423b8e22ad3f563b8ad6bd9afd"
+  image: "pubsweet/deployer@sha256:1dcf2276452f0556384ce211bd144fa688803d964cc922f0ed184ee370f9e9b7"
   stage: review
   environment:
     name: review/$CI_COMMIT_REF_NAME
@@ -56,7 +56,7 @@ review:
     - create_deployment
 
 stop_review:
-  image: "pubsweet/deployer@sha256:be649b83126c42f1f397789c85cb12babf4635423b8e22ad3f563b8ad6bd9afd"
+  image: "pubsweet/deployer@sha256:1dcf2276452f0556384ce211bd144fa688803d964cc922f0ed184ee370f9e9b7"
   stage: review
   variables:
     GIT_STRATEGY: none
