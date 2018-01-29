@@ -42,7 +42,7 @@ test:
     - ./bin/bundle exec rspec spec
 
 review:
-  image: pubsweet/deployer:09645ae4ae342739fd7e4706f34309ff67bfb8e2
+  image: pubsweet/deployer:d3086eb615b186aaa03f62a414f3cd1c1998d5fa
   stage: review
   environment:
     name: review/$CI_COMMIT_REF_NAME
