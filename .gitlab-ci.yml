@@ -3,7 +3,7 @@ services:
 
 stages:
   - build
-  - review
+  - staging
 
 variables:
   IMAGE_ORG: inkcoko
@@ -24,11 +24,11 @@ build:
     - echo "Ignore warning! Cannot perform an interactive login from a non TTY device"
     - docker push $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
 
-review:
+staging:
   image: pubsweet/deployer:latest
-  stage: review
+  stage: staging
   environment:
-    name: staging
+    name: staging/${CI_COMMIT_REF}
     # !! kube-lego will fail if domain > 63 chars
     url: "https://${CI_ENVIRONMENT_SLUG}.${BASE_DOMAIN}"
     on_stop: stop_review
@@ -37,19 +37,3 @@ review:
   script:
     - source deploy.sh
     - create_deployment
-
-stop_review:
-  image: pubsweet/deployer:latest
-  stage: review
-  variables:
-    GIT_STRATEGY: none
-  environment:
-    name: staging
-    action: stop
-  when: manual
-  except:
-    - master
-  script:
-    - source deploy.sh
-    - delete_deployment
-    - delete_objects_in_environment pvc
