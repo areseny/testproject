@@ -41,7 +41,7 @@ review:
     - create_kubeconfig
     - ensure_namespace
     - generate_objects
-    - cat ./infra/deployment/templates/*.yaml
+    - cat ./infra/deployment/*.yaml
 
 stop_review:
   image: pubsweet/deployer:latest
