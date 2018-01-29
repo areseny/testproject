@@ -68,5 +68,5 @@ stop_review:
     - master
   script:
     - source deploy.sh
-    - delete_deployment_no_db
+    - delete_deployment
     - delete_objects_in_environment pvc
