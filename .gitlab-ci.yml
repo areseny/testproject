@@ -45,7 +45,7 @@ review:
   image: pubsweet/deployer:b12456b7fb6f18edc2399d304ba016d2fc451978
   stage: review
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: staging
     # !! kube-lego will fail if domain > 63 chars
     url: "https://${CI_ENVIRONMENT_SLUG}.${BASE_DOMAIN}"
     on_stop: stop_review
@@ -58,6 +58,7 @@ review:
     - create_kubeconfig
     - ensure_namespace
     - generate_objects
+    - cat ./infra/deployment/templates/*.yaml
 
 stop_review:
   image: pubsweet/deployer:latest
@@ -65,7 +66,7 @@ stop_review:
   variables:
     GIT_STRATEGY: none
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: staging
     action: stop
   when: manual
   except:
