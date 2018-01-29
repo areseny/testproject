@@ -31,7 +31,6 @@ staging:
     name: staging/${CI_COMMIT_REF}
     # !! kube-lego will fail if domain > 63 chars
     url: "https://${CI_ENVIRONMENT_SLUG}.${BASE_DOMAIN}"
-    on_stop: stop_review
   except:
     - master
   script:
