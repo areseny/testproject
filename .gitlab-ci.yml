@@ -53,6 +53,10 @@ review:
     - master
   script:
     - source deploy.sh
+    - ensure_deploy_variables
+    - clone_config_repo
+    - create_kubeconfig
+    - ensure_namespace
     - generate_objects
 
 stop_review:
