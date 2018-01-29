@@ -25,7 +25,7 @@ build:
     - docker push $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
 
 review:
-  image: pubsweet/deployer:c3e772e738758166eb065f0c96690a75a02bc39b
+  image: pubsweet/deployer:latest
   stage: review
   environment:
     name: staging
