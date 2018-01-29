@@ -42,7 +42,7 @@ test:
     - ./bin/bundle exec rspec spec
 
 review:
-  image: pubsweet/deployer:b12456b7fb6f18edc2399d304ba016d2fc451978
+  image: pubsweet/deployer:908be5f091946057325ed6022c942750c151c03c
   stage: review
   environment:
     name: staging
