@@ -16,7 +16,7 @@ services:
       - redis-volume:/var/lib/redis/data
 
   slanger:
-    image: inkmap/slanger:1.0.3
+    image: inkcoko/slanger:0.6.0
     env_file:
       - '.env.sample'
     ports:
