@@ -63,6 +63,9 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
 
       context 'if the single_step_execution is invalid' do
 
+        # Use a class name which definitely hasn't been loaded by another test case
+        let(:step_class_name) { "InkStep::NonexistentClass" }
+
         context 'if the code supplied is missing' do
           before do
             single_step_execution_params[:code] = nil
@@ -74,7 +77,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
             end
 
             expect(response.status).to eq 422
-            expect(body_as_json['errors']).to eq ["That file does not define the class InkStep::AwesomeClass"]
+            expect(body_as_json['errors']).to eq ["That file does not define the class InkStep::NonexistentClass"]
           end
         end
 
@@ -89,7 +92,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
             end
 
             expect(response.status).to eq 422
-            expect(body_as_json['errors']).to eq ["That file does not define the class InkStep::AwesomeClass"]
+            expect(body_as_json['errors']).to eq ["That file does not define the class InkStep::NonexistentClass"]
           end
         end
 
@@ -103,7 +106,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
               perform_create_request(single_step_execution_params)
             end
             expect(response.status).to eq 422
-            expect(body_as_json['errors']).to eq ["Mismatch! You provided InkStep::AwesomeClass and the file defined something else"]
+            expect(body_as_json['errors']).to eq ["Mismatch! You provided InkStep::NonexistentClass and the file defined something else"]
           end
         end
 
@@ -118,7 +121,7 @@ describe Api::V1::SingleStepExecutionsController, type: :controller do
             end
 
             expect(response.status).to eq 422
-            expect(body_as_json['errors']).to eq ["Syntax error - InkStep::AwesomeClass could not be loaded"]
+            expect(body_as_json['errors']).to eq ["Syntax error - InkStep::NonexistentClass could not be loaded"]
           end
         end
 

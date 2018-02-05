@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -ex
+
+echo RAILS ENV: $RAILS_ENV
+./bin/rake db:create
+
+./bin/rake db:schema:load
+./bin/rake setup:create_account_recipe[$INK_EMAIL,$INK_PASSWORD,$INK_AUTH]
+
+(sleep 100; exit) &
+echo "Ready and waiting"
+nc -l -p 1234

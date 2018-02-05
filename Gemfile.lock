@@ -27,12 +27,6 @@ GIT
   specs:
     inkstep_coko_demo_steps (1.0.2)
 
-GIT
-  remote: https://gitlab.coko.foundation/blahah/inkstep_development
-  revision: a6972d5324d2ea96c78fc7c1cdb4b08fafb0cb51
-  specs:
-    inkstep_development (1.0.5)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -353,7 +347,6 @@ DEPENDENCIES
   ink_step!
   inkstep_coko_conversion!
   inkstep_coko_demo_steps!
-  inkstep_development!
   jbuilder (~> 2.0)
   jquery-rails
   json_spec
@@ -378,4 +371,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.14.5
+   1.16.0
