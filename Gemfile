@@ -7,6 +7,8 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'dotenv'
 gem 'dotenv-rails', require: 'dotenv/rails-now'#, groups: [:development, :test]
 
+gem 'puma'
+
 ################### authentication ####################
 
 gem 'devise'
@@ -92,9 +94,6 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-
-  # better web server than webrick
-  gem 'thin'
 
   ######################### deployment ##########################
 

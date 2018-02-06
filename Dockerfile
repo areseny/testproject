@@ -5,15 +5,15 @@ COPY .env.sample .rspec .ruby-version Capfile config.ru Gemfile Gemfile.lock Rak
 COPY bin/bundle bin/bundle
 RUN ./bin/bundle
 
-COPY bin bin
-COPY app app
-COPY config config
-COPY db db
-COPY lib lib
 COPY log log
 COPY public public
+COPY bin bin
+COPY lib lib
+COPY db db
+COPY config config
 COPY spec spec
+COPY app app
 
 EXPOSE 3000
 
-CMD ['./bin/server']
+CMD ['./bin/start']
