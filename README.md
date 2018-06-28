@@ -22,7 +22,7 @@ Run `docker-compose up` to start the app.
 
 The INK API is now running. See [ink-client](https://gitlab.coko.foundation/INK/ink-client/) for a React front-end for creating and managing recipes.
 
-Be aware that the INK user credentials come from [this file](https://gitlab.coko.foundation/INK/ink-api/blob/master/.env.sample) rather than the [seed file](https://gitlab.coko.foundation/INK/ink-api/blob/master/db/seeds.rb).
+Be aware that the INK user credentials come from [this `.env` file](https://gitlab.coko.foundation/INK/ink-api/blob/master/.env.sample) rather than the [seed file](https://gitlab.coko.foundation/INK/ink-api/blob/master/db/seeds.rb).
 
 ## Run tests
 
