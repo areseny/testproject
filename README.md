@@ -22,6 +22,8 @@ Run `docker-compose up` to start the app.
 
 The INK API is now running. See [ink-client](https://gitlab.coko.foundation/INK/ink-client/) for a React front-end for creating and managing recipes.
 
+Be aware that the INK user credentials come from [this file](https://gitlab.coko.foundation/INK/ink-api/blob/master/.env.sample) rather than the [seed file](https://gitlab.coko.foundation/INK/ink-api/blob/master/db/seeds.rb).
+
 ## Run tests
 
 Run `script/test` to run the tests in a Docker container. You can pass files or directories as arguments to scope the run to particular tests:
@@ -117,7 +119,7 @@ Once it is up and running, run the rake task in `lib/setup.rake` to create some 
 ### Adding a new step gem to the server
 
 Modify the `StepGemfile` (or make one if you don't have one already - there's a `StepGemfile.sample` to copy)
-The dependencies are handled by Bundler, so be aware that there may be version incompatibilities if ink-api and a step gem require different versions of the same dependency. 
+The dependencies are handled by Bundler, so be aware that there may be version incompatibilities if ink-api and a step gem require different versions of the same dependency.
 In most cases, Bundler cna handle this by itself, but it may take some fiddling by you to get it right.
 
 Run `bundle install`
